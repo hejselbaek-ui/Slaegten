@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-u6uyu6dFjmgBMy6x1zSzSCR1dMNsYTtXTElBEG1P5dE=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hQKFc8vJviXJzvQ8qIMI3oZ/NgIpAmpLaIVq3uBKuGI=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -315,6 +315,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <form id="pwForm" style="display:flex;flex-direction:column;gap:14px" autocomplete="off">
       <div class="pano" aria-hidden="true"><span class="cap">kun for familien</span><span class="nm">adgangskode</span></div>
       <p class="intro">Træet indeholder oplysninger om levende familiemedlemmer, så det er låst. Skriv familiens adgangskode. Telefonen husker den bagefter.</p>
+      <p class="status" id="lockNews" style="color:var(--fg)"><b style="font-weight:600">24. oktober 2026:</b> Ny, længere adgangskode implementeret. Spørg træets vogter.</p>
       <p class="status" id="lockVer"></p>
       <p class="status keeper small" id="lockAdmin"></p>
       <label for="pw" class="status">Adgangskode</label>
@@ -793,7 +794,7 @@ var CHANGELOG=[
   {v:'2.0.1',d:'2026-10-23',items:['Indstillinger er nu en ægte Zune-pivot. Stryg til siden mellem om, pauseskærm, forslag og resten. Zune blev selv lagt i graven i 2011. Vi holder mindet i hævd, ligesom med alle andre her']},
   {v:'2.0',d:'2026-10-23',items:['Pauseskærm. Hele slægten svæver diagonalt hen over skærmen som en musikvideo fra 2009','Velegnet til familiefester, lange søndage og når nogen spørger: “Hvem var det nu, ham med hatten?” Han er som regel død før din fødsel. Hatten har klaret sig bedre']},
   {v:'1.9.1',d:'2026-10-23',items:['Træets Vogter har fået stråhat og et græsstrå i munden. Han tager den ikke af indendørs. Vi er holdt op med at spørge']},
-  {v:'1.9',d:'2026-10-23',items:['Bo Hejselbæk er officielt udnævnt til Træets Vogter. Ros, rettelser og kage går direkte til ham. Klager går også til ham, og så videre ned i en skuffe','Versionslisten har fået en personlighed. Ingen har bedt om den']},
+  {v:'1.9',d:'2026-10-23',items:['Bo Hejselbæk er uofficielt udnævnt til Træets Vogter. Ros, rettelser og kage går direkte til ham. Klager går også til ham, og så videre ned i en skuffe','Versionslisten har fået en personlighed. Ingen har bedt om den']},
   {v:'1.8',d:'2026-10-23',items:['Forslagsknappen virker. Send nye slægtninge, glemte fødselsdage og billeder af oldemor med hat til Bo via WhatsApp, Messenger eller sms','Brevduer understøttes ikke. Det har været forsøgt']},
   {v:'1.7',d:'2026-10-23',items:['Huset er flyttet op i øverste venstre hjørne. Ét tryk, og du er hjemme','Du kan nu se træet fra hvem som helst, også fra den grandonkel, ingen kan huske navnet på. Det kan han heller ikke selv længere']},
   {v:'1.6.1',d:'2026-10-23',items:['Knappen “behold” er afskediget efter kort tids tjeneste og afløst af et mere ydmygt “‹ tilbage”','Kortene på forsiden siger ikke længere årstallet to gange. Det gør onklen til familiefesten stadig, men han ligger uden for vores ansvarsområde']},
