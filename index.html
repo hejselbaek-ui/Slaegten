@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-keR4vuYgBKwyClI19LvZ0EuuKoCMtOOKqhSBF/p17QU=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-+WSxaxJbDFAEEDuaqWpMfgpqFaupTdLAJy1KhH4Gmus=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -315,7 +315,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <form id="pwForm" style="display:flex;flex-direction:column;gap:14px" autocomplete="off">
       <div class="pano" aria-hidden="true"><span class="cap">kun for familien</span><span class="nm">adgangskode</span></div>
       <p class="intro">Træet indeholder oplysninger om levende familiemedlemmer, så det er låst. Skriv familiens adgangskode. Telefonen husker den bagefter.</p>
-      <p class="status" id="lockNews" style="color:var(--fg)"><b style="font-weight:600">24. oktober 2026:</b> Ny, længere adgangskode implementeret. Spørg træets vogter.</p>
+      <p class="status" id="lockNews" style="color:var(--t-far)"><b style="font-weight:600">24. oktober 2026:</b> Ny, længere adgangskode implementeret. Spørg træets vogter.</p>
       <p class="status" id="lockVer"></p>
       <p class="status keeper small" id="lockAdmin"></p>
       <label for="pw" class="status">Adgangskode</label>
@@ -512,6 +512,11 @@ function dec(o){
 function fmtVer(v){ var d=new Date(v); if(!v||isNaN(d)) return '';
   return d.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'})+' kl. '+d.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'}); }
 function showLock(o){
+  /* Passer telefonens gemte nøgle ikke til filerne (fx ny adgangskode), glemmes den gamle kopi af træet, og alt bag låsen ryddes */
+  if(KEY&&KEYSALT!==o.salt){ KEY=null; KEYSALT=null; try{ ['slaegt.key','slaegt.tree.enc','slaegt.photos.enc'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} }
+  P={}; VER=null; PHOTOS={}; PHVER=null; STACK=[];
+  ['#homeBtn','#backBtn','#keepBtn','#newsBtn','#settingsBtn','#playBtn','#povLbl','#settings','#news','#pauseBar'].forEach(function(s){ var el=$(s); if(el) el.hidden=true; });
+  $('#rail').innerHTML=''; RAILKEY=null;
   PENDING=o; $('#lockVer').textContent= fmtVer(o.version)? 'Træet er sidst opdateret '+fmtVer(o.version)+'.' : ''; $('#loading').hidden=true; $('#pick').hidden=true; $('#focus').hidden=true; $('#lock').hidden=false;
   setTimeout(function(){ try{ $('#pw').focus(); }catch(e){} },50);
 }
