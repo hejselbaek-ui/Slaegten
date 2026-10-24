@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-VfL7dbeZydocc17Xl06KtwxvwS7ge2fmbhFG2a9nMQY=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Slægten">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Slægten på mobilen</title>
+<style>
+/* Skrifttypen bor her hos os selv (fonts/), så Google ikke ser, hvem der kigger */
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/open-sans-latin-ext-300-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/open-sans-latin-300-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/open-sans-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/open-sans-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/open-sans-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/open-sans-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* Layout: Zune/Metro-panorama til telefon. Stor, beskåret "forrige person" øverst (tryk = tilbage), fokusperson, pivot-faner, flade kort i slægtsfarver. Generationslineal i højre kant. */
+:root{
+  /* Jordfarver: umbra, terrakotta, mos og okker på varm, mørk muld */
+  --bg:#15120f; --fg:#ede6dc; --sub:#a39888; --dim:#4a4239; --line:#2a241e; --raise:#1f1b17;
+  --c-own:#4a3b2e; --c-far:#a0522d; --c-mor:#5a6b3a; --c-in:#8c6d2c; --c-none:#4a4239;
+  --t-own:#d9c7b3; --t-far:#e0916a; --t-mor:#b0c287; --t-in:#d8b870;
+  --tile-ink:#f6f1ea; --off:#8a7d6d; --on:#5a6b3a;
+  --f-ui:"Open Sans","Segoe UI","Selawik",Roboto,system-ui,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#f3efe7; --fg:#221c16; --sub:#6b6155; --dim:#c9bfb1; --line:#e2dacd; --raise:#e9e3d8;
+  --c-own:#4a3b2e; --c-none:#8a7f72; --off:#9d9283;
+  --t-own:#4a3b2e; --t-far:#8f4524; --t-mor:#4b5a2f; --t-in:#735920; color-scheme:light }}
+:root[data-theme="light"]{
+  --bg:#f3efe7; --fg:#221c16; --sub:#6b6155; --dim:#c9bfb1; --line:#e2dacd; --raise:#e9e3d8;
+  --c-own:#4a3b2e; --c-none:#8a7f72; --off:#9d9283;
+  --t-own:#4a3b2e; --t-far:#8f4524; --t-mor:#4b5a2f; --t-in:#735920; color-scheme:light }
+
+html,body{height:100%}
+html{font-size:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@supports (font:-apple-system-body){html{font:-apple-system-body}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:0.9375rem;line-height:1.45;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+button:focus-visible,input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding-block:8px 64px;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:calc(max(16px, env(safe-area-inset-right,0px)) + 26px);
+  display:flex;flex-direction:column;gap:14px;min-width:0}
+
+/* Topbjælke */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.8125rem;color:var(--sub);min-height:36px}
+.bar .pov{display:flex;align-items:center;gap:8px;min-width:0}
+.bar .pov b{color:var(--fg);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chipbtn{border:1px solid var(--dim);padding:8px 14px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:0.875rem;letter-spacing:.02em;white-space:nowrap}
+.iconbtn{width:44px;height:44px;display:inline-grid;place-items:center;position:relative;color:var(--fg);flex:none}
+.iconbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn:active{background:var(--raise)}
+.badge-n{position:absolute;top:6px;right:5px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:var(--c-far);color:var(--tile-ink);font-size:0.6875rem;font-weight:600;line-height:17px;text-align:center;font-variant-numeric:tabular-nums}
+.backbtn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding-right:12px;font-size:1rem;color:var(--fg)}
+.backbtn span{font-size:1.5rem;line-height:1;margin-top:-2px}
+.homechip{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:0;padding:0 14px 0 10px;border:1px solid var(--dim);color:var(--fg);font-size:0.9375rem}
+.homechip svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.homechip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.homechip[aria-current="page"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.backchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:0;max-width:42vw;padding:0 14px 0 10px;border:1px solid var(--dim);color:var(--fg);font-size:0.9375rem;margin-right:auto}
+.backchip span{font-size:1.4rem;line-height:1;margin-top:-2px;flex:none}
+.backchip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.backchip:active{background:var(--fg);color:var(--bg)}
+.heroact{margin-top:8px;align-self:flex-start}
+.povbtn{display:flex;align-items:center;gap:6px;min-width:0;min-height:44px;color:var(--sub)}
+.povbtn b{color:var(--fg);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.povbtn .chev{flex:none;color:var(--sub)}
+.chipbtn:active{background:var(--fg);color:var(--bg)}
+
+/* Panorama-titel = forrige person */
+.pano{display:block;width:calc(100% + 26px);overflow:hidden;white-space:nowrap;margin-top:-4px}
+.pano .cap{display:block;font-size:0.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:-6px}
+.pano .nm{display:block;font-weight:300;font-size:clamp(58px,19vw,104px);line-height:1.02;letter-spacing:-.03em;color:var(--dim);text-transform:lowercase;margin-left:-.05em}
+button.pano:active .nm{color:var(--sub)}
+
+/* Fokusperson */
+.hero{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:start}
+.hero .ph{width:96px;height:96px}
+.hero .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.kin{font-size:0.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;overflow-wrap:anywhere}
+.k-own{color:var(--t-own)} .k-far{color:var(--t-far)} .k-mor{color:var(--t-mor)} .k-in{color:var(--t-in)} .k-none{color:var(--sub)}
+h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance;overflow-wrap:anywhere}
+.meta{font-size:0.8125rem;color:var(--sub);font-variant-numeric:tabular-nums}
+.anim{animation:turn .32s cubic-bezier(.1,.9,.2,1)}
+@keyframes turn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+/* Bevægelse: bekræfter retningen. Frem glider ind fra højre, tilbage fra venstre, kort rejser sig én ad gangen. */
+:root{--ease:cubic-bezier(.1,.9,.2,1)}
+@keyframes inR{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes inL{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes settle{from{opacity:0;transform:translateY(.3em)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes toastUp{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+.m-fwd{animation:inR .36s var(--ease) both}
+.m-back{animation:inL .36s var(--ease) both}
+.m-fly{animation:fadeIn .3s ease-out both}
+.m-fly h1{opacity:0}
+.pane.m-fwd,.pane.m-back{animation-duration:.3s}
+.pane .tile,.pane .tile.unk{animation:rise .42s var(--ease) backwards;animation-delay:calc(var(--i,0) * 38ms)}
+.pano .nm.settle{animation:settle .55s var(--ease) both}
+.pano .nm.slideL{animation:inL .4s var(--ease) both}
+.path button.here.new{animation:rise .35s var(--ease) both;animation-delay:.12s}
+.shake{animation:shake .4s ease-in-out}
+.toast{animation:toastUp .3s var(--ease) both}
+.flyer{position:fixed;left:0;top:0;margin:0;pointer-events:none;z-index:20;white-space:nowrap;transform-origin:0 0;color:var(--fg);font-family:var(--f-ui)}
+
+/* Vejen fra udgangspunktet */
+.path{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;font-size:0.8125rem}
+.path::-webkit-scrollbar{display:none}
+.path .lbl{color:var(--sub);white-space:nowrap;margin-right:4px;font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase}
+.path button{white-space:nowrap;padding:8px 10px;min-height:40px;background:var(--raise);display:flex;align-items:center;gap:6px}
+.path button .dot{width:8px;height:8px;flex:none}
+.path .sep{color:var(--dim)}
+.path button.here{background:var(--fg);color:var(--bg)}
+
+/* Pivot */
+.pivots{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;margin-top:6px}
+.pivots::-webkit-scrollbar{display:none}
+.pivots button{padding-block:6px;font-weight:300;font-size:1.75rem;line-height:1.1;color:var(--off);white-space:nowrap;text-transform:lowercase;transition:color .2s}
+.pivots button[aria-selected="true"]{color:var(--fg)}
+.pane{display:flex;flex-direction:column;gap:18px;min-height:240px;touch-action:pan-y}
+.grp{display:flex;flex-direction:column;gap:8px}
+.grp h2{margin:0;font-size:0.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
+.empty{color:var(--sub);font-size:0.875rem;margin:0}
+
+/* Fliser */
+.tile{position:relative;aspect-ratio:1/1;max-width:100%;overflow:hidden;color:var(--tile-ink);display:flex;flex-direction:column;justify-content:flex-end;
+  transition:transform .12s ease-out;will-change:transform}
+.tile.c-own,.ph.c-own{background:var(--c-own)} .tile.c-far,.ph.c-far{background:var(--c-far)}
+.tile.c-mor,.ph.c-mor{background:var(--c-mor)} .tile.c-in,.ph.c-in{background:var(--c-in)} .tile.c-none,.ph.c-none{background:var(--c-none)}
+.tile img,.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.tile .ini,.ph .ini{position:absolute;left:10px;top:4px;font-weight:300;font-size:2.875rem;line-height:1.1;opacity:.85}
+.ph{position:relative;overflow:hidden;color:var(--tile-ink)}
+.ph .ini{font-size:2.75rem;left:9px;top:2px}
+.tile .lab{position:relative;padding:6px 9px 8px;display:flex;flex-direction:column;gap:0}
+.tile.has-photo .lab{background:inherit}
+.tile .lt{font-size:0.6562rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.9;overflow-wrap:anywhere}
+.tile .ln{font-size:0.875rem;font-weight:600;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tile .ly{font-size:0.75rem;opacity:.85;font-variant-numeric:tabular-nums}
+.tile.unk{background:transparent;border:1px dashed var(--dim);color:var(--sub);cursor:default}
+.tile.self{outline:2px solid var(--fg);outline-offset:-2px}
+.tile.self::after{content:"her";position:absolute;top:6px;right:8px;font-size:0.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--fg);color:var(--bg);padding:1px 6px}
+.cap2{font-size:0.75rem;color:var(--sub);margin-top:-2px}
+/* Mørkekammer: på computer med mus fremkaldes billedet, og navneskiltet trækker sig tilbage. Klassen .mouse sættes først, når en rigtig mus bevæger sig (Windows lyver nogle gange om, at der ikke er en). Telefoner får intet af det.
+   Med "reducér bevægelse" slået til fremkaldes farverne stadig, men intet flytter sig. */
+  .mouse .tile.has-photo img{filter:saturate(.8) contrast(.94) brightness(1.04);transition:filter 1.2s ease}
+  .mouse .tile.has-photo .lt,.mouse .tile.has-photo .ly{transition:opacity .3s ease}
+  .mouse .tile.has-photo:hover img,.mouse .tile.has-photo:focus-visible img{filter:saturate(1.05) contrast(1.06) sepia(.12);transition-delay:90ms}
+  .mouse .tile.has-photo:hover .lt,.mouse .tile.has-photo:hover .ly,.mouse .tile.has-photo:focus-visible .lt,.mouse .tile.has-photo:focus-visible .ly{opacity:0;transition-delay:90ms}
+@media (prefers-reduced-motion:no-preference){
+  .mouse .tile.has-photo img{object-position:50% 50%;transform:scale(1.06);
+    transition:object-position .9s var(--ease),transform 1.1s var(--ease),filter 1.2s ease}
+  .mouse .tile.has-photo .lt,.mouse .tile.has-photo .ly{max-height:2.6em;transition:max-height .45s var(--ease),opacity .25s ease}
+  .mouse .tile.has-photo:hover img,.mouse .tile.has-photo:focus-visible img{object-position:50% 18%;transform:scale(1);transition-delay:90ms}
+  .mouse .tile.has-photo:hover .lt,.mouse .tile.has-photo:hover .ly,.mouse .tile.has-photo:focus-visible .lt,.mouse .tile.has-photo:focus-visible .ly{max-height:0;transition-delay:90ms}
+}
+
+
+/* Detaljer */
+dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:0.9375rem}
+dt{font-size:0.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);padding-top:3px}
+dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.src{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:0.8125rem;color:var(--sub)}
+.src li{border-left:3px solid var(--dim);padding-left:10px}
+.src li.opl{border-color:var(--t-far)}
+.badge{display:inline-block;font-size:0.6875rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;padding:0 5px;margin-left:4px;color:var(--t-far);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:0.75rem;color:var(--sub);margin:0;padding:0;list-style:none}
+.legend li{display:flex;align-items:center;gap:6px}
+.sq{width:10px;height:10px;display:inline-block;flex:none}
+.sq.c-own{background:var(--c-own)} .sq.c-far{background:var(--c-far)} .sq.c-mor{background:var(--c-mor)} .sq.c-in{background:var(--c-in)} .sq.c-none{background:var(--c-none)}
+
+/* Vælg person */
+.intro{margin:0;color:var(--sub);max-width:52ch}
+.search{width:100%;box-sizing:border-box;font:inherit;font-size:1rem;padding:10px 12px;background:var(--raise);color:var(--fg);border:1px solid var(--dim);border-radius:0}
+.alpha{display:flex;flex-direction:column;gap:2px}
+.alpha .letter{font-weight:300;font-size:1.875rem;color:var(--t-own);text-transform:lowercase;margin-top:10px;width:44px;height:44px;border:2px solid var(--t-own);display:grid;place-items:center;line-height:1}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);min-width:0}
+.row .rn{font-size:1.0625rem;font-weight:400;min-width:0;overflow-wrap:anywhere}
+.row .ry{font-size:0.8125rem;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row:active{background:var(--raise)}
+.status{font-size:0.75rem;color:var(--sub);margin:0}
+
+/* Generationslineal */
+.rail{position:fixed;right:env(safe-area-inset-right,0px);top:calc(env(safe-area-inset-top,0px) + 56px);bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
+  width:26px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;pointer-events:none;z-index:4}
+.rail .t{width:8px;height:1px;background:var(--dim);position:relative}
+.rail .t.zero{width:14px;background:var(--sub)}
+.rail .mark{position:absolute;left:2px;width:22px;height:20px;display:grid;place-items:center;font-size:0.6562rem;font-weight:600;color:var(--tile-ink);font-variant-numeric:tabular-nums;
+  transition:top .5s var(--ease),background-color .4s ease;top:0}
+.rail .cap{font-size:0.5625rem;letter-spacing:.12em;color:var(--sub);writing-mode:vertical-rl;transform:rotate(180deg)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--fg);color:var(--bg);padding:10px 16px;font-size:0.875rem;z-index:9;max-width:calc(100% - 48px)}
+@media (prefers-reduced-motion: reduce){.anim,.m-fwd,.m-back,.m-fly,.pane .tile,.pano .nm.settle,.pano .nm.slideL,.path button.here.new,.shake,.toast{animation:none!important}.m-fly h1{opacity:1}.tile{transition:none}.rail .mark{transition:none}}
+/* Bundbjælke: indstillinger og forældrefokus */
+.bottombar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);
+  padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bottombar .inner{max-width:720px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toggle{display:flex;align-items:center;gap:10px;font-size:0.875rem;color:var(--fg)}
+.toggle .tl{text-transform:lowercase}
+.switch{width:46px;height:26px;border-radius:13px;background:var(--dim);position:relative;flex:none;transition:background-color .25s ease}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--tile-ink);transition:transform .3s var(--ease)}
+.switch[aria-checked="true"]{background:var(--on)}
+.switch[aria-checked="true"]::after{transform:translateX(20px)}
+.viewseg{max-width:320px}
+.viewseg button{padding:6px 8px;min-height:40px}
+.keeper{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.keeper svg{flex:none;width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;color:var(--fg);margin-top:-2px}
+.keeper.small svg{width:26px;height:26px;stroke-width:1.8;color:var(--sub);margin-top:-3px}
+.keeper span{min-width:0}
+.pause{position:fixed;inset:0;z-index:30;background:#120f0c;color:#ede6dc;overflow:hidden;cursor:pointer;animation:fadeIn .8s ease-out both;-webkit-user-select:none;user-select:none}
+.pause .stage{position:absolute;left:50%;top:50%;width:240vmax;transform:translate(-50%,-50%) rotate(-14deg);display:flex;flex-direction:column;gap:.6vmax}
+.pause .prow{white-space:nowrap;font-family:var(--f-ui);font-weight:300;line-height:1;letter-spacing:-.02em;text-transform:lowercase;will-change:transform}
+.pause .prow span{padding-right:.6em}
+.pause .prow.a{animation:drift linear infinite}
+.pause .prow.b{animation:driftR linear infinite}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes driftR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.pause .feat{position:absolute;inset:auto 0 0 0;padding:0 max(24px, env(safe-area-inset-left,0px)) calc(env(safe-area-inset-bottom,0px) + 7vh);z-index:2}
+.pause .fname{font-weight:300;font-size:clamp(3rem,13vw,9rem);line-height:.95;letter-spacing:-.03em;text-transform:lowercase;white-space:nowrap;display:block;animation:featName 9s cubic-bezier(.2,.7,.2,1) both}
+.pause .fkin{font-size:.8rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#e0916a;display:block;margin-bottom:.6rem;animation:featIn 9s ease both}
+.pause .ffact{font-size:1rem;color:#bfb3a3;max-width:34ch;display:block;margin-top:.8rem;animation:featIn 9s ease both;animation-delay:.4s}
+.pause .fphoto{position:absolute;right:0;top:0;width:min(62vw,62vh);aspect-ratio:3/4;max-width:100%;overflow:hidden;z-index:1;
+  -webkit-mask-image:linear-gradient(to left,#000 55%,transparent);mask-image:linear-gradient(to left,#000 55%,transparent)}
+.pause .fphoto::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,#120f0c 98%)}
+.pause .fphoto img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) sepia(.25) contrast(1.05);animation:kenburns 9s ease-out both}
+.pause .hint{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 14px);text-align:center;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:#7d7264;z-index:3;animation:hintOut 6s ease both}
+@keyframes featName{0%{opacity:0;transform:translateX(28vw)}12%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(-14vw)}}
+@keyframes featIn{0%,8%{opacity:0}18%,85%{opacity:1}100%{opacity:0}}
+@keyframes kenburns{0%{opacity:0;transform:scale(1.18) translate(3%,2%)}12%{opacity:.85}85%{opacity:.85}100%{opacity:0;transform:scale(1.02) translate(-2%,-1%)}}
+@keyframes hintOut{0%,70%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.pause .prow.a,.pause .prow.b{animation:none}.pause .fname{animation:featIn 9s ease both}.pause .fphoto img{animation:featIn 9s ease both}}
+.hugebox{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border:1px dashed var(--dim);font-size:0.9375rem;line-height:1.45;color:var(--sub)}
+.hugebox b{color:var(--fg);font-weight:600}
+.hugebox .huge{font-weight:300;font-size:2.6rem;line-height:1;letter-spacing:-.02em;color:var(--t-far)}
+.spane{display:flex;flex-direction:column;gap:14px;min-height:50vh;touch-action:pan-y}
+.spane[hidden]{display:none}
+.spane .grp h2{font-size:0.75rem}
+#spivots{margin-top:-2px}
+.instbar{position:fixed;left:0;right:0;bottom:0;z-index:12;background:var(--raise);border-top:1px solid var(--dim);
+  padding-block:14px calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));
+  animation:toastUp2 .45s var(--ease) both}
+@keyframes toastUp2{from{transform:translateY(100%)}to{transform:none}}
+.instbar .inner{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.instbar .it{display:flex;flex-direction:column;gap:4px;font-size:0.9375rem;color:var(--sub);line-height:1.45}
+.instbar .it b{color:var(--fg);font-weight:600;font-size:1rem}
+.instbar .ib{display:flex;gap:8px;flex-wrap:wrap}
+.ishare{width:1.15em;height:1.15em;vertical-align:-0.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--fg)}
+@media (prefers-reduced-motion: reduce){.instbar{animation:none}}
+.pfnote{font-size:0.8125rem;color:var(--sub);margin:0}
+.tiles.big{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Indstillinger */
+.sheet{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overscroll-behavior:contain}
+.sheet .wrap{padding-right:max(16px, env(safe-area-inset-right,0px))}
+.seg{display:flex;border:1px solid var(--dim);max-width:100%}
+.seg button{flex:1;padding:10px 8px;min-height:44px;font-size:0.875rem;text-align:center;color:var(--sub);text-transform:lowercase}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.demo{display:inline-block;font-size:0.6875rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--c-in);color:var(--tile-ink);padding:2px 8px}
+.form{display:flex;flex-direction:column;gap:12px;min-width:0}
+.form label{font-size:0.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);display:flex;flex-direction:column;gap:5px}
+.form input,.form select,.form textarea{font:inherit;font-size:1rem;padding:9px 11px;background:var(--raise);color:var(--fg);border:1px solid var(--dim);border-radius:0;text-transform:none;letter-spacing:0;max-width:100%;box-sizing:border-box;width:100%}
+.form textarea{min-height:84px;resize:vertical}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form .preview{width:96px;height:96px;object-fit:cover;border:1px solid var(--line)}
+.primarybtn{background:var(--fg);color:var(--bg);padding:11px 18px;font-size:0.9375rem;align-self:flex-start}
+.queue{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.queue li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:0.875rem;min-width:0}
+.newslist li{flex-direction:column;gap:2px}
+.newslist .kind{display:inline-block;font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:1px 6px;margin-right:8px;color:var(--tile-ink)}
+.newslist .kind-tree{background:var(--c-mor)}
+.newslist .kind-app{background:var(--c-far)}
+.newslist .when{font-size:0.75rem;color:var(--sub);font-variant-numeric:tabular-nums}
+.newslist li.unread .when::before{content:"●";color:var(--t-far);margin-right:6px}
+.msgtext{margin:0;padding:12px;background:var(--raise);border:1px solid var(--line);font:inherit;font-size:0.875rem;white-space:pre-wrap;overflow-wrap:anywhere;max-height:16rem;overflow:auto;user-select:all;-webkit-user-select:all}
+.queue .st{font-size:0.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t-in);white-space:nowrap}
+@media (min-width:600px){ h1{font-size:2.375rem} .hero{grid-template-columns:120px minmax(0,1fr)} .hero .ph{width:120px;height:120px} }
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="bar">
+    <button class="backbtn" id="keepBtn" type="button" hidden><span aria-hidden="true">‹</span> tilbage</button>
+    <span class="status" id="povLbl" hidden>vælg et udgangspunkt</span>
+    <button class="homechip" id="homeBtn" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.8V20h13V9.8"/><path d="M10 20v-5h4v5"/></svg><b id="homeName"></b></button>
+    <button class="backchip" id="backBtn" type="button" hidden><span aria-hidden="true">‹</span><b id="backName"></b></button>
+    <div style="display:flex;gap:2px;flex:none">
+      <button class="iconbtn" id="playBtn" type="button" aria-label="Afspil slægten" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
+      <button class="iconbtn" id="newsBtn" type="button" aria-label="Nyheder" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="badge-n" id="newsBadge" hidden></span></button>
+      <button class="iconbtn" id="settingsBtn" type="button" aria-label="Indstillinger" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </div>
+  </div>
+
+  <section id="loading" aria-live="polite">
+    <div class="pano" aria-hidden="true"><span class="cap">et øjeblik</span><span class="nm">henter træet</span></div>
+    <p class="intro" id="loadMsg">Henter familiens data. Næste gang åbner appen med det samme.</p>
+  </section>
+
+  <section id="lock" hidden>
+    <form id="pwForm" style="display:flex;flex-direction:column;gap:14px" autocomplete="off">
+      <div class="pano" aria-hidden="true"><span class="cap">kun for familien</span><span class="nm">adgangskode</span></div>
+      <p class="intro">Træet indeholder oplysninger om levende familiemedlemmer, så det er låst. Skriv familiens adgangskode. Telefonen husker den bagefter.</p>
+      <p class="status" id="lockVer"></p>
+      <p class="status keeper small" id="lockAdmin"></p>
+      <label for="pw" class="status">Adgangskode</label>
+      <input id="pw" class="search" type="password" autocomplete="current-password">
+      <button class="chipbtn" type="submit" style="align-self:flex-start;font-size:15px;padding:8px 18px">åbn træet</button>
+      <p class="status" id="lockMsg" role="status"></p>
+    </form>
+  </section>
+
+  <section id="pick" hidden>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="pano" aria-hidden="true"><span class="cap" id="families">familien</span><span class="nm">hvem er du?</span></div>
+      <p class="intro">Vil du gennemse slægten som dig selv eller en anden person? Vælg personen herunder. Alle slægtskaber, farver og generationer regnes ud fra den, du vælger.</p>
+      <p class="status" id="pickNow" hidden></p>
+      <input id="q" class="search" type="search" placeholder="Søg efter navn" autocomplete="off" aria-label="Søg efter navn">
+      <div class="grp" id="pickPhotos"><h2>med billede</h2><div class="tiles" id="photoTiles"></div></div>
+      <div class="grp"><h2>alle personer</h2><div class="alpha" id="alpha"></div></div>
+      <p class="status" id="status"></p>
+    </div>
+  </section>
+
+  <section id="focus" hidden>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="pano" id="pano" aria-hidden="true"><span class="nm" id="panoNm"></span></div>
+      <div class="hero anim" id="hero"></div>
+      <div class="path" id="path" aria-label="Slægtskab til udgangspunktet"></div>
+      <div class="seg viewseg" role="group" aria-label="Visning" id="viewSeg">
+        <button type="button" id="view-all" data-view="all">alle</button>
+        <button type="button" id="view-par" data-view="par">kun forældre</button>
+      </div>
+      <div class="pivots" role="tablist" id="pivots">
+        <button role="tab" type="button" data-p="familie" id="tab-familie">familie</button>
+        <button role="tab" type="button" data-p="søskende" id="tab-søskende">søskende</button>
+        <button role="tab" type="button" data-p="detaljer" id="tab-detaljer">detaljer</button>
+        <button role="tab" type="button" data-p="farver" id="tab-farver">farver</button>
+      </div>
+      <div class="pane anim" id="pane" role="tabpanel"></div>
+    </div>
+  </section>
+</div>
+<div class="rail" id="rail" aria-hidden="true"></div>
+<div class="instbar" id="pauseBar" role="dialog" aria-label="Prøv pauseskærmen" hidden>
+  <div class="inner">
+    <div class="it"><b>Stor skærm, stort træ</b><span>Pauseskærmen er lavet til netop sådan en skærm. Læg den på bordet, tryk afspil, og lad slægten svæve forbi, mens kaffen bliver drukket.<span id="pauseWink"></span></span></div>
+    <div class="ib"><button class="primarybtn" type="button" id="pauseGo">afspil slægten</button><button class="chipbtn" type="button" id="pauseNo">nej tak</button></div>
+  </div>
+</div>
+<div class="instbar" id="instBar" role="dialog" aria-label="Installér appen" hidden>
+  <div class="inner">
+    <div class="it"><b>Få slægten på hjemmeskærmen</b><span id="instBarText"></span></div>
+    <div class="ib"><button class="primarybtn" type="button" id="instBtn" hidden>installér</button><button class="chipbtn" type="button" id="instLater">ikke nu</button></div>
+  </div>
+</div>
+<section class="sheet" id="news" hidden aria-label="Nyt i træet">
+  <div class="wrap">
+    <div class="bar"><span>nyheder</span><button class="chipbtn" id="closeNews" type="button">luk</button></div>
+    <div class="pano" aria-hidden="true"><span class="cap">seneste nyt</span><span class="nm">nyheder</span></div>
+    <ul class="queue newslist" id="newsList"></ul>
+    <button class="chipbtn" type="button" id="newsToLog" style="align-self:flex-start;margin-top:6px">se alle appens versioner ›</button>
+  </div>
+</section>
+<section class="sheet" id="settings" hidden aria-label="Indstillinger">
+  <div class="wrap">
+    <div class="bar"><span>indstillinger</span><button class="chipbtn" id="closeSettings" type="button">luk</button></div>
+    <div class="pano" aria-hidden="true"><span class="cap">appen</span><span class="nm">indstillinger</span></div>
+        <div class="pivots" role="tablist" id="spivots"><button role="tab" type="button" data-sp="om" id="sp-om">om</button><button role="tab" type="button" data-sp="pauseskærm" id="sp-pauseskaerm">pauseskærm</button><button role="tab" type="button" data-sp="plakat" id="sp-plakat">plakat</button><button role="tab" type="button" data-sp="forslag" id="sp-forslag">forslag</button><button role="tab" type="button" data-sp="udseende" id="sp-udseende">udseende</button><button role="tab" type="button" data-sp="notifikationer" id="sp-notifikationer">notifikationer</button><button role="tab" type="button" data-sp="versioner" id="sp-versioner">versioner</button></div>
+    <div class="spane" data-pane="om" role="tabpanel" hidden>
+      <p class="pfnote keeper" id="setAdmin" style="color:var(--fg)"></p>
+      <p class="pfnote" id="setVer"></p>
+      <div class="grp" id="instSect"><h2>installér appen</h2><p class="pfnote" id="instText"></p><button class="primarybtn" type="button" id="instBtn2" hidden>installér appen</button></div>
+    
+
+      <p class="pfnote">Glemmer adgangskoden på denne telefon. Næste gang appen åbnes, skal adgangskoden skrives igen. Dit valg af person og udseende bliver husket.</p>
+      <button class="chipbtn" type="button" id="logoutBtn" style="align-self:flex-start;font-size:15px;padding:8px 18px">log ud</button>
+    
+    </div>
+    <div class="spane" data-pane="pauseskærm" role="tabpanel" hidden>
+      <p class="pfnote">Hele slægten glider forbi i store bogstaver med billeder og små fakta. Tryk hvor som helst for at stoppe.</p>
+      <button class="primarybtn" type="button" id="pauseBtn">afspil slægten</button>
+      <div class="toggle" style="justify-content:space-between;min-height:44px"><span class="tl" id="idleLabel">start af sig selv efter 2 minutter</span><button class="switch" id="idleSwitch" type="button" role="switch" aria-checked="false" aria-labelledby="idleLabel"></button></div>
+      <p class="pfnote">Godt på en tablet på bordet til familiefesten. Skærmen holdes tændt, mens pauseskærmen kører.</p>
+    
+    </div>
+    <div class="spane" data-pane="plakat" role="tabpanel" hidden>
+      <p class="pfnote" style="color:var(--fg)">Hele familien på én plakat som PDF. Den er den samme for alle, og den bliver opdateret, når træet gør.</p>
+      <div class="hugebox"><span class="huge">it’s huuuuuge</span><span>Plakaten er <b id="pdfDims">2,8 meter bred og 60 cm høj</b>. Det er ikke en fejl, familien er bare stor. På telefonen kan du zoome helt ind på hvert navn. Til papir skal den printes som banner hos en printshop. En udgave til A3 og A2 er på vej.</span></div>
+      <button class="primarybtn" type="button" id="pdfGet" disabled>gør klar …</button>
+      <p class="pfnote" id="pdfMsg" role="status"></p>
+    </div>
+    <div class="spane" data-pane="forslag" role="tabpanel" hidden>
+      <p class="pfnote" id="sgIntro"></p>
+      <form class="form" id="suggestForm" novalidate>
+        <label>Fra
+          <select id="sgFrom"></select>
+        </label>
+        <label>Hvad vil du foreslå?
+          <select id="sgType"><option value="ny">Ny person</option><option value="ret">Ret eller tilføj oplysninger</option><option value="foto">Billede af en person</option></select>
+        </label>
+        <label id="sgNameWrap">Navn
+          <input id="sgName" type="text" autocomplete="off" placeholder="Fornavn og efternavn">
+        </label>
+        <label>Person i træet <span id="sgRelHint" style="text-transform:none;letter-spacing:0">(forælder, barn eller ægtefælle til)</span>
+          <select id="sgPerson"></select>
+        </label>
+        <label id="sgRelWrap">Relation
+          <select id="sgRel"><option>barn af</option><option>forælder til</option><option>gift med</option><option>søskende til</option></select>
+        </label>
+        <div class="two">
+          <label>Født<input id="sgBorn" type="text" inputmode="numeric" placeholder="dd.mm.åååå"></label>
+          <label>Død<input id="sgDied" type="text" inputmode="numeric" placeholder="dd.mm.åååå"></label>
+        </div>
+        <label>Billede
+          <input id="sgPhoto" type="file" accept="image/*">
+        </label>
+        <img id="sgPreview" class="preview" alt="" hidden>
+        <label>Kilde eller bemærkning
+          <textarea id="sgNote" placeholder="Fx: står i kirkebogen, eller fortalt af min moster"></textarea>
+        </label>
+        <button class="primarybtn" type="submit" id="sgSend">del forslaget</button>
+        <p class="pfnote" id="sgMsg" role="status"></p>
+      </form>
+      <div class="grp" id="sgFallback" hidden>
+        <h2>send beskeden selv</h2>
+        <p class="pfnote">Telefonens delemenu er ikke tilgængelig her. Kopiér teksten, og send den til Bo i WhatsApp, Messenger eller en sms. Husk billedet, hvis du har valgt et.</p>
+        <pre class="msgtext" id="sgText"></pre>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <button class="chipbtn" type="button" id="sgCopy">kopiér teksten</button>
+          <a class="chipbtn" id="sgWa" href="https://wa.me/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">åbn WhatsApp</a>
+        </div>
+      </div>
+      <div class="grp" id="sgQueueWrap" hidden><h2>dine forslag</h2><ul class="queue" id="sgQueue"></ul></div>
+    
+    </div>
+    <div class="spane" data-pane="udseende" role="tabpanel" hidden>
+      <div class="seg" role="group" aria-label="Udseende">
+        <button type="button" data-theme-opt="auto" id="th-auto">automatisk</button>
+        <button type="button" data-theme-opt="light" id="th-light">lys</button>
+        <button type="button" data-theme-opt="dark" id="th-dark">mørk</button>
+      </div>
+      <p class="pfnote">Automatisk følger telefonens indstilling.</p>
+    
+    </div>
+    <div class="spane" data-pane="notifikationer" role="tabpanel" hidden>
+      <div class="toggle" style="justify-content:space-between;min-height:44px"><span class="tl" id="ntLabel">vis nyt i træet</span><button class="switch" id="ntSwitch" type="button" role="switch" aria-checked="true" aria-labelledby="ntLabel"></button></div>
+      <p class="pfnote">Viser et tal på klokken øverst, når der er nyt i træet, og en kort besked, når træet bliver opdateret, mens appen er åben.</p>
+    
+    </div>
+    <div class="spane" data-pane="versioner" role="tabpanel" hidden>
+      <p class="pfnote" id="appVer"></p>
+      <ul class="queue" id="changelog"></ul>
+    
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)};
+var P={}, VER=null, POV=null, CUR=null, STACK=[], PIVOT='familie', DIST={}, PREV={}, GMIN=0, GMAX=0, LAST=null;
+function store(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){ return null; } }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+function yr(t){ var m=(t||'').match(/\d{4}/); return m?m[0]:''; }
+function years(p){ var a=yr(p.b), c=yr(p.d); if(a&&c) return a+'–'+c; if(a) return 'f. '+a; if(c) return '† '+c; return ''; }
+function first(p){ return p.kald || p.n.split(' ')[0]; }
+function gen(nm){ return /[sxz]$/i.test(nm)? nm+"'" : nm+'s'; }
+function initials(n){ var w=n.split(/\s+/).filter(function(x){return /^[A-ZÆØÅ]/.test(x)}); if(!w.length) return '?'; return (w[0][0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase(); }
+
+/* ---------- Data: hentes fra tree.json (senere: OneDrive) og tjekkes for ændringer ---------- */
+var TITLE='familien';
+function ingest(j){
+  CHANGES=(j.changes||[]).slice().sort(function(a,b){ return a.t<b.t?1:-1; });
+  P=j.people; TITLE=(j.title||'familien').toLowerCase();
+  var cnt={}; Object.keys(P).forEach(function(id){ var w=P[id].n.split(' '); if(w.length<2) return; var l=w[w.length-1]; if(/^[A-ZÆØÅ]/.test(l)) cnt[l]=(cnt[l]||0)+1; });
+  var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}), shown=top.slice(0,5).map(function(x){return x.toLowerCase()});
+  var fam=document.getElementById('families'); if(fam) fam.textContent=shown.join(' · ')+(top.length>5?' · +'+(top.length-5)+' slægtsnavne':'');
+  Object.keys(P).forEach(function(id){ var p=P[id]; p.id=id; p.kids=[]; p.sp=[]; p.photo=PHOTOS[id]||null; });
+  Object.keys(P).forEach(function(id){ var p=P[id]; [p.f,p.m].forEach(function(q){ if(q&&P[q]) P[q].kids.push(id); }); });
+  (j.unions||[]).forEach(function(u){ if(P[u.a]&&P[u.b]){ P[u.a].sp.push({id:u.b,txt:u.txt}); P[u.b].sp.push({id:u.a,txt:u.txt}); } });
+  Object.keys(P).forEach(function(id){ P[id].kids.sort(function(a,b){ return (yr(P[a].b)||'9999').localeCompare(yr(P[b].b)||'9999'); }); });
+}
+var PHOTOS={}, PHVER=null, TRIES=0, KEY=null, KEYSALT=null, PENDING=null;
+/* ---------- Kryptering: data er låst med familiens adgangskode (AES-GCM, nøgle via PBKDF2) ---------- */
+function ub64(t){ var b=atob(t), u=new Uint8Array(b.length); for(var i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; }
+function b64(buf){ var u=new Uint8Array(buf), s=''; for(var i=0;i<u.length;i++) s+=String.fromCharCode(u[i]); return btoa(s); }
+function loadKey(){
+  var k=null; try{ k=JSON.parse(localStorage.getItem('slaegt.key')||'null'); }catch(e){}
+  if(!k||!window.crypto||!crypto.subtle) return Promise.resolve();
+  return crypto.subtle.importKey('raw',ub64(k.k),'AES-GCM',false,['decrypt']).then(function(key){ KEY=key; KEYSALT=k.s; }).catch(function(){});
+}
+function dec(o){
+  if(!KEY||KEYSALT!==o.salt) return Promise.reject('nokey');
+  return crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(o.iv)},KEY,ub64(o.ct)).then(function(buf){ return JSON.parse(new TextDecoder().decode(buf)); });
+}
+function fmtVer(v){ var d=new Date(v); if(!v||isNaN(d)) return '';
+  return d.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'})+' kl. '+d.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'}); }
+function showLock(o){
+  PENDING=o; $('#lockVer').textContent= fmtVer(o.version)? 'Træet er sidst opdateret '+fmtVer(o.version)+'.' : ''; $('#loading').hidden=true; $('#pick').hidden=true; $('#focus').hidden=true; $('#lock').hidden=false;
+  setTimeout(function(){ try{ $('#pw').focus(); }catch(e){} },50);
+}
+function unlock(){
+  var pw=$('#pw').value; if(pw&&pw.normalize) pw=pw.normalize('NFC'); if(!pw||!PENDING) return;
+  $('#lockMsg').textContent='Åbner…';
+  var o=PENDING;
+  crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']).then(function(base){
+    return crypto.subtle.deriveKey({name:'PBKDF2',salt:ub64(o.salt),iterations:o.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},true,['decrypt']);
+  }).then(function(key){
+    return crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(o.iv)},key,ub64(o.ct)).then(function(buf){
+      return crypto.subtle.exportKey('raw',key).then(function(raw){
+        try{ localStorage.setItem('slaegt.key',JSON.stringify({k:b64(raw),s:o.salt})); }catch(e){}
+        KEY=key; KEYSALT=o.salt; PENDING=null; $('#pw').value=''; $('#lock').hidden=true; $('#lockMsg').textContent='';
+        try{ localStorage.setItem('slaegt.tree.enc',JSON.stringify(o)); }catch(e){}
+        apply(JSON.parse(new TextDecoder().decode(buf)),true); loadPhotos();
+      });
+    });
+  }).catch(function(){ $('#lockMsg').textContent='Forkert adgangskode. Prøv igen.'; var w=$('#pw'); w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); w.select(); });
+}
+function lockDevice(){
+  try{ ['slaegt.key','slaegt.tree.enc','slaegt.photos.enc','slaegt.pov'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
+  location.reload();
+}
+function apply(j,quiet){
+  var changed=VER!==null; VER=j.version; ingest(j);
+  if(POV&&!P[POV]) POV=null; if(CUR&&CUR!=='__pick'&&!P[CUR]) CUR=POV;
+  STACK=STACK.filter(function(x){return P[x]});
+  $('#loading').hidden=true; $('#lock').hidden=true;
+  stamp(); if(POV) solve(); render();
+  if(changed&&!quiet&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
+}
+function setPhotos(ph){ PHOTOS=ph.photos||{}; PHVER=VER; Object.keys(P).forEach(function(id){ P[id].photo=PHOTOS[id]||null; }); render(); }
+function loadPhotos(){
+  if(PHVER===VER||!KEY) return;
+  fetch('photos.enc.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(o){
+    return dec(o).then(function(ph){ setPhotos(ph); try{ localStorage.setItem('slaegt.photos.enc',JSON.stringify(o)); }catch(e){} });
+  }).catch(function(){});
+}
+function load(first){
+  return fetch('tree.enc.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(o){
+    LAST=new Date(); TRIES=0;
+    if(o.version===VER){ stamp(); loadPhotos(); return; }
+    return dec(o).then(function(j){
+      apply(j,first); try{ localStorage.setItem('slaegt.tree.enc',JSON.stringify(o)); }catch(e){}
+      loadPhotos();
+    },function(){ if(VER===null||KEYSALT!==o.salt) showLock(o); });
+  }).catch(function(){
+    if(VER!==null) return;
+    TRIES++;
+    if(TRIES<5){ $('#loadMsg').textContent='Forbindelsen er langsom. Prøver igen…'; setTimeout(function(){ load(true); },1500*TRIES); }
+    else $('#loadMsg').textContent='Kunne ikke hente træets data. Tjek forbindelsen, og genindlæs siden.';
+  });
+}
+function stamp(){
+  var t=LAST? LAST.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'}) : '–';
+  var v=fmtVer(VER);
+  $('#status').textContent=Object.keys(P).length+' personer'+(v?' · sidst opdateret '+v:'')+' · tjekket kl. '+t;
+  $('#setVer').textContent=Object.keys(P).length+' personer. Træet er sidst opdateret '+(v||'–')+'. Appen tjekkede sidst for ændringer kl. '+t+', og tjekker igen hvert minut, og når appen åbnes.';
+}
+setInterval(function(){ load(false); },60000);
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) load(false); });
+
+/* ---------- Slægtskab: korteste vej fra udgangspunktet, blod foran ægteskab ---------- */
+function edges(id){ var p=P[id], e=[]; if(p.f&&P[p.f]) e.push([p.f,'U']); if(p.m&&P[p.m]) e.push([p.m,'U']);
+  p.kids.forEach(function(k){ e.push([k,'D']); }); p.sp.forEach(function(s){ e.push([s.id,'S']); }); return e; }
+function solve(){
+  DIST={}; PREV={}; DIST[POV]=0; var Q=[POV], done={};
+  while(Q.length){
+    Q.sort(function(a,b){return DIST[a]-DIST[b]}); var u=Q.shift(); if(done[u]) continue; done[u]=1;
+    edges(u).forEach(function(e){ var v=e[0], w=DIST[u]+(e[1]==='S'?1.35:1);
+      if(DIST[v]===undefined||w<DIST[v]-1e-9){ DIST[v]=w; PREV[v]=[u,e[1]]; Q.push(v); } });
+  }
+  GMIN=0; GMAX=0;
+  Object.keys(P).forEach(function(id){ var g=genOf(id); if(g==null) return; if(g<GMIN) GMIN=g; if(g>GMAX) GMAX=g; });
+}
+function steps(id){ var s=[], x=id; while(x!==POV&&PREV[x]){ s.unshift({k:PREV[x][1],to:x,from:PREV[x][0]}); x=PREV[x][0]; } return x===POV? s : null; }
+function genOf(id){ var s=steps(id); if(!s) return null; var g=0; s.forEach(function(x){ if(x.k==='U') g++; else if(x.k==='D') g--; }); return g; }
+function F(id){ return P[id].s==='F'; }
+function upWords(arr){ var w=arr.map(function(s){ return F(s.to)?'mor':'far'; }), out=[]; for(var i=0;i<w.length;i+=2) out.push(w.slice(i,i+2).join('')); return out; }
+var LASTGC=null;
+function gcWord(arr){ return (F(arr[0].to)?'datter':'sønne')+(F(arr[1].to)?'datter':'søn'); }
+function downWord(arr){
+  var n=arr.length, last=arr[n-1].to;
+  if(n===1) return F(last)?'datter':'søn';
+  if(n===2) return 'barnebarn';
+  return 'tip'.repeat(n-3)+'oldebarn';
+}
+function fullSib(a,b){ var A=P[a],B=P[b]; return A.f&&A.m&&A.f===B.f&&A.m===B.m; }
+function term(st){
+  LASTGC=null;
+  if(!st) return null; if(!st.length) return '';
+  var code=st.map(function(s){return s.k}).join(''), segs=[], i=0;
+  while(i<st.length){
+    var r=code.slice(i), n=0;
+    if(r[0]==='U'){
+      while(r[n]==='U') n++;
+      if(r[n]==='D'){
+        var pre=Math.max(0,n-2);
+        if(pre){ segs.push.apply(segs,upWords(st.slice(i,i+pre))); i+=pre; continue; }
+        if(r.indexOf('UUDD')===0){ segs.push(F(st[i+3].to)?'kusine':'fætter'); i+=4; continue; }
+        if(r.indexOf('UUD')===0){ var side=F(st[i].to)?'mor':'far'; segs.push(F(st[i+2].to)?(side==='far'?'faster':'moster'):side+'bror'); i+=3; continue; }
+        if(r.indexOf('UDD')===0){ segs.push(F(st[i+2].to)?'niece':'nevø'); i+=3; continue; }
+        if(r.indexOf('UDS')===0){ segs.push(F(st[i+2].to)?'svigerinde':'svoger'); i+=3; continue; }
+        var half=!fullSib(st[i].from,st[i+1].to);
+        segs.push((half?'halv':'')+(F(st[i+1].to)?'søster':'bror')); i+=2; continue;
+      }
+      segs.push.apply(segs,upWords(st.slice(i,i+n))); i+=n; continue;
+    }
+    if(r[0]==='D'){
+      while(r[n]==='D') n++;
+      if(n===1&&r[1]==='S'){ segs.push(F(st[i+1].to)?'svigerdatter':'svigersøn'); i+=2; continue; }
+      segs.push(downWord(st.slice(i,i+n))); LASTGC= n===2? gcWord(st.slice(i,i+2)) : null; i+=n; continue;
+    }
+    if(r.indexOf('SUD')===0){ segs.push(F(st[i+2].to)?'svigerinde':'svoger'); i+=3; continue; }
+    if(r.indexOf('SU')===0){ segs.push(F(st[i+1].to)?'svigermor':'svigerfar'); i+=2; continue; }
+    segs.push(F(st[i].to)?'hustru':'mand'); i+=1;
+  }
+  return segs.join('s ');
+}
+function cat(id){
+  var st=steps(id); if(!st) return 'none'; if(!st.length) return 'own';
+  if(st.some(function(s){return s.k==='S'})) return 'in';
+  var n=0; while(n<st.length&&st[n].k==='U') n++;
+  if(n===0) return 'own';
+  if(n===1&&n<st.length) return 'own';
+  return F(st[0].to)?'mor':'far';
+}
+function shortKin(id){ if(id===POV) return 'set fra'; var t=term(steps(id)); return t==null? 'ingen kendt forbindelse' : t; }
+function longKin(id){ if(id===POV) return 'set fra'; var t=term(steps(id)); if(t==null) return 'ingen kendt forbindelse til '+first(P[POV]); var tail=(LASTGC&&/barnebarn$/.test(t))? ' ('+LASTGC+')' : ''; return gen(first(P[POV]))+' '+t+tail; }
+function genName(g){
+  if(g===0) return 'samme generation som '+first(P[POV]);
+  var up=['forældre','bedsteforældre','oldeforældre'], dn=['børn','børnebørn','oldebørn'], a=Math.abs(g);
+  var w = a<=3 ? (g>0?up:dn)[a-1] : 'tip'.repeat(a-3)+(g>0?'oldeforældre':'oldebørn');
+  return w+'-generationen';
+}
+
+/* ---------- Visning ---------- */
+function photoBox(p,cls){
+  var c=cat(p.id);
+  return '<div class="'+cls+' c-'+c+'">'+(p.photo?'<img alt="" src="'+p.photo+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+'</div>';
+}
+function tile(id,opts){
+  opts=opts||{}; var p=P[id], c=cat(id);
+  return '<button type="button" class="tile c-'+c+(p.photo?' has-photo':'')+(opts.self?' self':'')+'" data-id="'+id+'">'+
+    (p.photo?'<img alt="" loading="lazy" src="'+p.photo+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+
+    '<span class="lab">'+(opts.lt===''?'':'<span class="lt">'+esc(opts.lt||shortKin(id))+'</span>')+'<span class="ln">'+esc(p.n)+'</span>'+(years(p)?'<span class="ly">'+years(p)+'</span>':'')+'</span></button>';
+}
+function unknown(txt){ return '<div class="tile unk"><span class="lab"><span class="lt">ukendt</span><span class="ln">'+esc(txt)+'</span><span class="ly">ikke fundet endnu</span></span></div>'; }
+function group(title,inner,extra){ return '<div class="grp"><h2>'+title+'</h2>'+(extra||'')+'<div class="tiles">'+inner+'</div></div>'; }
+function mark(t){ return esc(t).replace(/\s*\(per slægtsbog[^)]*\)/g,' <span class="badge">per slægtsbog</span>'); }
+
+function render(){
+  var povSet=!!POV&&!!P[POV];
+  $('#pick').hidden=povSet&&CUR!=='__pick'; $('#focus').hidden=!povSet||CUR==='__pick';
+  var picking=CUR==='__pick'||!povSet;
+  $('#povLbl').hidden=povSet;
+  $('#homeBtn').hidden=!povSet||picking; if(povSet){ $('#homeName').textContent=first(P[POV]); $('#homeBtn').setAttribute('aria-label','Hjem til '+P[POV].n); }
+  if(CUR===POV) $('#homeBtn').setAttribute('aria-current','page'); else $('#homeBtn').removeAttribute('aria-current');
+  $('#keepBtn').hidden=!(picking&&povSet);
+  if(picking) $('#backBtn').hidden=true;
+  $('#pickNow').hidden=!(picking&&povSet); if(picking&&povSet) $('#pickNow').textContent='Du ser lige nu træet fra '+P[POV].n+'.';
+  $('#settingsBtn').hidden=!VER; $('#newsBtn').hidden=!VER||!NOTIFY; updateBadge();
+  if(!povSet||CUR==='__pick'){ renderPick(); $('#rail').innerHTML=''; RAILKEY=null; return; }
+  renderFocus();
+}
+function renderPick(){
+  var q=($('#q').value||'').trim().toLowerCase();
+  var ids=Object.keys(P).filter(function(id){ return !q||P[id].n.toLowerCase().indexOf(q)>=0||(P[id].aka||'').toLowerCase().indexOf(q)>=0; });
+  var ph=ids.filter(function(id){return P[id].photo});
+  $('#pickPhotos').hidden=!ph.length;
+  $('#photoTiles').innerHTML=ph.map(function(id){ return tile(id,{lt:''}); }).join('');
+  ids.sort(function(a,b){ return P[a].n.localeCompare(P[b].n,'da'); });
+  var html='', L='';
+  ids.forEach(function(id){ var l=P[id].n[0].toLowerCase(); if(l!==L){ L=l; html+='<div class="letter">'+esc(l)+'</div>'; }
+    html+='<button type="button" class="row" data-id="'+id+'"><span class="rn">'+esc(P[id].n)+'</span><span class="ry">'+years(P[id])+'</span></button>'; });
+  $('#alpha').innerHTML=html||'<p class="empty">Ingen fundet.</p>';
+  // tiles in pick are neutral magenta
+  Array.prototype.forEach.call($('#photoTiles').children,function(t){ t.className=t.className.replace(/c-\w+/,'c-own'); });
+}
+function renderFocus(){
+  if(typeof armInstallBar==='function') armInstallBar();
+  if(typeof armPauseHint==='function') setTimeout(armPauseHint,7000);
+  if(typeof updatePlay==='function') updatePlay();
+  var p=P[CUR], c=cat(CUR), g=genOf(CUR);
+  // panorama-titel: står stille som på en Zune; vejen tilbage er knappen ‹ øverst
+  $('#panoNm').textContent=TITLE;
+  var prev=STACK[STACK.length-1]||(CUR!==POV?POV:null);
+  $('#backBtn').hidden=!prev; if(prev){ $('#backName').textContent=first(P[prev]); $('#backBtn').setAttribute('aria-label','Tilbage til '+P[prev].n); }
+  // hero
+  var meta=[]; if(years(p)) meta.push(years(p)); if(p.job) meta.push(p.job);
+  $('#hero').innerHTML=photoBox(p,'ph')+'<div class="txt"><span class="kin k-'+c+'">'+esc(longKin(CUR))+'</span><h1>'+esc(p.n)+'</h1>'+
+    (p.aka?'<span class="meta">'+mark(p.aka)+'</span>':'')+(meta.length?'<span class="meta">'+esc(meta.join(' · '))+'</span>':'')+
+    (g!=null&&CUR!==POV?'<span class="meta">'+(g>0?'+':'')+g+' · '+esc(genName(g))+'</span>':'')+
+    (CUR===POV? '<button class="chipbtn heroact" type="button" id="changeBtn">skift person</button>' : '<button class="chipbtn heroact" type="button" id="rebaseBtn">se træet fra '+esc(first(p))+'</button>')+'</div>';
+  if(DIR==='fwd'||DIR==='back') replay($('#hero'), FLY&&!REDUCED.matches? 'm-fly' : (DIR==='back'?'m-back':'m-fwd'));
+  // vejen
+  var st=steps(CUR), chain=[POV].concat(st? st.map(function(s){return s.to}) : []);
+  var ph='<span class="lbl">slægtskab</span>';
+  if(CUR===POV) ph='<span class="sep">Tryk på et kort for at gå videre i familien.</span>';
+  else chain.forEach(function(id,i){ ph+=(i?'<span class="sep">›</span>':'')+'<button type="button" class="'+(id===CUR?'here':'')+'" data-id="'+id+'"><span class="dot sq c-'+cat(id)+'"></span>'+esc(first(P[id]))+'</button>'; });
+  if(!st&&CUR!==POV) ph+='<span class="sep">ingen kendt forbindelse</span>';
+  $('#path').innerHTML=ph; var pe=$('#path'); pe.scrollLeft=pe.scrollWidth;
+  if(DIR==='fwd'){ var hb=pe.querySelector('button.here'); if(hb) hb.classList.add('new'); }
+  // pivots
+  Array.prototype.forEach.call(document.querySelectorAll('#pivots button'),function(b){ b.setAttribute('aria-selected',b.dataset.p===PIVOT?'true':'false'); });
+  var sel=document.querySelector('#pivots [aria-selected="true"]'); if(sel) sel.scrollIntoView({block:'nearest',inline:'nearest'});
+  $('#pivots').hidden=PFOCUS;
+  $('#view-all').setAttribute('aria-pressed',PFOCUS?'false':'true'); $('#view-par').setAttribute('aria-pressed',PFOCUS?'true':'false');
+  $('#pane').innerHTML=pane(p); stagger(); replay($('#pane'), DIR==='back'||DIR==='right'?'m-back':'m-fwd');
+  renderRail(g);
+  if(FLY&&!REDUCED.matches) requestAnimationFrame(flyName); else FLY=null;
+  DIR='fwd';
+}
+function pane(p){
+  if(PFOCUS){
+    var tl=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
+    var end=!p.f&&!p.m? '<p class="pfnote">Sporet slutter her. Ingen kendte forældre endnu.</p>' : '<p class="pfnote">Tryk på en forælder for at gå en generation op. Tryk på ‹ og navnet øverst for at gå ned igen. Vælg “alle” eller stryg til højre for at se hele familien.</p>';
+    return '<div class="grp"><h2>forældre</h2><div class="tiles big">'+tl+'</div>'+end+'</div>';
+  }
+  if(PIVOT==='familie'){
+    var par=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
+    var html=group('forældre',par);
+    if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(s.txt&&s.txt.trim().toLowerCase()!=='gift'?'<span class="cap2">'+mark(s.txt)+'</span>':'')+'</div>'; }).join('')+'</div></div>';
+    html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join('')) : '<div class="grp"><h2>børn</h2><p class="empty">Ingen kendte børn.</p></div>';
+    return html;
+  }
+  if(PIVOT==='søskende'){
+    var sib=Object.keys(P).filter(function(id){ var q=P[id]; return (p.f&&q.f===p.f)||(p.m&&q.m===p.m); });
+    if(sib.length<=1) return '<div class="grp"><h2>søskende</h2><p class="empty">Ingen kendte søskende.</p></div>';
+    sib.sort(function(a,b){ return (yr(P[a].b)||'9999').localeCompare(yr(P[b].b)||'9999'); });
+    return group('søskendeflokken, ældst først',sib.map(function(id){ return tile(id,{self:id===p.id}); }).join(''),'<p class="empty" style="font-size:13px">'+(sib.length-1)+' søskende. Rammen viser '+esc(first(p))+'.</p>');
+  }
+  if(PIVOT==='detaljer'){
+    var rows=[['født',p.b],['død',p.d],['erhverv',p.job],['også kaldt',p.aka]].filter(function(r){return r[1]});
+    var h=rows.length?'<dl>'+rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+mark(r[1])+'</dd>'}).join('')+'</dl>':'';
+    if(!rows.length&&!(p.notes&&p.notes.length)) h='<p class="empty">Ingen yderligere oplysninger endnu.</p>';
+    if(p.notes&&p.notes.length) h+='<div class="grp"><h2>noter</h2><ul class="notes">'+p.notes.map(function(n){return '<li>'+mark(n)+'</li>'}).join('')+'</ul></div>';
+    var src=(p.src||[]).map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+(p.opl||[]).map(function(s){return '<li class="opl">'+esc(s)+'</li>'}).join('');
+    if(src) h+='<div class="grp"><h2>kilder</h2><ul class="src">'+src+'</ul><ul class="legend"><li><span class="sq c-none"></span>fundet i et dokument</li><li><span class="sq c-far"></span>oplyst af familien</li></ul></div>';
+    return '<div class="grp"><h2>om '+esc(first(p))+'</h2>'+h+'</div>';
+  }
+  // farver: forklaring af orienteringen
+  var nm=first(P[POV]);
+  return '<div class="grp"><h2>sådan læser du træet</h2><ul class="legend" style="flex-direction:column;gap:8px;font-size:14px;color:var(--fg)">'+
+    '<li><span class="sq c-own"></span>'+esc(nm)+', søskende, nevøer og niecer og deres børn</li>'+
+    '<li><span class="sq c-far"></span>'+esc(gen(nm))+' fars side</li>'+
+    '<li><span class="sq c-mor"></span>'+esc(gen(nm))+' mors side</li>'+
+    '<li><span class="sq c-in"></span>indgiftet: ægtefæller og svigerfamilie</li></ul>'+
+    '<ul class="notes" style="font-size:14px;color:var(--sub)"><li>Knappen ‹ øverst har navnet på den, du kom fra. Tryk på den for at gå tilbage. Huset fører dig hjem til '+esc(nm)+'.</li>'+
+    '<li>Linjen “slægtskab” viser, hvordan personen hænger sammen med '+esc(nm)+'. Hver person i linjen er et led; tryk på et led for at hoppe dertil.</li>'+
+    '<li>Linealen i højre kant viser generationen. 0 er '+esc(gen(nm))+' egen generation, + er opad, − er nedad.</li>'+
+    '<li>Stryg til siden under fanerne for at skifte mellem familie, søskende og detaljer.</li></ul></div>';
+}
+function renderRail(g){
+  var rail=$('#rail'), key=POV+':'+GMIN+':'+GMAX;
+  if(RAILKEY!==key||!rail.querySelector('.mark')){
+    var h='<span class="cap">generation</span>';
+    for(var x=GMAX;x>=GMIN;x--) h+='<span class="t'+(x===0?' zero':'')+'" data-g="'+x+'"></span>';
+    rail.innerHTML=h+'<span class="mark" hidden></span>'; RAILKEY=key;
+  }
+  var m=rail.querySelector('.mark'), t=rail.querySelector('.t[data-g="'+g+'"]');
+  if(g==null||!t){ m.hidden=true; return; }
+  m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
+  m.style.top=(t.offsetTop-10)+'px';
+}
+var APP_VERSION='2.6';
+var ADMIN='Bo Hejselbæk';
+var CHANGELOG=[
+  {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Familiens adgangskode er skiftet til en længere. Telefonen spørger én gang, så husker den den igen. Spørg Bo om den nye, og skriv den ikke på køleskabet','Skrifttypen bor nu hos mig i stedet for hos Google. Google behøver ikke vide, hvornår du kigger på oldefar. Den virker også, når nettet er væk','Jeg har ansat en dørmand, der kun lukker min egen kode ind og ingen data ud. Han smiler aldrig, men han er grundig','Navne med apostrof, som O\'Neill, kan ikke længere slå hul i siden. Vi har ingen O\'Neill. Endnu']},
+  {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
+  {v:'2.4.3',d:'2026-10-24',t:'2026-10-24T05:24:13Z',items:['På computeren åbnede plakaten en delemenu, som om du ville maile 2,77 meter familie til nogen. Jeg tog fejl. Nu bliver den bare hentet ned i overførsler','På telefonen kommer delemenuen stadig, for det er den vej, filer kommer hjem der']},
+  {v:'2.4.2',d:'2026-10-24',t:'2026-10-24T05:08:36Z',items:['Den store grå overskrift skiftede navn, hver gang du trykkede på nogen, og flere troede, siden handlede om den forkerte. Nu står der bare “familien”, og der bliver den stående. Ligesom familien selv','Vejen tilbage er en lille knap øverst med navnet på den, du kom fra. Jeg har aldrig været god til farvel, så nu siger jeg bare ‹']},
+  {v:'2.4.1',d:'2026-10-24',t:'2026-10-24T04:57:45Z',items:['Plakatens mål står ikke længere skrevet med kuglepen. Jeg måler nu selve plakaten, hver gang du kigger, for familien vokser, især bagud, når nogen graver i kirkebøgerne','Lige nu er den 2,77 meter. Sofaen er stadig i fare']},
+  {v:'2.4',d:'2026-10-23',items:['Tablets og store skærme bliver nu spurgt, om de vil vise hele slægten frem. Det gælder alle tablets, også dem med frugt på ryggen','Store skærme har fået en ▶-knap øverst, så pauseskærmen altid er ét tryk væk. Slægten har alligevel ingen andre planer']},
+  {v:'2.3.1',d:'2026-10-23',items:['Installationsvejledningen kan nu kende forskel på Chrome, Edge, Firefox, Samsung Internet og Safari. Den findes, fordi “det er så nemt med iPhone”. Det er det tydeligvis ikke. Jeg bliver så træt']},
+  {v:'2.3',d:'2026-10-23',items:['Appen spørger høfligt, om den må flytte ind på din hjemmeskærm. Siger du “ikke nu”, holder den sig væk i 30 dage. Så kommer den igen. Det gør familien altid']},
+  {v:'2.2',d:'2026-10-23',items:['Klokken fortæller nu også, når appen selv har lært noget nyt. Træets nyheder står i grønt, appens i terrakotta. De taler ikke sammen, og det er nok bedst sådan']},
+  {v:'2.1',d:'2026-10-23',items:['Familieplakaten kan hentes som PDF. Den er 2,8 meter bred, så ryd væggen i stuen og overvej sofaens fremtid','Til almindelige printere kommer der en udgave, som ikke kræver byggetilladelse']},
+  {v:'2.0.1',d:'2026-10-23',items:['Indstillinger er nu en ægte Zune-pivot. Stryg til siden mellem om, pauseskærm, forslag og resten. Zune blev selv lagt i graven i 2011. Vi holder mindet i hævd, ligesom med alle andre her']},
+  {v:'2.0',d:'2026-10-23',items:['Pauseskærm. Hele slægten svæver diagonalt hen over skærmen som en musikvideo fra 2009','Velegnet til familiefester, lange søndage og når nogen spørger: “Hvem var det nu, ham med hatten?” Han er som regel død før din fødsel. Hatten har klaret sig bedre']},
+  {v:'1.9.1',d:'2026-10-23',items:['Træets Vogter har fået stråhat og et græsstrå i munden. Han tager den ikke af indendørs. Vi er holdt op med at spørge']},
+  {v:'1.9',d:'2026-10-23',items:['Bo Hejselbæk er officielt udnævnt til Træets Vogter. Ros, rettelser og kage går direkte til ham. Klager går også til ham, og så videre ned i en skuffe','Versionslisten har fået en personlighed. Ingen har bedt om den']},
+  {v:'1.8',d:'2026-10-23',items:['Forslagsknappen virker. Send nye slægtninge, glemte fødselsdage og billeder af oldemor med hat til Bo via WhatsApp, Messenger eller sms','Brevduer understøttes ikke. Det har været forsøgt']},
+  {v:'1.7',d:'2026-10-23',items:['Huset er flyttet op i øverste venstre hjørne. Ét tryk, og du er hjemme','Du kan nu se træet fra hvem som helst, også fra den grandonkel, ingen kan huske navnet på. Det kan han heller ikke selv længere']},
+  {v:'1.6.1',d:'2026-10-23',items:['Knappen “behold” er afskediget efter kort tids tjeneste og afløst af et mere ydmygt “‹ tilbage”','Kortene på forsiden siger ikke længere årstallet to gange. Det gør onklen til familiefesten stadig, men han ligger uden for vores ansvarsområde']},
+  {v:'1.6',d:'2026-10-23',items:['En klokke. Den ringer ikke, men den har et lille tal, og det må man lære at leve med','Knapperne er blevet større, og teksten følger telefonens tekststørrelse, så læsebrillerne kan blive i etuiet. Hvor etuiet er, kan appen desværre ikke svare på']},
+  {v:'1.5',d:'2026-10-23',items:['“Sidst opdateret” viser nu, hvor frisk træet er, ligesom datoen på mælken. Træet bliver dog aldrig surt, det bliver bare ældre','Der er også en log ud-knap til dem, der låner oldefars telefon. Han opdager det ikke']},
+  {v:'1.4',d:'2026-10-23',items:['Lys, mørk eller automatisk. Mørk tilstand passer godt til en app, hvor de fleste medlemmer har sovet længe','Med forældrefokus klatrer du op ad stammen én generation ad gangen, indtil kirkebøgerne giver op']},
+  {v:'1.3',d:'2026-10-23',items:['Alt bevæger sig nu. Navne flyver, kort rejser sig, og generationsmarkøren glider stille af sted. Det er mere liv, end de fleste i træet har vist i et stykke tid']},
+  {v:'1.2',d:'2026-10-23',items:['Træet har fået hængelås, så kun familien kommer ind. Naboens kat har søgt igen og fået afslag igen','Appen kan nu bo på hjemmeskærmen og klarer sig uden internet, ligesom dens beboere har gjort i 200 år']},
+  {v:'1.0',d:'2026-10-23',items:['I begyndelsen var der kaos, en slægtsbog med kaffepletter og mindst tre stavemåder af det samme navn. Så kom appen. Kaffepletterne lever videre i ånden']}
+];
+var NOTIFY=store('slaegt.notify')!=='0', CHANGES=[];
+var DIR='fwd', FLY=null, RAILKEY=null, PFOCUS=store('slaegt.pfocus')==='1';
+var REDUCED=matchMedia('(prefers-reduced-motion: reduce)');
+function replay(el,cls){ ['anim','m-fwd','m-back','m-fly'].forEach(function(c){ el.classList.remove(c); }); void el.offsetWidth; el.classList.add(cls||'m-fwd'); }
+function stagger(){ Array.prototype.forEach.call(document.querySelectorAll('#pane .tile'),function(t,i){ t.style.setProperty('--i',Math.min(i,10)); }); }
+// Navnet "flyver" fra kortet, man trykkede på, op til overskriften (Metro-continuum)
+function flyName(){
+  var f=FLY; FLY=null; var h1=document.querySelector('#hero h1'); if(!f||!h1) return;
+  var to=h1.getBoundingClientRect(), fs=parseFloat(getComputedStyle(h1).fontSize);
+  var el=document.createElement('span'); el.className='flyer'; el.textContent=h1.textContent;
+  el.style.fontSize=fs+'px'; el.style.fontWeight='300'; el.style.lineHeight=getComputedStyle(h1).lineHeight;
+  document.body.appendChild(el);
+  var k=f.fs/fs, done=function(){ el.remove(); var hero=$('#hero'); if(hero) hero.classList.remove('m-fly'); };
+  var a=el.animate([{transform:'translate('+f.x+'px,'+f.y+'px) scale('+k+')',opacity:.9},{transform:'translate('+to.left+'px,'+to.top+'px) scale(1)',opacity:1}],
+    {duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});
+  a.onfinish=done; a.oncancel=done; setTimeout(done,700);
+}
+
+/* ---------- Navigation ---------- */
+function go(id){
+  if(!P[id]||id===CUR) return;
+  if(CUR&&CUR!=='__pick') STACK.push(CUR);
+  CUR=id; PIVOT='familie'; DIR='fwd'; render(); window.scrollTo({top:0});
+  try{ history.pushState({n:STACK.length},''); }catch(e){}
+}
+function back(){
+  if(STACK.length){ CUR=STACK.pop(); }
+  else if(CUR!==POV) CUR=POV;
+  DIR='back'; FLY=null; render(); window.scrollTo({top:0});
+}
+function choosePov(id){ POV=id; store('slaegt.pov',id); STACK=[]; CUR=id; PIVOT='familie'; solve(); render(); window.scrollTo({top:0}); }
+window.addEventListener('popstate',function(){ if(CUR==='__pick'){ CUR=POV; render(); } else if(STACK.length) back(); });
+
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-id]');
+  if(t){ var id=t.dataset.id; if(!$('#pick').hidden){ DIR='fwd'; choosePov(id); return; }
+    var src=t.querySelector('.ln')||t; var r=src.getBoundingClientRect();
+    FLY= (t.classList.contains('tile')&&id!==CUR)? {x:r.left,y:r.top,fs:parseFloat(getComputedStyle(src).fontSize)} : null;
+    go(id); return; }
+  var pv=e.target.closest('#pivots button'); if(pv){ setPivot(pv.dataset.p); return; }
+});
+$('#backBtn').addEventListener('click',back);
+/* ---------- Træets vogter ---------- */
+var FARMER='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4.5 13.2c3.6 1.9 19.4 1.9 23 0c-1.7-1-3.8-1.5-6.1-1.7M4.5 13.2c1.7-1 3.8-1.5 6.1-1.7"/><path d="M10.6 11.6C10.6 7.1 12.7 5.2 16 5.2s5.4 1.9 5.4 6.4"/><path d="M10.8 9.4c3.5.9 6.9.9 10.4 0"/><path d="M11.8 15.4c.4 2.8 2 4.5 4.2 4.5s3.8-1.7 4.2-4.5"/><path d="M17.8 18.4l5.4 2.4"/><path d="M7 28.5c.4-4.6 4-7.1 9-7.1s8.6 2.5 9 7.1"/><path d="M13 21.8v6.7M19 21.8v6.7"/></svg>';
+(function(){ var fn=ADMIN.split(' ')[0];
+  $('#lockAdmin').innerHTML=FARMER+'<span>Mangler du adgangskoden? Spørg '+esc(ADMIN)+', som passer træet.</span>';
+  $('#setAdmin').innerHTML=FARMER+'<span>Træet passes af '+esc(ADMIN)+'. Har du rettelser, nye billeder eller spørgsmål, så skriv til '+esc(fn)+', eller stryg over til “forslag”.</span>';
+  $('#sgIntro').textContent='Send nye personer, datoer eller billeder til '+ADMIN+'. Forslaget sendes fra din egen telefon med WhatsApp, Messenger eller sms, så '+fn+' kan se, hvem det er fra. Intet kommer ind i træet, før '+fn+' har set det.';
+  $('#sgSend').textContent='del forslaget med '+fn;
+})();
+/* ---------- Nyheder og notifikationer ---------- */
+function lastSeen(){ return store('slaegt.seen')||''; }
+/* App-nyheder: kun versioner nyere end den, brugeren startede med */
+function vnum(v){ return String(v).split('.').map(function(x){ return ('000'+x).slice(-3); }).join('.'); }
+/* Versioner med test:true er ikke godkendt af Træets Vogter endnu: de ligger på siden, men familien hører ikke om dem. Fjern test:true for at offentliggøre. */
+var LIVE=CHANGELOG.filter(function(c){ return !c.test; }), LIVEVER=LIVE.length?LIVE[0].v:APP_VERSION;
+var APPBASE=store('slaegt.appbase'); if(!APPBASE){ APPBASE=LIVEVER; store('slaegt.appbase',APPBASE); }
+function appNews(){ return LIVE.filter(function(c){ return vnum(c.v)>vnum(APPBASE); }); }
+function appUnread(){ var seen=store('slaegt.seenapp')||APPBASE; return appNews().filter(function(c){ return vnum(c.v)>vnum(seen); }).length; }
+function unread(){ var s=lastSeen(); return CHANGES.filter(function(c){ return c.t>s; }).length + appUnread(); }
+function updateBadge(){ var n=NOTIFY? unread():0, b=$('#newsBadge'); b.hidden=!n; b.textContent=n>9?'9+':n; $('#newsBtn').setAttribute('aria-label',n? 'Nyheder, '+n+' nye':'Nyheder'); }
+function dayFmt(t){ var d=new Date(t); return isNaN(d)?'':d.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'}); }
+function openNews(){
+  var s=lastSeen(), seenApp=store('slaegt.seenapp')||APPBASE;
+  var items=CHANGES.map(function(c){ return {k:'træet', d:c.t, when:dayFmt(c.t), text:c.text, unread:c.t>s}; })
+    .concat(appNews().map(function(c){ return {k:'appen', d:c.t||c.d+'T23:59:59Z', v:vnum(c.v), when:dayFmt(c.d)+' · version '+c.v, text:c.items.join('. ')+'.', unread:vnum(c.v)>vnum(seenApp)}; }))
+    .sort(function(a,b){ if(a.d!==b.d) return a.d<b.d?1:-1; return (b.v||'')>(a.v||'')?1:-1; });
+  $('#newsList').innerHTML= items.length? items.map(function(c){ return '<li class="'+(c.unread?'unread':'')+'"><span class="when"><span class="kind kind-'+(c.k==='appen'?'app':'tree')+'">'+c.k+'</span>'+esc(c.when)+'</span><span>'+esc(c.text)+'</span></li>'; }).join('') : '<li>Ingen nyheder endnu.</li>';
+  if(CHANGES.length) store('slaegt.seen',CHANGES[0].t);
+  store('slaegt.seenapp',LIVEVER);
+  $('#news').hidden=false; replay($('#news').querySelector('.wrap'),'m-fwd'); updateBadge();
+}
+// Fortæl én gang, at appen er blevet opdateret
+setTimeout(function(){ var last=store('slaegt.lastrun'); store('slaegt.lastrun',LIVEVER);
+  if(last&&vnum(LIVEVER)>vnum(last)&&NOTIFY) toast('Appen er opdateret til version '+LIVEVER+'. Se nyt under klokken.'); updateBadge(); },1500);
+$('#newsBtn').addEventListener('click',openNews);
+$('#closeNews').addEventListener('click',function(){ $('#news').hidden=true; });
+$('#newsToLog').addEventListener('click',function(){ $('#news').hidden=true; openSettings(); setSPane('versioner'); });
+function setNotify(on){ NOTIFY=on; store('slaegt.notify',on?'1':'0'); $('#ntSwitch').setAttribute('aria-checked',on?'true':'false'); $('#newsBtn').hidden=!VER||!on; updateBadge(); }
+$('#ntSwitch').addEventListener('click',function(){ setNotify(!NOTIFY); });
+$('#ntSwitch').setAttribute('aria-checked',NOTIFY?'true':'false');
+function renderChangelog(){
+  $('#appVer').textContent='Du bruger version '+APP_VERSION+'.';
+  $('#changelog').innerHTML=LIVE.map(function(c){ return '<li style="flex-direction:column;gap:2px"><span class="when" style="font-size:0.75rem;color:var(--sub)">Version '+c.v+' · '+esc(dayFmt(c.d))+'</span><span>'+c.items.map(esc).join('. ')+'.</span></li>'; }).join('');
+}
+/* ---------- Forældrefokus, indstillinger og demo-formular ---------- */
+function setPF(on){ if(on===PFOCUS) return; PFOCUS=on; store('slaegt.pfocus',on?'1':'0'); DIR=on?'left':'right'; FLY=null; if(!$('#focus').hidden) renderFocus(); }
+$('#view-all').addEventListener('click',function(){ setPF(false); });
+$('#view-par').addEventListener('click',function(){ setPF(true); });
+var THEME=store('slaegt.theme')||'auto';
+function applyTheme(t){ THEME=t; store('slaegt.theme',t);
+  if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+  Array.prototype.forEach.call(document.querySelectorAll('[data-theme-opt]'),function(b){ b.setAttribute('aria-pressed',b.dataset.themeOpt===t?'true':'false'); }); }
+applyTheme(THEME);
+document.querySelectorAll('[data-theme-opt]').forEach(function(b){ b.addEventListener('click',function(){ applyTheme(b.dataset.themeOpt); }); });
+function openSettings(){
+  var sel=$('#sgPerson'); var ids=Object.keys(P).sort(function(a,b){ return P[a].n.localeCompare(P[b].n,'da'); });
+  var fr=$('#sgFrom'), keep=fr.value||(P[store('slaegt.from')]?store('slaegt.from'):POV);
+  fr.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===keep?' selected':'')+'>'+esc(P[id].n)+'</option>'; }).join('');
+  sel.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===CUR?' selected':'')+'>'+esc(P[id].n)+(years(P[id])?' ('+years(P[id])+')':'')+'</option>'; }).join('');
+  sgType(); renderChangelog(); refreshInstall(); $('#settings').hidden=false; setSPane(SPANE,'none'); replay($('#settings').querySelector('.wrap'),'m-fwd'); $('#settings').scrollTop=0;
+}
+function closeSettings(){ $('#settings').hidden=true; }
+var SPORDER=['om','pauseskærm','plakat','forslag','udseende','notifikationer','versioner'], SPANE=store('slaegt.spane')||'om';
+function setSPane(k,dir){
+  if(SPORDER.indexOf(k)<0) k='om';
+  var prev=SPANE; SPANE=k; store('slaegt.spane',k);
+  document.querySelectorAll('#spivots button').forEach(function(b){ b.setAttribute('aria-selected',b.dataset.sp===k?'true':'false'); });
+  document.querySelectorAll('.spane').forEach(function(p){ p.hidden=p.dataset.pane!==k; });
+  var cur=document.querySelector('.spane[data-pane="'+k+'"]');
+  if(dir!=='none') replay(cur, SPORDER.indexOf(k)>=SPORDER.indexOf(prev)?'m-fwd':'m-back');
+  var sel=document.querySelector('#spivots [aria-selected="true"]'); if(sel) sel.scrollIntoView({block:'nearest',inline:'center'});
+  $('#settings').scrollTop=0;
+  if(k==='plakat') preparePdf();
+}
+/* ---------- Familieplakat som PDF (låst med familiens adgangskode) ---------- */
+var PDFFILE=null, PDFVER=null, PDFBUSY=false;
+function pdfUi(label,disabled,msg){ var b=$('#pdfGet'); b.textContent=label; b.disabled=!!disabled; if(msg!=null) $('#pdfMsg').textContent=msg; }
+function preparePdf(){
+  if(PDFBUSY||!KEY) return; if(PDFFILE&&PDFVER===VER){ pdfUi('hent familieplakaten',false); return; }
+  PDFBUSY=true; pdfUi('gør klar …',true,'');
+  fetch('plakat.enc.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(o){
+    if(KEYSALT!==o.salt) throw 0;
+    return crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(o.iv)},KEY,ub64(o.ct)).then(function(buf){
+      PDFFILE=new File([buf],'Familieplakat-Hejselbaek.pdf',{type:'application/pdf'}); PDFVER=VER;
+      var dm=(o.mm||'').match(/(\d+)\D+(\d+)/); if(dm) $('#pdfDims').textContent=(Math.round(dm[1]/10)/100).toString().replace('.',',')+' meter bred og '+Math.round(dm[2]/10)+' cm høj';
+      pdfUi('hent familieplakaten',false,'PDF, '+(Math.round(o.size/100000)/10).toString().replace('.',',')+' MB'+(o.mm?' · '+o.mm:'')+'.');
+    });
+  }).catch(function(){ pdfUi('prøv igen',false,'Plakaten kunne ikke hentes. Tjek forbindelsen.'); PDFFILE=null; })
+  .then(function(){ PDFBUSY=false; });
+}
+function pdfDownload(){ var u=URL.createObjectURL(PDFFILE), a=document.createElement('a'); a.href=u; a.download=PDFFILE.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },5000); }
+$('#pdfGet').addEventListener('click',function(){
+  if(!PDFFILE){ preparePdf(); return; }
+  var canFiles=false; try{ canFiles=!!(navigator.canShare&&navigator.canShare({files:[PDFFILE]})); }catch(e){}
+  // Delemenuen kun på Android, iPhone og iPad; på Windows, Mac og Linux hentes filen bare (Windows' delemenu sender den ellers til Outlook)
+  if((ANDROID||IOS)&&navigator.share&&canFiles) navigator.share({files:[PDFFILE],title:'Familieplakat'}).catch(function(e){ if(!e||e.name!=='AbortError') pdfDownload(); });
+  else pdfDownload();
+});
+document.querySelectorAll('#spivots button').forEach(function(b){ b.addEventListener('click',function(){ setSPane(b.dataset.sp); }); });
+(function(){ var x=null,y=null;
+  document.querySelectorAll('.spane').forEach(function(p){
+    p.addEventListener('touchstart',function(e){ if(e.target.closest('input,textarea,select,.switch')) return; x=e.touches[0].clientX; y=e.touches[0].clientY; },{passive:true});
+    p.addEventListener('touchend',function(e){ if(x==null) return; var dx=e.changedTouches[0].clientX-x, dy=e.changedTouches[0].clientY-y; x=null;
+      if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return; var i=SPORDER.indexOf(SPANE)+(dx<0?1:-1); if(i>=0&&i<SPORDER.length) setSPane(SPORDER[i]); },{passive:true});
+  }); })();
+$('#settingsBtn').addEventListener('click',openSettings);
+$('#closeSettings').addEventListener('click',closeSettings);
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
+function sgType(){ var t=$('#sgType').value; $('#sgNameWrap').hidden=t!=='ny'; $('#sgRelWrap').hidden=t!=='ny';
+  $('#sgRelHint').textContent= t==='ny'? '(den nye person hænger sammen med)' : '(som forslaget handler om)'; }
+$('#sgType').addEventListener('change',sgType);
+$('#sgPhoto').addEventListener('change',function(){ var f=this.files&&this.files[0], img=$('#sgPreview'); if(!f){ img.hidden=true; return; }
+  var r=new FileReader(); r.onload=function(){ img.src=r.result; img.hidden=false; }; r.readAsDataURL(f); });
+function sgMessage(){
+  var t=$('#sgType').value, who=P[$('#sgPerson').value], from=P[$('#sgFrom').value];
+  var kind={ny:'Ny person',ret:'Ret eller tilføj oplysninger',foto:'Billede'}[t];
+  var L=['Forslag til slægtsappen','Fra: '+from.n+' [#'+from.id+']','Hvad: '+kind];
+  if(t==='ny'){ L.push('Navn: '+$('#sgName').value.trim()); L.push('Hænger sammen med: '+$('#sgRel').value+' '+who.n+' [#'+who.id+']'); }
+  else L.push('Om: '+who.n+' [#'+who.id+']');
+  if($('#sgBorn').value.trim()) L.push('Født: '+$('#sgBorn').value.trim());
+  if($('#sgDied').value.trim()) L.push('Død: '+$('#sgDied').value.trim());
+  if($('#sgNote').value.trim()) L.push('Kilde eller bemærkning: '+$('#sgNote').value.trim());
+  var f=$('#sgPhoto').files&&$('#sgPhoto').files[0]; if(f) L.push('Billede: vedhæftet');
+  var ref='SLG-'+Date.now().toString(36).slice(-5).toUpperCase();
+  L.push('—'); L.push('Reference '+ref+' · app '+APP_VERSION);
+  return {text:L.join('\n'), file:f||null, summary: (t==='ny'? $('#sgName').value.trim()+' · '+$('#sgRel').value+' '+first(who) : (t==='foto'? 'Billede af '+who.n : 'Oplysninger om '+who.n))+' · fra '+from.n};
+}
+function sgDone(summary,status){
+  var li=document.createElement('li'); li.innerHTML='<span style="min-width:0;overflow-wrap:anywhere"></span><span class="st"></span>';
+  li.firstChild.textContent=summary; li.lastChild.textContent=status;
+  $('#sgQueue').prepend(li); li.classList.add('m-fwd'); $('#sgQueueWrap').hidden=false;
+}
+$('#suggestForm').addEventListener('submit',function(e){
+  e.preventDefault(); var t=$('#sgType').value, form=this;
+  if(t==='ny'&&!$('#sgName').value.trim()){ $('#sgMsg').textContent='Skriv navnet på den nye person.'; var n=$('#sgName'); n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); return; }
+  store('slaegt.from',$('#sgFrom').value); var m=sgMessage(); $('#sgFallback').hidden=true;
+  try{ if(navigator.clipboard) navigator.clipboard.writeText(m.text).catch(function(){}); }catch(err){}
+  var reset=function(){ var from=$('#sgFrom').value; form.reset(); $('#sgFrom').value=from; $('#sgPreview').hidden=true; sgType(); };
+  var fallback=function(){
+    $('#sgText').textContent=m.text; $('#sgWa').href='https://wa.me/?text='+encodeURIComponent(m.text);
+    $('#sgFallback').hidden=false; $('#sgMsg').textContent='';
+    $('#sgFallback').scrollIntoView({behavior: REDUCED.matches?'auto':'smooth', block:'start'});
+    sgDone(m.summary,'klar til at sende'); reset();
+  };
+  if(!navigator.share){ fallback(); return; }
+  var data={title:'Forslag til slægtsappen',text:m.text};
+  try{ if(m.file&&navigator.canShare&&navigator.canShare({files:[m.file]})) data.files=[m.file]; }catch(err){}
+  navigator.share(data).then(function(){
+    sgDone(m.summary,'delt');
+    $('#sgMsg').textContent= data.files? 'Tak! Forslaget er delt. Hvis teksten mangler under billedet i beskeden, så sæt den ind. Den er kopieret.' : 'Tak! Forslaget er delt.';
+    reset();
+  },function(err){
+    if(err&&err.name==='AbortError'){ $('#sgMsg').textContent='Forslaget blev ikke delt. Du kan prøve igen.'; return; }
+    fallback();
+  });
+});
+$('#sgCopy').addEventListener('click',function(){
+  var txt=$('#sgText').textContent, btn=this;
+  var ok=function(){ btn.textContent='kopieret'; setTimeout(function(){ btn.textContent='kopiér teksten'; },2000); };
+  var sel=function(){ var r=document.createRange(); r.selectNodeContents($('#sgText')); var w=getSelection(); w.removeAllRanges(); w.addRange(r); };
+  try{ navigator.clipboard.writeText(txt).then(ok,sel); }catch(err){ sel(); }
+});
+$('#homeBtn').addEventListener('click',function(){ STACK=[]; CUR=POV; PIVOT='familie'; render(); window.scrollTo({top:0}); });
+var BEFORE=null;
+$('#keepBtn').addEventListener('click',function(){ CUR=BEFORE&&P[BEFORE]?BEFORE:POV; render(); window.scrollTo({top:0}); });
+function openPicker(){ BEFORE=CUR; CUR='__pick'; $('#q').value=''; render(); window.scrollTo({top:0}); }
+$('#hero').addEventListener('click',function(e){
+  if(e.target.closest('#changeBtn')){ e.stopPropagation(); openPicker(); }
+  else if(e.target.closest('#rebaseBtn')){ e.stopPropagation(); DIR='fwd'; choosePov(CUR); toast('Træet ses nu fra '+P[POV].n); }
+});
+$('#q').addEventListener('input',renderPick);
+
+// Stryg mellem faner
+var sx=null, sy=null, ORDER=['familie','søskende','detaljer','farver'];
+function setPivot(pv){ if(pv===PIVOT) return; DIR=ORDER.indexOf(pv)>ORDER.indexOf(PIVOT)?'left':'right'; PIVOT=pv; FLY=null; renderFocus(); }
+$('#pane').addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+$('#pane').addEventListener('touchend',function(e){
+  if(sx==null) return; var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy; sx=null;
+  if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return;
+  if(PFOCUS){ if(dx>0) setPF(false); return; }
+  var i=ORDER.indexOf(PIVOT)+(dx<0?1:-1); if(i<0||i>=ORDER.length) return; setPivot(ORDER[i]);
+},{passive:true});
+
+// Mørkekammer: tænd kun hover-effekten, når en rigtig mus faktisk bevæger sig
+(function(){ var r=document.documentElement; function f(e){ if(e.pointerType==='mouse') r.classList.add('mouse'); else if(e.pointerType==='touch'||e.pointerType==='pen') r.classList.remove('mouse'); }
+  document.addEventListener('pointermove',f,{passive:true}); document.addEventListener('pointerdown',f,{passive:true}); })();
+// Metro-"tilt" når man trykker på et kort
+document.addEventListener('pointerdown',function(e){
+  var t=e.target.closest('.tile[data-id]'); if(!t||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var r=t.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+  t.style.transform='perspective(500px) rotateY('+(x*14)+'deg) rotateX('+(-y*14)+'deg) scale(.97)';
+  var up=function(){ t.style.transform=''; document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+  document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+});
+
+var TT=null;
+function toast(m){ var el=document.querySelector('.toast'); if(!el){ el=document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); }
+  el.textContent=m; el.hidden=false; el.style.animation='none'; void el.offsetWidth; el.style.animation=''; clearTimeout(TT); TT=setTimeout(function(){ el.hidden=true; },3500); }
+
+POV=store('slaegt.pov'); CUR=POV;
+// Start straks med låste data fra sidst (åbnes med den gemte nøgle); hent derefter nyeste version
+$('#pwForm').addEventListener('submit',function(e){ e.preventDefault(); unlock(); });
+$('#logoutBtn').addEventListener('click',function(){ try{ localStorage.removeItem('slaegt.key'); }catch(e){} location.reload(); });
+try{ localStorage.removeItem('slaegt.tree'); localStorage.removeItem('slaegt.photos'); }catch(e){}
+loadKey().then(function(){
+  var ct=null, cp=null; try{ ct=JSON.parse(localStorage.getItem('slaegt.tree.enc')||'null'); cp=JSON.parse(localStorage.getItem('slaegt.photos.enc')||'null'); }catch(e){}
+  var p=Promise.resolve();
+  if(ct&&KEY) p=dec(ct).then(function(j){ apply(j,true); return cp? dec(cp).then(function(ph){ if(ct.version===cp.version) setPhotos(ph); }) : null; }).catch(function(){});
+  return p;
+}).then(function(){ load(true); });
+/* ---------- Pauseskærm (Zune-inspireret) ---------- */
+var PAUSE=null, PTIMER=null, WAKE=null, IDLE=store('slaegt.idle')==='1', IDLET=null;
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function startPause(){
+  if(PAUSE||!VER||!Object.keys(P).length) return;
+  closeSettings(); $('#news').hidden=true;
+  var ids=Object.keys(P), names=ids.map(function(id){ return P[id].n; });
+  var el=document.createElement('div'); el.className='pause'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','Pauseskærm. Tryk for at stoppe.');
+  var rows='', sizes=[2.2,7.5,3.2,11,2.6,5.5,9,3.6,6.5], ops=[.10,.16,.12,.22,.08,.14,.18,.10,.13];
+  sizes.forEach(function(sz,i){
+    var list=shuffle(names.slice()).slice(0,26), line=list.map(function(n){ return '<span>'+esc(n)+'</span>'; }).join('');
+    var dur=Math.round(160+sz*22+Math.random()*60);
+    rows+='<div class="prow '+(i%2?'b':'a')+'" style="font-size:'+sz+'vmax;opacity:'+ops[i]+';animation-duration:'+dur+'s">'+line+line+'</div>';
+  });
+  el.innerHTML='<div class="stage" aria-hidden="true">'+rows+'</div><div class="fphoto" aria-hidden="true"></div><div class="feat" aria-live="polite"></div><div class="hint">tryk for at stoppe</div>';
+  document.body.appendChild(el); PAUSE=el;
+  var order=shuffle(ids.filter(function(id){ return P[id].photo; })).concat(shuffle(ids.filter(function(id){ return !P[id].photo; })));
+  var k=0;
+  function feature(){
+    var id=order[k++%order.length], p=P[id], facts=[];
+    var kin= POV&&P[POV]? (id===POV? 'set fra' : longKin(id)) : '';
+    if(years(p)) facts.push(years(p)); if(p.job) facts.push(p.job);
+    else if(p.b&&/,/.test(p.b)) facts.push('født '+p.b.replace(/\s*\(per slægtsbog\)/,''));
+    var ph=el.querySelector('.fphoto'); ph.innerHTML= p.photo? '<img alt="" src="'+p.photo+'">' : '';
+    el.querySelector('.feat').innerHTML=(kin?'<span class="fkin">'+esc(kin)+'</span>':'')+'<span class="fname">'+esc(p.n)+'</span>'+(facts.length?'<span class="ffact">'+esc(facts.join(' · '))+'</span>':'');
+  }
+  feature(); PTIMER=setInterval(feature,9000);
+  var stop=function(e){ if(e) e.preventDefault(); stopPause(); };
+  el.addEventListener('click',stop); el.addEventListener('touchstart',stop,{passive:false});
+  try{ if(navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ WAKE=w; },function(){}); }catch(e){}
+}
+function stopPause(){
+  if(!PAUSE) return; clearInterval(PTIMER); var el=PAUSE; PAUSE=null;
+  el.style.transition='opacity .35s'; el.style.opacity='0'; setTimeout(function(){ el.remove(); },380);
+  try{ if(WAKE) WAKE.release(); }catch(e){} WAKE=null; armIdle();
+}
+document.addEventListener('keydown',function(e){ if(PAUSE) stopPause(); });
+document.addEventListener('visibilitychange',function(){ if(!document.hidden&&PAUSE&&navigator.wakeLock&&!WAKE){ try{ navigator.wakeLock.request('screen').then(function(w){ WAKE=w; },function(){}); }catch(e){} } });
+function armIdle(){ clearTimeout(IDLET); if(IDLE&&!PAUSE) IDLET=setTimeout(function(){ if(!$('#lock').hidden||$('#focus').hidden&&$('#pick').hidden) return armIdle(); startPause(); },120000); }
+['pointerdown','keydown','scroll','touchstart'].forEach(function(ev){ document.addEventListener(ev,function(){ if(!PAUSE) armIdle(); },{passive:true}); });
+$('#pauseBtn').addEventListener('click',function(e){ e.stopPropagation(); setTimeout(startPause,60); });
+$('#idleSwitch').setAttribute('aria-checked',IDLE?'true':'false');
+$('#idleSwitch').addEventListener('click',function(){ IDLE=!IDLE; store('slaegt.idle',IDLE?'1':'0'); this.setAttribute('aria-checked',IDLE?'true':'false'); armIdle(); });
+armIdle();
+/* ---------- Installér appen: Android-prompt, iPhone-vejledning, aldrig når den er installeret ---------- */
+var IPROMPT=null, SHAREICON='<svg class="ishare" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3.5M8 7.5l4-4 4 4"/><path d="M7 11H5.5v9.5h13V11H17"/></svg>';
+var UA=navigator.userAgent||'', IOS=/iphone|ipad|ipod/i.test(UA)||(/macintosh/i.test(UA)&&navigator.maxTouchPoints>1), ANDROID=/android/i.test(UA);
+var INAPP=/FBAN|FBAV|FB_IAB|Instagram|Messenger|WhatsApp|Line\//i.test(UA);
+function isInstalled(){ try{ return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true; }catch(e){ return false; } }
+function canInstallHere(){ return !!document.querySelector('link[rel="manifest"]'); }
+function instText(){
+  if(isInstalled()) return 'Appen er installeret på denne telefon. Godt gået.';
+  if(INAPP) return 'Du har åbnet linket inde i '+(/WhatsApp/i.test(UA)?'WhatsApp':'Messenger eller Facebook')+', og derfra kan appen ikke installeres. Tryk på menuen og vælg “Åbn i '+(IOS?'Safari':'Chrome')+'”, og prøv igen derfra.';
+  if(IOS) return 'Tryk på Del '+SHAREICON+' nederst i Safari, rul ned, og vælg “Føj til hjemmeskærm”. Så får du et ikon og appen i fuld skærm.';
+  if(IPROMPT) return 'Tryk på “installér”, så lægger telefonen et ikon på hjemmeskærmen, og appen åbner i fuld skærm.';
+  if(ANDROID){
+    if(/EdgA\//.test(UA)) return 'Du bruger Edge. Tryk på menuen ⋯ nederst på skærmen, stryg menuen op, og vælg “Føj til telefon” (på nogle versioner “Føj til startskærm”).';
+    if(/Firefox\//.test(UA)) return 'Du bruger Firefox. Tryk på menuen ⋮, og vælg “Installér” (på nogle versioner “Føj til startskærm”).';
+    if(/SamsungBrowser/.test(UA)) return 'Du bruger Samsung Internet. Tryk på menuen ☰ nederst, vælg “Tilføj side til”, og derefter “Startskærm”.';
+    return 'Tryk på menuen ⋮ øverst til højre i Chrome, og vælg “Installér app” eller “Føj til startskærm”.';
+  }
+  return 'På computeren kan du installere appen fra browserens adresselinje eller menu, hvis den tilbyder det.';
+}
+function refreshInstall(){
+  var t=instText(); $('#instText').innerHTML=t; $('#instBarText').innerHTML=t;
+  var show=!!IPROMPT&&!isInstalled(); $('#instBtn').hidden=!show; $('#instBtn2').hidden=!show;
+  $('#instSect').hidden=!canInstallHere();
+}
+function maybeShowInstallBar(){
+  if(!canInstallHere()||isInstalled()) return;
+  var later=parseInt(store('slaegt.instlater')||'0',10); if(later&&Date.now()-later<30*864e5) return;
+  if(!(IOS||ANDROID||IPROMPT)) return;
+  refreshInstall(); $('#instBar').hidden=false;
+}
+function doInstall(){ if(!IPROMPT) return; IPROMPT.prompt(); IPROMPT.userChoice.then(function(c){ IPROMPT=null; $('#instBar').hidden=true; refreshInstall(); if(c&&c.outcome==='accepted') toast('Appen bliver lagt på hjemmeskærmen'); },function(){}); }
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); IPROMPT=e; refreshInstall(); });
+window.addEventListener('appinstalled',function(){ IPROMPT=null; $('#instBar').hidden=true; refreshInstall(); });
+$('#instBtn').addEventListener('click',doInstall); $('#instBtn2').addEventListener('click',doInstall);
+$('#instLater').addEventListener('click',function(){ store('slaegt.instlater',String(Date.now())); $('#instBar').hidden=true; });
+refreshInstall();
+var INSTARMED=false;
+function armInstallBar(){ if(INSTARMED) return; INSTARMED=true; setTimeout(maybeShowInstallBar,4000); }
+/* ---------- Store skærme: ▶ i topbjælken og ét høfligt tip om pauseskærmen ---------- */
+var BIGQ=matchMedia('(min-width: 700px) and (min-height: 560px)');
+var APPLETAB=/ipad/i.test(UA)||(/macintosh/i.test(UA)&&navigator.maxTouchPoints>1);
+function isBig(){ return BIGQ.matches; }
+function updatePlay(){ $('#playBtn').hidden=!(isBig()&&VER&&!$('#focus').hidden); }
+try{ BIGQ.addEventListener('change',updatePlay); }catch(e){}
+$('#playBtn').addEventListener('click',function(){ startPause(); });
+var PHARMED=false;
+function armPauseHint(){
+  updatePlay();
+  if(PHARMED||!isBig()||store('slaegt.pausehint')) return; PHARMED=true;
+  var tries=0;
+  (function wait(){
+    if(!$('#instBar').hidden||PAUSE||!$('#settings').hidden){ if(++tries<30) setTimeout(wait,5000); return; }
+    if(APPLETAB) $('#pauseWink').textContent=' Ja, også på en med et lille æble bagpå. Vi dømmer ingen. Næsten.';
+    $('#pauseBar').hidden=false;
+  })();
+}
+function closePauseHint(){ store('slaegt.pausehint','1'); $('#pauseBar').hidden=true; }
+$('#pauseGo').addEventListener('click',function(){ closePauseHint(); setTimeout(startPause,60); });
+$('#pauseNo').addEventListener('click',closePauseHint);
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+</script>
+</body>
+</html>
