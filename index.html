@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9NJUMYx3iCgAtJWonEt0Q4eauNIySMIBnlXEi9GoLHU=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-uE8tV9SRm5rjYCY6GVFfRDpSw9ZlWLilYWWBB1hrkXg=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -655,8 +655,6 @@ function cat(id){
   if(n===1&&n<st.length) return 'own';
   return F(st[0].to)?'mor':'far';
 }
-/* Ingen børn: kendt barnløs (p.ingenBoern) eller død som barn giver "Ingen børn."; ellers neutralt "Ingen børn i træet." uden "endnu" */
-function noKidsText(p){ var a=yr(p.b), c=yr(p.d); if(p.ingenBoern||(a&&c&&(+c - +a)<15)) return 'Ingen børn.'; return 'Ingen børn i træet.'; }
 function shortKin(id){ if(id===POV) return 'set fra'; var t=term(steps(id)); return t==null? 'ingen forbindelse i træet endnu' : t; }
 function longKin(id){ if(id===POV) return 'set fra'; var t=term(steps(id)); if(t==null) return 'ingen forbindelse i træet endnu til '+first(P[POV]); var tail=(LASTGC&&/barnebarn$/.test(t))? ' ('+LASTGC+')' : ''; return gen(first(P[POV]))+' '+t+tail; }
 function genName(g){
@@ -756,7 +754,7 @@ function pane(p){
     var par=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
     var html=group('forældre',par);
     if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(s.txt&&s.txt.trim().toLowerCase()!=='gift'?'<span class="cap2">'+mark(s.txt)+'</span>':'')+'</div>'; }).join('')+'</div></div>';
-    html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join('')) : '<div class="grp"><h2>børn</h2><p class="empty">'+noKidsText(p)+'</p></div>';
+    html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join(''))  : ''; // ingen børn i træet: ingen overskrift
     return html;
   }
   if(PIVOT==='søskende'){
