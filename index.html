@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eg3opjXhJgb0FTG2FLREp0sekk1u2ZgQfq38IRQMhCM=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jtI4eXBi6XmrymZ0O188b5KYFEF3uznYMcl29EUF2B8=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -497,6 +497,11 @@ function ingest(j){
   Object.keys(P).forEach(function(id){ P[id].kids.sort(function(a,b){ return (yr(P[a].b)||'9999').localeCompare(yr(P[b].b)||'9999'); }); });
 }
 var PHOTOS={}, PHVER=null, TRIES=0, KEY=null, KEYSALT=null, PENDING=null;
+/* Tegnede stand-ins til personer uden eget billede. Hvem der får hvilken, står i træets data (p.av). Rigtige billeder går altid forrest. */
+var AVATARS={};
+function pic(p){ return p.photo||(p.av&&AVATARS[p.av])||null; }
+function loadAvatars(){ fetch('avatars.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ AVATARS=(j&&j.avatars)||{}; if(VER) render(); }).catch(function(){}); }
+loadAvatars();
 /* ---------- Kryptering: data er låst med familiens adgangskode (AES-GCM, nøgle via PBKDF2) ---------- */
 function ub64(t){ var b=atob(t), u=new Uint8Array(b.length); for(var i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; }
 function b64(buf){ var u=new Uint8Array(buf), s=''; for(var i=0;i<u.length;i++) s+=String.fromCharCode(u[i]); return btoa(s); }
@@ -657,12 +662,14 @@ function genName(g){
 /* ---------- Visning ---------- */
 function photoBox(p,cls){
   var c=cat(p.id);
-  return '<div class="'+cls+' c-'+c+'">'+(p.photo?'<img alt="" src="'+p.photo+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+'</div>';
+  var src=pic(p);
+  return '<div class="'+cls+' c-'+c+'">'+(src?'<img alt="" src="'+src+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+'</div>';
 }
 function tile(id,opts){
   opts=opts||{}; var p=P[id], c=cat(id);
-  return '<button type="button" class="tile c-'+c+(p.photo?' has-photo':'')+(opts.self?' self':'')+'" data-id="'+id+'">'+
-    (p.photo?'<img alt="" loading="lazy" src="'+p.photo+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+
+  var src=pic(p);
+  return '<button type="button" class="tile c-'+c+(src?' has-photo':'')+(opts.self?' self':'')+'" data-id="'+id+'">'+
+    (src?'<img alt="" loading="lazy" src="'+src+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+
     '<span class="lab">'+(opts.lt===''?'':'<span class="lt">'+esc(opts.lt||shortKin(id))+'</span>')+'<span class="ln">'+esc(p.n)+'</span>'+(years(p)?'<span class="ly">'+years(p)+'</span>':'')+'</span></button>';
 }
 function unknown(txt){ return '<div class="tile unk"><span class="lab"><span class="lt">ukendt</span><span class="ln">'+esc(txt)+'</span><span class="ly">ikke fundet endnu</span></span></div>'; }
@@ -783,9 +790,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.6';
+var APP_VERSION='2.7';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.7',d:'2026-10-25',t:'2026-10-25T04:45:00Z',test:true,items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg har sørget for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
   {v:'2.4.3',d:'2026-10-24',t:'2026-10-24T05:24:13Z',items:['På computeren åbnede plakaten en delemenu, som om du ville maile 2,77 meter familie til nogen. Jeg tog fejl. Nu bliver den bare hentet ned i overførsler','På telefonen kommer delemenuen stadig, for det er den vej, filer kommer hjem der']},
