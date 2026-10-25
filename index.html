@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-uE8tV9SRm5rjYCY6GVFfRDpSw9ZlWLilYWWBB1hrkXg=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SRVlrz3gRTEDAV3M8FeF9f85BCnD1qQpWdscKOrIN88=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -799,6 +799,7 @@ function renderRail(g){
 var APP_VERSION='2.7';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
@@ -928,7 +929,7 @@ function openSettings(){
   var fr=$('#sgFrom'), keep=fr.value||(P[store('slaegt.from')]?store('slaegt.from'):POV);
   fr.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===keep?' selected':'')+'>'+esc(P[id].n)+'</option>'; }).join('');
   sel.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===CUR?' selected':'')+'>'+esc(P[id].n)+(years(P[id])?' ('+years(P[id])+')':'')+'</option>'; }).join('');
-  sgType(); renderChangelog(); refreshInstall(); $('#settings').hidden=false; setSPane(SPANE,'none'); replay($('#settings').querySelector('.wrap'),'m-fwd'); $('#settings').scrollTop=0;
+  sgType(); renderChangelog(); refreshInstall(); $('#settings').hidden=false; setSPane(SPANE,'none'); replay($('#settings').querySelector('.wrap'),'m-fwd'); $('#settings').scrollTop=0; swipeHint();
 }
 function closeSettings(){ $('#settings').hidden=true; }
 var SPORDER=['om','pauseskærm','plakat','forslag','udseende','notifikationer','versioner'], SPANE=store('slaegt.spane')||'om';
@@ -968,12 +969,47 @@ $('#pdfGet').addEventListener('click',function(){
   else pdfDownload();
 });
 document.querySelectorAll('#spivots button').forEach(function(b){ b.addEventListener('click',function(){ setSPane(b.dataset.sp); }); });
-(function(){ var x=null,y=null;
+/* Stryg mellem indstillingernes faner. Siden følger fingeren, næste overskrift lyser op, når et slip vil skifte fane.
+   Berøringer i de yderste 20 px ignoreres, så telefonens egen tilbage-bevægelse får lov at være i fred. */
+function spBtn(i){ return document.querySelectorAll('#spivots button')[i]; }
+function swipeLearned(){ store('slaegt.swipehint','9'); }
+(function(){ var x=null,y=null,lock=null,t0=0,lit=null;
+  function light(b){ if(lit&&lit!==b) lit.style.color=''; lit=b; if(b) b.style.color='var(--fg)'; }
+  function back(p){ p.style.transition='transform .28s var(--ease),opacity .28s'; p.style.transform=''; p.style.opacity=''; setTimeout(function(){ p.style.transition=''; },300); light(null); }
   document.querySelectorAll('.spane').forEach(function(p){
-    p.addEventListener('touchstart',function(e){ if(e.target.closest('input,textarea,select,.switch')) return; x=e.touches[0].clientX; y=e.touches[0].clientY; },{passive:true});
-    p.addEventListener('touchend',function(e){ if(x==null) return; var dx=e.changedTouches[0].clientX-x, dy=e.changedTouches[0].clientY-y; x=null;
-      if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return; var i=SPORDER.indexOf(SPANE)+(dx<0?1:-1); if(i>=0&&i<SPORDER.length) setSPane(SPORDER[i]); },{passive:true});
+    p.addEventListener('touchstart',function(e){ var tx=e.touches[0].clientX; x=null;
+      if(e.touches.length>1||e.target.closest('input,textarea,select,.switch')||tx<20||tx>innerWidth-20) return;
+      x=tx; y=e.touches[0].clientY; lock=null; t0=Date.now(); p.classList.remove('m-fwd','m-back'); p.style.transition=''; },{passive:true});
+    p.addEventListener('touchmove',function(e){ if(x==null) return;
+      var mx=e.touches[0].clientX-x, my=e.touches[0].clientY-y;
+      if(lock===null){ if(Math.abs(mx)<10&&Math.abs(my)<10) return; lock=Math.abs(mx)>Math.abs(my)*1.2?'h':'v'; }
+      if(lock!=='h'||REDUCED.matches) return;
+      var i=SPORDER.indexOf(SPANE), j=i+(mx<0?1:-1), edge=j<0||j>=SPORDER.length, dx=edge?mx/3:mx;
+      p.style.transform='translateX('+dx+'px)'; p.style.opacity=String(1-Math.min(Math.abs(dx)/p.offsetWidth,1)*.5);
+      light(!edge&&Math.abs(mx)>Math.min(90,p.offsetWidth*.25)?spBtn(j):null); },{passive:true});
+    p.addEventListener('touchend',function(e){ if(x==null) return;
+      var ex=e.changedTouches[0].clientX-x, ey=e.changedTouches[0].clientY-y, dt=Date.now()-t0; x=null;
+      var go=lock==='h'&&Math.abs(ex)>Math.abs(ey)&&(Math.abs(ex)>Math.min(90,p.offsetWidth*.25)||(Math.abs(ex)>30&&dt<250)), j=SPORDER.indexOf(SPANE)+(ex<0?1:-1);
+      if(go&&j>=0&&j<SPORDER.length){ p.style.transform=''; p.style.opacity=''; light(null); swipeLearned(); setSPane(SPORDER[j]); return; }
+      back(p); },{passive:true});
+    p.addEventListener('touchcancel',function(){ if(x==null) return; x=null; back(p); },{passive:true});
   }); })();
+/* Et lille puf de første to gange, indstillingerne åbnes på en touchskærm: siden glider en anelse til side, og næste overskrift lyser op.
+   Har man først strøget selv, puffer jeg aldrig igen. Med "reducér bevægelse" puffer jeg slet ikke. */
+function swipeHint(){
+  var n=+(store('slaegt.swipehint')||0);
+  if(n>=2||REDUCED.matches||!matchMedia('(pointer:coarse)').matches) return;
+  store('slaegt.swipehint',String(n+1));
+  setTimeout(function(){
+    if($('#settings').hidden) return;
+    var p=document.querySelector('.spane[data-pane="'+SPANE+'"]'), i=SPORDER.indexOf(SPANE), dir=i<SPORDER.length-1?-1:1, nb=spBtn(i-dir);
+    if(!p||!p.animate) return; p.classList.remove('m-fwd','m-back');
+    var d=dir*44+'px', o={duration:1100,easing:'cubic-bezier(.4,0,.2,1)'};
+    p.animate([{transform:'none'},{transform:'translateX('+d+')',offset:.4},{transform:'translateX('+d+')',offset:.55},{transform:'none'}],o);
+    if(nb){ var off=getComputedStyle(nb).color, on=getComputedStyle(document.body).color;
+      nb.animate([{color:off},{color:on,offset:.4},{color:on,offset:.55},{color:off}],o); }
+  },900);
+}
 $('#settingsBtn').addEventListener('click',openSettings);
 $('#closeSettings').addEventListener('click',closeSettings);
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
