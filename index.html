@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jtI4eXBi6XmrymZ0O188b5KYFEF3uznYMcl29EUF2B8=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-wRa8OAhw8YrusqHo0cbV5U9uNUFeCNWVPOJ4qN07808=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -193,6 +193,10 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .row .ry{font-size:0.8125rem;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
 .row:active{background:var(--raise)}
 .status{font-size:0.75rem;color:var(--sub);margin:0}
+/* "Indsend billede": hele linjen er knappen, uden knapudseende; pilen er den samme terrakotta som på adgangskodesiden */
+.sendpic{align-self:flex-start;min-height:44px;padding:0;margin:-6px 0;font-size:0.9375rem;color:var(--fg)}
+.sendpic span{color:var(--t-far);font-size:1.15em;margin-left:2px}
+.sendpic:active{opacity:.6}
 
 /* Generationslineal */
 .rail{position:fixed;right:env(safe-area-inset-right,0px);top:calc(env(safe-area-inset-top,0px) + 56px);bottom:calc(env(safe-area-inset-bottom,0px) + 24px);
@@ -329,6 +333,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="pano" aria-hidden="true"><span class="cap" id="families">familien</span><span class="nm">hvem er du?</span></div>
       <p class="intro">Vil du gennemse slægten som dig selv eller en anden person? Vælg personen herunder. Alle slægtskaber, farver og generationer regnes ud fra den, du vælger.</p>
+      <button type="button" class="sendpic" id="sendPic">Indsend billede <span aria-hidden="true">→</span></button>
       <p class="status" id="pickNow" hidden></p>
       <input id="q" class="search" type="search" placeholder="Søg efter navn" autocomplete="off" aria-label="Søg efter navn">
       <div class="grp" id="pickPhotos"><h2>med billede</h2><div class="tiles" id="photoTiles"></div></div>
@@ -793,7 +798,7 @@ function renderRail(g){
 var APP_VERSION='2.7';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
-  {v:'2.7',d:'2026-10-25',t:'2026-10-25T04:45:00Z',test:true,items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg har sørget for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man selv']},
+  {v:'2.7',d:'2026-10-25',t:'2026-10-25T04:45:00Z',test:true,items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg har sørget for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man selv','Vil du skifte din tegning ud med dig selv, så tryk på “Indsend billede” under “hvem er du?”. Jeg lover ikke, at du bliver pænere. Kun mere dig']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
   {v:'2.4.3',d:'2026-10-24',t:'2026-10-24T05:24:13Z',items:['På computeren åbnede plakaten en delemenu, som om du ville maile 2,77 meter familie til nogen. Jeg tog fejl. Nu bliver den bare hentet ned i overførsler','På telefonen kommer delemenuen stadig, for det er den vej, filer kommer hjem der']},
@@ -1034,6 +1039,12 @@ $('#hero').addEventListener('click',function(e){
   else if(e.target.closest('#rebaseBtn')){ e.stopPropagation(); DIR='fwd'; choosePov(CUR); toast('Træet ses nu fra '+P[POV].n); }
 });
 $('#q').addEventListener('input',renderPick);
+/* Indsend billede: åbner forslag med "Billede af en person" valgt, og den, man ser træet fra, som afsender og person */
+$('#sendPic').addEventListener('click',function(){
+  openSettings(); setSPane('forslag');
+  $('#sgType').value='foto'; sgType();
+  var me=(POV&&P[POV])?POV:null; if(me){ $('#sgFrom').value=me; $('#sgPerson').value=me; }
+});
 
 // Stryg mellem faner
 var sx=null, sy=null, ORDER=['familie','søskende','detaljer','farver'];
