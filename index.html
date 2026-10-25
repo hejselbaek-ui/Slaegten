@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Mv+R1QM7wkjuDp96ptmA3pS+8rXHHyib9Gzl8uT/Dvg=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-J6rpfAM2fZXlCjI0qsUdm0g2OCT9jDiN0FpUuYF6vDg=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -747,19 +747,19 @@ function renderFocus(){
 function pane(p){
   if(PFOCUS){
     var tl=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
-    var end=!p.f&&!p.m? '<p class="pfnote">Sporet slutter her. Ingen kendte forældre endnu.</p>' : '<p class="pfnote">Tryk på en forælder for at gå en generation op. Tryk på ‹ og navnet øverst for at gå ned igen. Vælg “alle” eller stryg til højre for at se hele familien.</p>';
+    var end=!p.f&&!p.m? '<p class="pfnote">Sporet slutter her. Forældrene er ikke i træet endnu.</p>' : '<p class="pfnote">Tryk på en forælder for at gå en generation op. Tryk på ‹ og navnet øverst for at gå ned igen. Vælg “alle” eller stryg til højre for at se hele familien.</p>';
     return '<div class="grp"><h2>forældre</h2><div class="tiles big">'+tl+'</div>'+end+'</div>';
   }
   if(PIVOT==='familie'){
     var par=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
     var html=group('forældre',par);
     if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(s.txt&&s.txt.trim().toLowerCase()!=='gift'?'<span class="cap2">'+mark(s.txt)+'</span>':'')+'</div>'; }).join('')+'</div></div>';
-    html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join('')) : '<div class="grp"><h2>børn</h2><p class="empty">Ingen kendte børn.</p></div>';
+    html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join('')) : '<div class="grp"><h2>børn</h2><p class="empty">Ikke i træet endnu.</p></div>';
     return html;
   }
   if(PIVOT==='søskende'){
     var sib=Object.keys(P).filter(function(id){ var q=P[id]; return (p.f&&q.f===p.f)||(p.m&&q.m===p.m); });
-    if(sib.length<=1) return '<div class="grp"><h2>søskende</h2><p class="empty">Ingen kendte søskende.</p></div>';
+    if(sib.length<=1) return '<div class="grp"><h2>søskende</h2><p class="empty">Ikke i træet endnu.</p></div>';
     sib.sort(function(a,b){ return (yr(P[a].b)||'9999').localeCompare(yr(P[b].b)||'9999'); });
     return group('søskendeflokken, ældst først',sib.map(function(id){ return tile(id,{self:id===p.id}); }).join(''),'<p class="empty" style="font-size:13px">'+(sib.length-1)+' søskende. Rammen viser '+esc(first(p))+'.</p>');
   }
