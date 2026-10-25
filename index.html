@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lacHw9LV0v2EPRsURl9wm6VpD00582HIlDr428pA664=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-owVhn+gwEIGY5gpghOHfsqXT8+SHOQSIr5IVqzn/Lh4=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -933,13 +933,13 @@ function openSettings(){
   var fr=$('#sgFrom'), keep=fr.value||(P[store('slaegt.from')]?store('slaegt.from'):POV);
   fr.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===keep?' selected':'')+'>'+esc(P[id].n)+'</option>'; }).join('');
   sel.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===CUR?' selected':'')+'>'+esc(P[id].n)+(years(P[id])?' ('+years(P[id])+')':'')+'</option>'; }).join('');
-  sgType(); renderChangelog(); refreshInstall(); $('#settings').hidden=false; setSPane(SPANE,'none'); replay($('#settings').querySelector('.wrap'),'m-fwd'); $('#settings').scrollTop=0; swipeHint();
+  sgType(); renderChangelog(); refreshInstall(); $('#settings').hidden=false; setSPane('om','none'); replay($('#settings').querySelector('.wrap'),'m-fwd'); $('#settings').scrollTop=0; swipeHint();
 }
 function closeSettings(){ $('#settings').hidden=true; }
-var SPORDER=['om','pauseskærm','plakat','forslag','udseende','notifikationer','versioner'], SPANE=store('slaegt.spane')||'om';
+var SPORDER=['om','pauseskærm','plakat','forslag','udseende','notifikationer','versioner'], SPANE='om'; /* Indstillinger åbner altid på "om". Genveje (forslag, versioner) vælger selv deres fane bagefter */
 function setSPane(k,dir){
   if(SPORDER.indexOf(k)<0) k='om';
-  var prev=SPANE; SPANE=k; store('slaegt.spane',k);
+  var prev=SPANE; SPANE=k;
   document.querySelectorAll('#spivots button').forEach(function(b){ b.setAttribute('aria-selected',b.dataset.sp===k?'true':'false'); });
   document.querySelectorAll('.spane').forEach(function(p){ p.hidden=p.dataset.pane!==k; });
   var cur=document.querySelector('.spane[data-pane="'+k+'"]');
