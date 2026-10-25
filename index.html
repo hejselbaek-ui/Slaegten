@@ -67,7 +67,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--fg);outline-off
 .homechip{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:0;padding:0 14px 0 10px;border:1px solid var(--dim);color:var(--fg);font-size:0.9375rem}
 .homechip svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .homechip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.homechip[aria-current="page"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+/* Hjemme: knappen træder tilbage, for et tryk gør ingenting. Ude: fuld farve, så vejen hjem er tydelig */
+.homechip[aria-current="page"]{color:var(--sub);border-color:var(--line)}
+.homechip{transition:color .25s,border-color .25s}
+.homechip:active{background:var(--fg);color:var(--bg)}
 .backchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:0;max-width:42vw;padding:0 14px 0 10px;border:1px solid var(--dim);color:var(--fg);font-size:0.9375rem;margin-right:auto}
 .backchip span{font-size:1.4rem;line-height:1;margin-top:-2px;flex:none}
 .backchip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
