@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-t3HOCdaB8AqD/92nLLXqgOpge3gXd17fVkRANy84xf0=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Lyqj3p9Mqn+sv14CZxwoHX6z/GilB8xiiPc3D6V3H1k=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -744,6 +744,7 @@ function renderFocus(){
   $('#view-all').setAttribute('aria-pressed',PFOCUS?'false':'true'); $('#view-par').setAttribute('aria-pressed',PFOCUS?'true':'false');
   $('#pane').innerHTML=pane(p); $('#pane').classList.toggle('still',DIR==='none'); stagger(); if(DIR!=='none') replay($('#pane'), DIR==='back'||DIR==='right'?'m-back':'m-fwd');
   renderRail(g);
+  if(!PFOCUS) personHint();
   if(FLY&&!REDUCED.matches) requestAnimationFrame(flyName); else FLY=null;
   DIR='fwd';
 }
@@ -802,7 +803,7 @@ function renderRail(g){
 var APP_VERSION='2.7';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
-  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet','Ved den sidste fane forsvandt venstre margen, og alt kravlede helt ud til kanten af skærmen. Jeg har bedt den blive, hvor den hører til. Det har den lovet. Det plejer de at love','Når appen åbnede, blinkede navn og billede, som om personen blev præsenteret to gange. Nu glider de ind én gang og bliver der. Ligesom svigerfamilien']},
+  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet','Ved den sidste fane forsvandt venstre margen, og alt kravlede helt ud til kanten af skærmen. Jeg har bedt den blive, hvor den hører til. Det har den lovet. Det plejer de at love','Når appen åbnede, blinkede navn og billede, som om personen blev præsenteret to gange. Nu glider de ind én gang og bliver der. Ligesom svigerfamilien','Det samme gælder nu under hver person. Stryg mellem familie, søskende, detaljer og farver, og siden følger med. Familien gør det sjældent']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
@@ -1093,13 +1094,48 @@ $('#sendPic').addEventListener('click',function(){
 // Stryg mellem faner
 var sx=null, sy=null, ORDER=['familie','søskende','detaljer','farver'];
 function setPivot(pv){ if(pv===PIVOT) return; DIR=ORDER.indexOf(pv)>ORDER.indexOf(PIVOT)?'left':'right'; PIVOT=pv; FLY=null; renderFocus(); }
-$('#pane').addEventListener('touchstart',function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
-$('#pane').addEventListener('touchend',function(e){
-  if(sx==null) return; var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy; sx=null;
-  if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return;
-  if(PFOCUS){ if(dx>0) setPF(false); return; }
-  var i=ORDER.indexOf(PIVOT)+(dx<0?1:-1); if(i<0||i>=ORDER.length) return; setPivot(ORDER[i]);
-},{passive:true});
+/* Som i indstillingerne: siden følger fingeren, næste overskrift lyser op, når et slip vil skifte fane, enderne giver lidt efter.
+   I forældrefokus er der kun én vej, nemlig til højre tilbage til hele familien. Yderste 20 px tilhører telefonens tilbage-bevægelse. */
+(function(){ var pn=$('#pane'), lock=null, t0=0, lit=null;
+  function btn(i){ return document.querySelectorAll('#pivots button')[i]; }
+  function light(b){ if(lit&&lit!==b) lit.style.color=''; lit=b; if(b) b.style.color='var(--fg)'; }
+  function target(mx){ if(PFOCUS) return mx>0? 'pf' : null; var j=ORDER.indexOf(PIVOT)+(mx<0?1:-1); return j>=0&&j<ORDER.length? j : null; }
+  function back(){ pn.style.transition='transform .28s var(--ease),opacity .28s'; pn.style.transform=''; pn.style.opacity=''; setTimeout(function(){ pn.style.transition=''; },300); light(null); }
+  pn.addEventListener('touchstart',function(e){ var tx=e.touches[0].clientX; sx=null;
+    if(e.touches.length>1||tx<20||tx>innerWidth-20) return;
+    sx=tx; sy=e.touches[0].clientY; lock=null; t0=Date.now(); pn.classList.remove('anim','m-fwd','m-back'); pn.style.transition=''; },{passive:true});
+  pn.addEventListener('touchmove',function(e){ if(sx==null) return;
+    var mx=e.touches[0].clientX-sx, my=e.touches[0].clientY-sy;
+    if(lock===null){ if(Math.abs(mx)<10&&Math.abs(my)<10) return; lock=Math.abs(mx)>Math.abs(my)*1.2?'h':'v'; }
+    if(lock!=='h'||REDUCED.matches) return;
+    var j=target(mx), dx=j===null?mx/3:mx;
+    pn.style.transform='translateX('+dx+'px)'; pn.style.opacity=String(1-Math.min(Math.abs(dx)/pn.offsetWidth,1)*.5);
+    light(typeof j==='number'&&Math.abs(mx)>Math.min(90,pn.offsetWidth*.25)?btn(j):null); },{passive:true});
+  pn.addEventListener('touchend',function(e){ if(sx==null) return;
+    var ex=e.changedTouches[0].clientX-sx, ey=e.changedTouches[0].clientY-sy, dt=Date.now()-t0; sx=null;
+    var go=lock==='h'&&Math.abs(ex)>Math.abs(ey)&&(Math.abs(ex)>Math.min(90,pn.offsetWidth*.25)||(Math.abs(ex)>30&&dt<250)), j=target(ex);
+    if(go&&j!==null){ pn.style.transform=''; pn.style.opacity=''; light(null); store('slaegt.swipehint.p','9');
+      if(j==='pf') setPF(false); else setPivot(ORDER[j]); return; }
+    back(); },{passive:true});
+  pn.addEventListener('touchcancel',function(){ if(sx==null) return; sx=null; back(); },{passive:true});
+})();
+/* Et lille puf de første to gange, en person vises på en touchskærm. Har man strøget selv, er det slut. Ingen puf med "reducér bevægelse" */
+var PHINT=false;
+function personHint(){
+  if(PHINT) return; PHINT=true;
+  var n=+(store('slaegt.swipehint.p')||0);
+  if(n>=2||REDUCED.matches||!matchMedia('(pointer:coarse)').matches) return;
+  store('slaegt.swipehint.p',String(n+1));
+  setTimeout(function(){
+    var pn=$('#pane'); if($('#focus').hidden||PFOCUS||!pn.animate||!$('#settings').hidden) return;
+    var i=ORDER.indexOf(PIVOT), dir=i<ORDER.length-1?-1:1, nb=document.querySelectorAll('#pivots button')[i-dir];
+    pn.classList.remove('anim','m-fwd','m-back');
+    var d=dir*44+'px', o={duration:1100,easing:'cubic-bezier(.4,0,.2,1)'};
+    pn.animate([{transform:'none'},{transform:'translateX('+d+')',offset:.4},{transform:'translateX('+d+')',offset:.55},{transform:'none'}],o);
+    if(nb){ var off=getComputedStyle(nb).color, on=getComputedStyle(document.body).color;
+      nb.animate([{color:off},{color:on,offset:.4},{color:on,offset:.55},{color:off}],o); }
+  },1400);
+}
 
 // Mørkekammer: tænd kun hover-effekten, når en rigtig mus faktisk bevæger sig
 (function(){ var r=document.documentElement; function f(e){ if(e.pointerType==='mouse') r.classList.add('mouse'); else if(e.pointerType==='touch'||e.pointerType==='pen') r.classList.remove('mouse'); }
