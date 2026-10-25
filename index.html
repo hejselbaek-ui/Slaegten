@@ -268,6 +268,14 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .ishare{width:1.15em;height:1.15em;vertical-align:-0.2em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--fg)}
 @media (prefers-reduced-motion: reduce){.instbar{animation:none}}
 .pfnote{font-size:0.8125rem;color:var(--sub);margin:0}
+.priv .pfnote+.pfnote{margin-top:8px}
+.priv details{margin-top:4px}
+.priv summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;font-size:0.8125rem;font-weight:600;color:var(--fg)}
+.priv summary::-webkit-details-marker{display:none}
+.priv summary::before{content:"›";font-size:1.2em;line-height:1;transition:transform .2s;color:var(--t-far)}
+.priv details[open] summary::before{transform:rotate(90deg)}
+.priv ul{margin:0 0 4px;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:0.8125rem;color:var(--sub)}
+@media (prefers-reduced-motion: reduce){.priv summary::before{transition:none}}
 .tiles.big{grid-template-columns:repeat(2,minmax(0,1fr))}
 /* Indstillinger */
 .sheet{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
@@ -391,10 +399,22 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <div class="spane" data-pane="om" role="tabpanel" hidden>
       <p class="pfnote keeper" id="setAdmin" style="color:var(--fg)"></p>
       <p class="pfnote" id="setVer"></p>
+      <div class="grp priv" id="privSect"><h2>dine data</h2>
+        <p class="pfnote">Alt i træet er låst med familiens adgangskode. Navne, datoer og billeder ligger krypteret, også der, hvor appen bor på nettet, så ingen udenforstående kan læse dem. Adgangskoden bliver på din telefon og sendes ingen steder hen. Appen bruger ingen cookies, ingen statistik og ingen reklamer. Børn vises kun som tegning, og om dit eget billede skal med, bestemmer du selv.</p>
+        <p class="pfnote">Telefonen husker nøglen, så træet er aldrig mere låst end selve telefonen. Har du ladet telefonen gemme adgangskoden, udfylder den den også selv igen efter log ud. Det er telefonens skærmlås, der passer på træet.</p>
+        <details><summary>for de nysgerrige</summary>
+          <ul>
+            <li>AES-256-GCM-kryptering. Nøglen regnes ud på telefonen med PBKDF2-SHA256, 250.000 runder.</li>
+            <li>En Content Security Policy sørger for, at kun appens egen kode kører, og at appen kun må tale med sig selv.</li>
+            <li>Skrifttyperne ligger i appen, ikke hos f.eks. Google.</li>
+            <li>En låst kopi af træet gemmes på telefonen, så appen også virker uden net.</li>
+          </ul>
+        </details>
+      </div>
       <div class="grp" id="instSect"><h2>installér appen</h2><p class="pfnote" id="instText"></p><button class="primarybtn" type="button" id="instBtn2" hidden>installér appen</button></div>
     
 
-      <p class="pfnote">Glemmer adgangskoden på denne telefon. Næste gang appen åbnes, skal adgangskoden skrives igen. Dit valg af person og udseende bliver husket.</p>
+      <p class="pfnote">Glemmer appens nøgle på denne telefon. Har telefonen selv gemt adgangskoden, udfylder den den igen. Dit valg af person og udseende bliver husket.</p>
       <button class="chipbtn" type="button" id="logoutBtn" style="align-self:flex-start;font-size:15px;padding:8px 18px">log ud</button>
     
     </div>
