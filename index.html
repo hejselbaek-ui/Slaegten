@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SRVlrz3gRTEDAV3M8FeF9f85BCnD1qQpWdscKOrIN88=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lacHw9LV0v2EPRsURl9wm6VpD00582HIlDr428pA664=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -269,7 +269,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .pfnote{font-size:0.8125rem;color:var(--sub);margin:0}
 .tiles.big{grid-template-columns:repeat(2,minmax(0,1fr))}
 /* Indstillinger */
-.sheet{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overscroll-behavior:contain}
+.sheet{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
 .sheet .wrap{padding-right:max(16px, env(safe-area-inset-right,0px))}
 .seg{display:flex;border:1px solid var(--dim);max-width:100%}
 .seg button{flex:1;padding:10px 8px;min-height:44px;font-size:0.875rem;text-align:center;color:var(--sub);text-transform:lowercase}
@@ -736,7 +736,7 @@ function renderFocus(){
   if(DIR==='fwd'){ var hb=pe.querySelector('button.here'); if(hb) hb.classList.add('new'); }
   // pivots
   Array.prototype.forEach.call(document.querySelectorAll('#pivots button'),function(b){ b.setAttribute('aria-selected',b.dataset.p===PIVOT?'true':'false'); });
-  var sel=document.querySelector('#pivots [aria-selected="true"]'); if(sel) sel.scrollIntoView({block:'nearest',inline:'nearest'});
+  stripTo($('#pivots'),document.querySelector('#pivots [aria-selected="true"]'),false);
   $('#pivots').hidden=PFOCUS;
   $('#view-all').setAttribute('aria-pressed',PFOCUS?'false':'true'); $('#view-par').setAttribute('aria-pressed',PFOCUS?'true':'false');
   $('#pane').innerHTML=pane(p); stagger(); replay($('#pane'), DIR==='back'||DIR==='right'?'m-back':'m-fwd');
@@ -799,7 +799,7 @@ function renderRail(g){
 var APP_VERSION='2.7';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
-  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet']},
+  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet','Ved den sidste fane forsvandt venstre margen, og alt kravlede helt ud til kanten af skærmen. Jeg har bedt den blive, hvor den hører til. Det har den lovet. Det plejer de at love']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
@@ -828,6 +828,10 @@ var CHANGELOG=[
 var NOTIFY=store('slaegt.notify')!=='0', CHANGES=[];
 var DIR='fwd', FLY=null, RAILKEY=null, PFOCUS=store('slaegt.pfocus')==='1';
 var REDUCED=matchMedia('(prefers-reduced-motion: reduce)');
+/* Ruller kun fanebåndet selv. scrollIntoView flyttede også hele siden sidelæns, så venstre margen forsvandt ved sidste fane */
+function stripTo(strip,b,center){ if(!strip||!b) return; var l=b.offsetLeft-strip.offsetLeft, max=strip.scrollWidth-strip.clientWidth;
+  var x=center? l-(strip.clientWidth-b.offsetWidth)/2 : (l<strip.scrollLeft? l : (l+b.offsetWidth>strip.scrollLeft+strip.clientWidth? l+b.offsetWidth-strip.clientWidth : strip.scrollLeft));
+  x=Math.max(0,Math.min(max,x)); try{ strip.scrollTo({left:x,behavior:REDUCED.matches?'auto':'smooth'}); }catch(e){ strip.scrollLeft=x; } }
 function replay(el,cls){ ['anim','m-fwd','m-back','m-fly'].forEach(function(c){ el.classList.remove(c); }); void el.offsetWidth; el.classList.add(cls||'m-fwd'); }
 function stagger(){ Array.prototype.forEach.call(document.querySelectorAll('#pane .tile'),function(t,i){ t.style.setProperty('--i',Math.min(i,10)); }); }
 // Navnet "flyver" fra kortet, man trykkede på, op til overskriften (Metro-continuum)
@@ -940,7 +944,7 @@ function setSPane(k,dir){
   document.querySelectorAll('.spane').forEach(function(p){ p.hidden=p.dataset.pane!==k; });
   var cur=document.querySelector('.spane[data-pane="'+k+'"]');
   if(dir!=='none') replay(cur, SPORDER.indexOf(k)>=SPORDER.indexOf(prev)?'m-fwd':'m-back');
-  var sel=document.querySelector('#spivots [aria-selected="true"]'); if(sel) sel.scrollIntoView({block:'nearest',inline:'center'});
+  stripTo($('#spivots'),document.querySelector('#spivots [aria-selected="true"]'),true);
   $('#settings').scrollTop=0;
   if(k==='plakat') preparePdf();
 }
