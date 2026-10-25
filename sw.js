@@ -1,6 +1,6 @@
 // Gemmer appen og de låste data på telefonen, så den virker offline.
 // Data hentes altid fra nettet først; den gemte kopi bruges kun uden forbindelse.
-const CACHE='slaegten-v51';
+const CACHE='slaegten-v52';
 const SHELL=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','icon-180.png','fonts/open-sans-latin-300-normal.woff2','fonts/open-sans-latin-400-normal.woff2','fonts/open-sans-latin-600-normal.woff2'];
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())); });
 self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });
