@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Lyqj3p9Mqn+sv14CZxwoHX6z/GilB8xiiPc3D6V3H1k=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-WSKfD7zeUMDAFsv5E7oihZ2u85Q3V0q7BllvCBud4Qs=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -800,10 +800,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.7';
+var APP_VERSION='2.7.1';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
-  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet','Ved den sidste fane forsvandt venstre margen, og alt kravlede helt ud til kanten af skærmen. Jeg har bedt den blive, hvor den hører til. Det har den lovet. Det plejer de at love','Når appen åbnede, blinkede navn og billede, som om personen blev præsenteret to gange. Nu glider de ind én gang og bliver der. Ligesom svigerfamilien','Det samme gælder nu under hver person. Stryg mellem familie, søskende, detaljer og farver, og siden følger med. Familien gør det sjældent']},
+  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:30:00Z',items:['Du kan nu stryge mellem fanerne under hver person og i indstillingernes sektioner. Siden følger fingeren. Når du har strøget langt nok, lyser næste overskrift op. Slip, og så er du, hvor du skal være. Kirkebøgerne har aldrig været så samarbejdsvillige','De første par gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Oldefar fik også et puf engang. Han flyttede sig ikke']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
