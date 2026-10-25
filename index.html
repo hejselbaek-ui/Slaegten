@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-owVhn+gwEIGY5gpghOHfsqXT8+SHOQSIr5IVqzn/Lh4=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-t3HOCdaB8AqD/92nLLXqgOpge3gXd17fVkRANy84xf0=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -109,6 +109,7 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 .m-fly h1{opacity:0}
 .pane.m-fwd,.pane.m-back{animation-duration:.3s}
 .pane .tile,.pane .tile.unk{animation:rise .42s var(--ease) backwards;animation-delay:calc(var(--i,0) * 38ms)}
+.pane.still .tile,.pane.still .tile.unk{animation:none}
 .pano .nm.settle{animation:settle .55s var(--ease) both}
 .pano .nm.slideL{animation:inL .4s var(--ease) both}
 .path button.here.new{animation:rise .35s var(--ease) both;animation-delay:.12s}
@@ -505,7 +506,7 @@ var PHOTOS={}, PHVER=null, TRIES=0, KEY=null, KEYSALT=null, PENDING=null;
 /* Tegnede stand-ins til personer uden eget billede. Hvem der får hvilken, står i træets data (p.av). Rigtige billeder går altid forrest. */
 var AVATARS={};
 function pic(p){ return p.photo||(p.av&&AVATARS[p.av])||null; }
-function loadAvatars(){ fetch('avatars.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ AVATARS=(j&&j.avatars)||{}; if(VER) render(); }).catch(function(){}); }
+function loadAvatars(){ fetch('avatars.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ AVATARS=(j&&j.avatars)||{}; if(VER){ quiet(); render(); } }).catch(function(){}); }
 loadAvatars();
 /* ---------- Kryptering: data er låst med familiens adgangskode (AES-GCM, nøgle via PBKDF2) ---------- */
 function ub64(t){ var b=atob(t), u=new Uint8Array(b.length); for(var i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; }
@@ -556,10 +557,12 @@ function apply(j,quiet){
   if(POV&&!P[POV]) POV=null; if(CUR&&CUR!=='__pick'&&!P[CUR]) CUR=POV;
   STACK=STACK.filter(function(x){return P[x]});
   $('#loading').hidden=true; $('#lock').hidden=true;
-  stamp(); if(POV) solve(); render();
+  stamp(); if(POV) solve(); if(changed) quiet(); render();
   if(changed&&!quiet&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
 }
-function setPhotos(ph){ PHOTOS=ph.photos||{}; PHVER=VER; Object.keys(P).forEach(function(id){ P[id].photo=PHOTOS[id]||null; }); render(); }
+function setPhotos(ph){ PHOTOS=ph.photos||{}; PHVER=VER; Object.keys(P).forEach(function(id){ P[id].photo=PHOTOS[id]||null; }); quiet(); render(); }
+/* Opdateringer i baggrunden (billeder, tegninger, nyt træ) tegner siden om uden at spille animationen igen. Ellers blinkede navn og billede ved opstart */
+function quiet(){ if(!$('#focus').hidden) DIR='none'; }
 function loadPhotos(){
   if(PHVER===VER||!KEY) return;
   fetch('photos.enc.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(o){
@@ -739,7 +742,7 @@ function renderFocus(){
   stripTo($('#pivots'),document.querySelector('#pivots [aria-selected="true"]'),false);
   $('#pivots').hidden=PFOCUS;
   $('#view-all').setAttribute('aria-pressed',PFOCUS?'false':'true'); $('#view-par').setAttribute('aria-pressed',PFOCUS?'true':'false');
-  $('#pane').innerHTML=pane(p); stagger(); replay($('#pane'), DIR==='back'||DIR==='right'?'m-back':'m-fwd');
+  $('#pane').innerHTML=pane(p); $('#pane').classList.toggle('still',DIR==='none'); stagger(); if(DIR!=='none') replay($('#pane'), DIR==='back'||DIR==='right'?'m-back':'m-fwd');
   renderRail(g);
   if(FLY&&!REDUCED.matches) requestAnimationFrame(flyName); else FLY=null;
   DIR='fwd';
@@ -799,7 +802,7 @@ function renderRail(g){
 var APP_VERSION='2.7';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
-  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet','Ved den sidste fane forsvandt venstre margen, og alt kravlede helt ud til kanten af skærmen. Jeg har bedt den blive, hvor den hører til. Det har den lovet. Det plejer de at love']},
+  {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:10:00Z',test:true,items:['I indstillingerne følger siden nu fingeren, når du stryger, og næste overskrift lyser op, når du har strøget langt nok. Slip, og du er der','De første to gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Det er mere, end man kan sige om de fleste i træet','Ved den sidste fane forsvandt venstre margen, og alt kravlede helt ud til kanten af skærmen. Jeg har bedt den blive, hvor den hører til. Det har den lovet. Det plejer de at love','Når appen åbnede, blinkede navn og billede, som om personen blev præsenteret to gange. Nu glider de ind én gang og bliver der. Ligesom svigerfamilien']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
   {v:'2.5',d:'2026-10-24',t:'2026-10-24T07:37:00Z',items:['På computere afsløres nu mere af hvert foto, når du holder musen over et kort. Det er subtilt og henrivende, ligesom oldemor']},
