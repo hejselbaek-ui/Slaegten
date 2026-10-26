@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-uHM183t5tTucHY9WAswNRWWydk/JnvavmiEicsvXA0M=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-+mYzhvmXDffl0qZfHE5LhE2oz3/pvc2I0qtpNYU6co4=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -388,7 +388,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 </div>
 <section class="sheet" id="news" hidden aria-label="Nyt i træet">
   <div class="wrap">
-    <div class="bar"><span>nyheder</span><button class="chipbtn" id="closeNews" type="button">luk</button></div>
+    <div class="bar"><span></span><button class="chipbtn" id="closeNews" type="button">luk</button></div>
     <div class="pano" aria-hidden="true"><span class="cap">seneste nyt</span><span class="nm">nyheder</span></div>
     <ul class="queue newslist" id="newsList"></ul>
     <button class="chipbtn" type="button" id="newsToLog" style="align-self:flex-start;margin-top:6px">se alle appens versioner ›</button>
@@ -396,7 +396,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 </section>
 <section class="sheet" id="settings" hidden aria-label="Indstillinger">
   <div class="wrap">
-    <div class="bar"><span>indstillinger</span><button class="chipbtn" id="closeSettings" type="button">luk</button></div>
+    <div class="bar"><span></span><button class="chipbtn" id="closeSettings" type="button">luk</button></div>
     <div class="pano" aria-hidden="true"><span class="cap">appen</span><span class="nm">indstillinger</span></div>
         <div class="pivots" role="tablist" id="spivots"><button role="tab" type="button" data-sp="om" id="sp-om">om</button><button role="tab" type="button" data-sp="pauseskærm" id="sp-pauseskaerm">pauseskærm</button><button role="tab" type="button" data-sp="plakat" id="sp-plakat">plakat</button><button role="tab" type="button" data-sp="forslag" id="sp-forslag">forslag</button><button role="tab" type="button" data-sp="udseende" id="sp-udseende">udseende</button><button role="tab" type="button" data-sp="notifikationer" id="sp-notifikationer">notifikationer</button><button role="tab" type="button" data-sp="versioner" id="sp-versioner">versioner</button></div>
     <div class="spane" data-pane="om" role="tabpanel" hidden>
@@ -637,7 +637,7 @@ function solve(){
 }
 function steps(id){ var s=[], x=id; while(x!==POV&&PREV[x]){ s.unshift({k:PREV[x][1],to:x,from:PREV[x][0]}); x=PREV[x][0]; } return x===POV? s : null; }
 function genOf(id){ var s=steps(id); if(!s) return null; var g=0; s.forEach(function(x){ if(x.k==='U') g++; else if(x.k==='D') g--; }); return g; }
-function F(id){ return P[id].s==='F'; }
+function F(id){ return id==='__mor__'?true:id==='__far__'?false:P[id].s==='F'; }
 function upWords(arr){ var w=arr.map(function(s){ return F(s.to)?'mor':'far'; }), out=[]; for(var i=0;i<w.length;i+=2) out.push(w.slice(i,i+2).join('')); return out; }
 var LASTGC=null;
 function gcWord(arr){ return (F(arr[0].to)?'datter':'sønne')+(F(arr[1].to)?'datter':'søn'); }
@@ -709,7 +709,8 @@ function tile(id,opts){
     (src?'<img alt="" loading="lazy" src="'+src+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+
     '<span class="lab">'+(opts.lt===''?'':'<span class="lt">'+esc(opts.lt||shortKin(id))+'</span>')+'<span class="ln">'+esc(p.n)+'</span>'+(years(p)?'<span class="ly">'+years(p)+'</span>':'')+'</span></button>';
 }
-/* Tom forælder: relationen står som på alle andre kort; personen er bare ikke i træet endnu (den, der kigger, kender måske godt navnet) */
+/* Tom forælder: relationen regnes ud præcis som for et udfyldt kort — den tomme far/mor-plads får samme udgangspunkt-relative slægtsled som en udfyldt søskendeplads ville (fx "morfars farfars farfar"). Personen er bare ikke i træet endnu (den, der kigger, kender måske godt navnet) */
+function emptyKin(sex){ var base=steps(CUR); if(!base) return sex; var t=term(base.concat([{k:'U',to:(sex==='mor'?'__mor__':'__far__'),from:CUR}])); return (t==null||t==='')?sex:t; }
 function unknown(rel){ return '<div class="tile unk"><span class="lab"><span class="lt">'+esc(rel)+'</span><span class="ly">ikke i træet endnu</span></span></div>'; }
 function group(title,inner,extra){ return '<div class="grp"><h2>'+title+'</h2>'+(extra||'')+'<div class="tiles">'+inner+'</div></div>'; }
 function mark(t){ return esc(t).replace(/\s*\(per slægtsbog[^)]*\)/g,' <span class="badge">per slægtsbog</span>'); }
@@ -779,12 +780,12 @@ function renderFocus(){
 }
 function pane(p){
   if(PFOCUS){
-    var tl=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
+    var tl=(p.f?tile(p.f):unknown(emptyKin('far')))+(p.m?tile(p.m):unknown(emptyKin('mor')));
     var end=!p.f&&!p.m? '<p class="pfnote">Sporet slutter her. Forældrene er ikke i træet endnu.</p>' : '<p class="pfnote">Tryk på en forælder for at gå en generation op. Tryk på ‹ og navnet øverst for at gå ned igen. Vælg “alle” eller stryg til højre for at se hele familien.</p>';
     return '<div class="grp"><h2>forældre</h2><div class="tiles big">'+tl+'</div>'+end+'</div>';
   }
   if(PIVOT==='familie'){
-    var par=(p.f?tile(p.f):unknown('far'))+(p.m?tile(p.m):unknown('mor'));
+    var par=(p.f?tile(p.f):unknown(emptyKin('far')))+(p.m?tile(p.m):unknown(emptyKin('mor')));
     var html=group('forældre',par);
     if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(s.txt&&s.txt.trim().toLowerCase()!=='gift'?'<span class="cap2">'+mark(s.txt)+'</span>':'')+'</div>'; }).join('')+'</div></div>';
     html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join(''))  : ''; // ingen børn i træet: ingen overskrift

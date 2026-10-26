@@ -1,0 +1,4 @@
+# Slægten er en privat, adgangskode-beskyttet familie-app.
+# Intet herinde skal kunne findes via søgemaskiner.
+User-agent: *
+Disallow: /
