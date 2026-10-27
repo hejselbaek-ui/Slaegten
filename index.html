@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vbWLMsmpOek0Ycy8J1pwJ/Fdm78G60NK9wEYjAeXBuk=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7QZ0WnxOb1tuJrFTfImlXpJ6ARUPwye9msBgMSI+O9I=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -708,8 +708,23 @@ function cat(id){
   if(n===1&&n<st.length) return 'own';
   return F(st[0].to)?'mor':'far';
 }
+/* Op ad træet siger dagligsproget ét ord (oldemor, tipoldemor), mens leddene siger præcis hvilken
+   af dem (mormors mormor). Begge dele er rigtige: det almindelige ord står i overskriften, og det
+   tekniske slægtsled står under navnet. Nedad gør "barnebarn" og "datterdatter" det samme.
+   Kortene (shortKin) beholder leddene — der står op til otte tipoldefædre ved siden af hinanden,
+   og kun leddet skiller dem ad. */
+function pureUp(st){ return st&&st.length&&st.every(function(s){ return s.k==='U'; })? st : null; }
+function pureDown(st){ return st&&st.length&&st.every(function(s){ return s.k==='D'; })? st : null; }
+function upPlain(st){ var n=st.length; if(n<3) return null; /* mor/far og bedsteforældre siger det samme begge veje */
+  return 'tip'.repeat(n-3)+(F(st[n-1].to)?'oldemor':'oldefar'); }
+function lineage(id){ var st=steps(id); if(!st||!st.length) return null;
+  var up=pureUp(st); if(up&&up.length>=3) return term(up);
+  var dn=pureDown(st); if(dn&&dn.length===2) return gcWord(dn);
+  return null; }
 function shortKin(id){ if(id===POV) return 'set fra'; var t=term(steps(id)); return t==null? 'ingen forbindelse i træet endnu' : t; }
-function longKin(id){ if(id===POV) return 'set fra'; var t=term(steps(id)); if(t==null) return 'ingen forbindelse i træet endnu til '+first(P[POV]); var tail=(LASTGC&&/barnebarn$/.test(t))? ' ('+LASTGC+')' : ''; return gen(first(P[POV]))+' '+t+tail; }
+function longKin(id){ if(id===POV) return 'set fra';
+  var st=steps(id), t=term(st); if(t==null) return 'ingen forbindelse i træet endnu til '+first(P[POV]);
+  var up=pureUp(st); return gen(first(P[POV]))+' '+((up&&upPlain(up))||t); }
 function genName(g){
   if(g===0) return 'samme generation som '+first(P[POV]);
   var up=['forældre','bedsteforældre','oldeforældre'], dn=['børn','børnebørn','oldebørn'], a=Math.abs(g);
@@ -776,8 +791,10 @@ function renderFocus(){
   // hero
   var meta=[]; if(years(p)) meta.push(years(p)); if(p.job) meta.push(p.job);
   $('#hero').innerHTML=photoBox(p,'ph')+'<div class="txt"><span class="kin k-'+c+'">'+esc(longKin(CUR))+'</span><h1>'+esc(p.n)+'</h1>'+
+    /* Slægtskabet hører sammen: det almindelige ord står over navnet, slægtsleddet lige under det.
+       Før stod linjen nederst, efter levnedsløbet, og så hang de to halvdele ikke sammen */
+    (g!=null&&CUR!==POV?'<span class="meta">'+(g>0?'+':'')+g+' · '+esc(lineage(CUR)||genName(g))+'</span>':'')+
     (p.aka?'<span class="meta">'+mark(p.aka)+'</span>':'')+(meta.length?'<span class="meta">'+esc(meta.join(' · '))+'</span>':'')+
-    (g!=null&&CUR!==POV?'<span class="meta">'+(g>0?'+':'')+g+' · '+esc(genName(g))+'</span>':'')+
     (CUR===POV? '<button class="chipbtn heroact" type="button" id="changeBtn">skift person</button>' : '<button class="chipbtn heroact" type="button" id="rebaseBtn">se træet fra '+esc(first(p))+'</button>')+'</div>';
   if(DIR==='fwd'||DIR==='back') replay($('#hero'), FLY&&!REDUCED.matches? 'm-fly' : (DIR==='back'?'m-back':'m-fwd'));
   // vejen
@@ -851,9 +868,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.8';
+var APP_VERSION='2.9';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.9',d:'2026-10-27',t:'2026-10-27T09:25:00Z',items:['Øverst på hvert kort står nu det ord, man faktisk bruger: oldemor, tipoldefar, barnebarn. Det præcise slægtsled står under navnet, hvor det ikke råber ad nogen. Begge dele er rigtige, men kun det ene bliver sagt ved kaffebordet']},
   {v:'2.8',d:'2026-10-27',t:'2026-10-27T06:15:00Z',items:['Jeg håndterer billederne klogere nu. De er der, når du åbner mig, i stedet for at nogle gange komme dryssende bagefter']},
   {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:30:00Z',items:['Du kan nu stryge mellem fanerne under hver person og i indstillingernes sektioner. Siden følger fingeren. Når du har strøget langt nok, lyser næste overskrift op. Slip, og så er du, hvor du skal være. Kirkebøgerne har aldrig været så samarbejdsvillige','De første par gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Bedstefar fik også et puf engang. Han flyttede sig ikke']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
