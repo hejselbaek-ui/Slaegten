@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-+mYzhvmXDffl0qZfHE5LhE2oz3/pvc2I0qtpNYU6co4=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vbWLMsmpOek0Ycy8J1pwJ/Fdm78G60NK9wEYjAeXBuk=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -526,16 +526,26 @@ function ingest(j){
   var cnt={}; Object.keys(P).forEach(function(id){ var w=P[id].n.split(' '); if(w.length<2) return; var l=w[w.length-1]; if(/^[A-ZÆØÅ]/.test(l)) cnt[l]=(cnt[l]||0)+1; });
   var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}), shown=top.slice(0,5).map(function(x){return x.toLowerCase()});
   var fam=document.getElementById('families'); if(fam) fam.textContent=shown.join(' · ')+(top.length>5?' · +'+(top.length-5)+' slægtsnavne':'');
+  PHWANT=j.phv||null;
+  PHLIST=null; if(j.ph&&j.ph.length){ PHLIST={}; j.ph.forEach(function(k){ PHLIST[k]=1; }); }
+  trimPhotos();
   Object.keys(P).forEach(function(id){ var p=P[id]; p.id=id; p.kids=[]; p.sp=[]; p.photo=PHOTOS[id]||null; });
   Object.keys(P).forEach(function(id){ var p=P[id]; [p.f,p.m].forEach(function(q){ if(q&&P[q]) P[q].kids.push(id); }); });
   (j.unions||[]).forEach(function(u){ if(P[u.a]&&P[u.b]){ P[u.a].sp.push({id:u.b,txt:u.txt}); P[u.b].sp.push({id:u.a,txt:u.txt}); } });
   Object.keys(P).forEach(function(id){ P[id].kids.sort(function(a,b){ return (yr(P[a].b)||'9999').localeCompare(yr(P[b].b)||'9999'); }); });
 }
 var PHOTOS={}, PHVER=null, TRIES=0, KEY=null, KEYSALT=null, PENDING=null;
+/* Træet bestemmer, hvem der har et portræt (p.ph) og hvilken billedfil der hører til (p.phv).
+   Derfor kan et billede, der er taget ud af træet, aldrig blive hængende i telefonens gemte kopi */
+var PHLIST=null, PHWANT=null, PHPRE=null;
+function trimPhotos(){ if(!PHLIST) return; Object.keys(PHOTOS).forEach(function(id){ if(!PHLIST[id]) delete PHOTOS[id]; }); }
 /* Tegnede stand-ins til personer uden eget billede. Hvem der får hvilken, står i træets data (p.av). Rigtige billeder går altid forrest. */
 var AVATARS={};
 function pic(p){ return p.photo||(p.av&&AVATARS[p.av])||null; }
-function loadAvatars(){ fetch('avatars.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ AVATARS=(j&&j.avatars)||{}; if(VER){ quiet(); render(); } }).catch(function(){}); }
+/* Tegningerne ændrer sig aldrig, så browserens egen kopi må gerne bruges. Før hentede jeg 374 kB hver gang */
+var AVP=null;
+function loadAvatars(){ AVP=fetch('avatars.json',{cache:'default'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ AVATARS=(j&&j.avatars)||{}; if(VER){ quiet(); render(); } }).catch(function(){}); return AVP; }
+function waitAvatars(){ return AVP? Promise.race([AVP,new Promise(function(r){ setTimeout(r,300); })]) : null; }
 loadAvatars();
 /* ---------- Kryptering: data er låst med familiens adgangskode (AES-GCM, nøgle via PBKDF2) ---------- */
 function ub64(t){ var b=atob(t), u=new Uint8Array(b.length); for(var i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; }
@@ -554,7 +564,7 @@ function fmtVer(v){ var d=new Date(v); if(!v||isNaN(d)) return '';
 function showLock(o){
   /* Passer telefonens gemte nøgle ikke til filerne (fx ny adgangskode), glemmes den gamle kopi af træet, og alt bag låsen ryddes */
   if(KEY&&KEYSALT!==o.salt){ KEY=null; KEYSALT=null; try{ ['slaegt.key','slaegt.tree.enc','slaegt.photos.enc'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} }
-  P={}; VER=null; PHOTOS={}; PHVER=null; STACK=[];
+  P={}; VER=null; PHOTOS={}; PHVER=null; PHLIST=null; PHWANT=null; STACK=[];
   ['#homeBtn','#backBtn','#keepBtn','#newsBtn','#settingsBtn','#playBtn','#povLbl','#settings','#news','#pauseBar'].forEach(function(s){ var el=$(s); if(el) el.hidden=true; });
   $('#rail').innerHTML=''; RAILKEY=null;
   PENDING=o; $('#lockVer').textContent= fmtVer(o.version)? 'Træet er sidst opdateret '+fmtVer(o.version)+'.' : ''; $('#loading').hidden=true; $('#pick').hidden=true; $('#focus').hidden=true; $('#lock').hidden=false;
@@ -581,20 +591,31 @@ function lockDevice(){
   try{ ['slaegt.key','slaegt.tree.enc','slaegt.photos.enc','slaegt.pov'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
   location.reload();
 }
-function apply(j,quiet){
+/* NB: parameteren hed før "quiet" og skyggede for funktionen quiet() længere nede. Så snart træet
+   blev opdateret i baggrunden, kaldte "quiet()" i stedet en true/false-værdi, og hele opdateringen
+   faldt lydløst på gulvet: ingen ny tegning, ingen nye billeder. Derfor hedder den nu "first" */
+function apply(j,first){
   var changed=VER!==null; VER=j.version; ingest(j);
   if(POV&&!P[POV]) POV=null; if(CUR&&CUR!=='__pick'&&!P[CUR]) CUR=POV;
   STACK=STACK.filter(function(x){return P[x]});
   $('#loading').hidden=true; $('#lock').hidden=true;
   stamp(); if(POV) solve(); if(changed) quiet(); render();
-  if(changed&&!quiet&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
+  if(changed&&!first&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
 }
-function setPhotos(ph){ PHOTOS=ph.photos||{}; PHVER=VER; Object.keys(P).forEach(function(id){ P[id].photo=PHOTOS[id]||null; }); quiet(); render(); }
+/* Billedfilen står selv for sin version — ikke træets. Ellers kunne appen tro, at en gammel
+   kopi var den nyeste, og så holdt den op med at spørge efter billeder igen */
+function setPhotos(ph,quietOnly){ PHOTOS=ph.photos||{}; PHVER=ph.version||null; trimPhotos();
+  if(quietOnly) return;
+  Object.keys(P).forEach(function(id){ P[id].photo=PHOTOS[id]||null; }); quiet(); render(); }
 /* Opdateringer i baggrunden (billeder, tegninger, nyt træ) tegner siden om uden at spille animationen igen. Ellers blinkede navn og billede ved opstart */
 function quiet(){ if(!$('#focus').hidden) DIR='none'; }
+function fetchPhotos(){ return fetch('photos.enc.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }); }
 function loadPhotos(){
-  if(PHVER===VER||!KEY) return;
-  fetch('photos.enc.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(o){
+  if(!KEY) return;
+  /* Har vi allerede præcis den billedfil, træet peger på, er der intet at hente */
+  if(PHWANT? PHVER===PHWANT : PHVER!==null) return;
+  var pre=PHPRE; PHPRE=null;
+  (pre? pre.then(function(o){ return o||fetchPhotos(); }) : fetchPhotos()).then(function(o){
     return dec(o).then(function(ph){ setPhotos(ph); try{ localStorage.setItem('slaegt.photos.enc',JSON.stringify(o)); }catch(e){} });
   }).catch(function(){});
 }
@@ -830,9 +851,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.7.1';
+var APP_VERSION='2.8';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.8',d:'2026-10-27',t:'2026-10-27T06:15:00Z',items:['Jeg håndterer billederne klogere nu. De er der, når du åbner mig, i stedet for at nogle gange komme dryssende bagefter']},
   {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:30:00Z',items:['Du kan nu stryge mellem fanerne under hver person og i indstillingernes sektioner. Siden følger fingeren. Når du har strøget langt nok, lyser næste overskrift op. Slip, og så er du, hvor du skal være. Kirkebøgerne har aldrig været så samarbejdsvillige','De første par gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Bedstefar fik også et puf engang. Han flyttede sig ikke']},
   {v:'2.7',d:'2026-10-25',t:'2026-10-25T05:09:36Z',items:['Alle uden billede har fået en tegnet stand-in. Ingen af dem ligner nogen, og det er meningen. Jeg sørger for, at ægtefæller og søskende ikke deler ansigt','Børn og unge vises kun som tegning. Om man vil have sit eget billede i træet, bestemmer man helt selv']},
   {v:'2.6',d:'2026-10-24',t:'2026-10-24T12:10:16Z',items:['Ny, længere adgangskode skal sikre privatlivets fred og ro. Og alt indhold er nu krypteret på basis af den nye adgangskode. Vi og vores forfædre fortjener diskretion','Desuden er det kun min egen kode, der får lov til at køre, og ingen data forlader siden','Skrifttypen brugt i appen hentes heller ikke længere hos (evil) Google. Dine besøg i træet er nemlig kun en sag mellem dig og forfædrene. Æret være deres minde']},
@@ -1190,9 +1212,17 @@ $('#logoutBtn').addEventListener('click',function(){ try{ localStorage.removeIte
 try{ localStorage.removeItem('slaegt.tree'); localStorage.removeItem('slaegt.photos'); }catch(e){}
 loadKey().then(function(){
   var ct=null, cp=null; try{ ct=JSON.parse(localStorage.getItem('slaegt.tree.enc')||'null'); cp=JSON.parse(localStorage.getItem('slaegt.photos.enc')||'null'); }catch(e){}
-  var p=Promise.resolve();
-  if(ct&&KEY) p=dec(ct).then(function(j){ apply(j,true); return cp? dec(cp).then(function(ph){ if(ct.version===cp.version) setPhotos(ph); }) : null; }).catch(function(){});
-  return p;
+  /* Ingen gemt billedkopi: hent billederne med det samme, side om side med træet, i stedet for at vente,
+     til træet er hentet, låst op og tegnet. Den største fil skal ikke stå bagerst i køen */
+  if(!cp) PHPRE=fetchPhotos().catch(function(){ return null; });
+  if(!(ct&&KEY)) return;
+  /* Billeder og tegninger på plads FØR første tegning, så skærmen ikke bygges i tre bølger:
+     bogstaver, så tegninger, så billeder. Den gemte kopi vises altid — den bliver renset mod
+     træets billedliste i ingest(), så et fjernet portræt aldrig når at blive tegnet */
+  return Promise.all([dec(ct), cp? dec(cp).catch(function(){ return null; }) : null, waitAvatars()]).then(function(r){
+    if(r[1]) setPhotos(r[1],true);
+    apply(r[0],true);
+  }).catch(function(){});
 }).then(function(){ load(true); });
 /* ---------- Pauseskærm (Zune-inspireret) ---------- */
 var PAUSE=null, PTIMER=null, WAKE=null, IDLE=store('slaegt.idle')==='1', IDLET=null;
