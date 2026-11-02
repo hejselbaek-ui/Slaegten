@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BhoKegzrL89yxLuGVJqPclvbp8DcEpvJ77dqUqENOeo=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-DTCBby8A0irbfVC8LUPTNSbT4e4GaXPcWjaeQ9JXseA=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -307,6 +307,52 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .newslist li.unread .when::before{content:"●";color:var(--t-far);margin-right:6px}
 .msgtext{margin:0;padding:12px;background:var(--raise);border:1px solid var(--line);font:inherit;font-size:0.875rem;white-space:pre-wrap;overflow-wrap:anywhere;max-height:16rem;overflow:auto;user-select:all;-webkit-user-select:all}
 .queue .st{font-size:0.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t-in);white-space:nowrap}
+/* ÅBNINGSBILLEDE — samme bomærke som i filmen: "slægten", "altid i lommen" og de fire
+   grenfarver, med samme rækkefølge og rytme som `brand_frame_html` i studio.py (logo op, undertekst
+   ind, firkanter 120 ms efter hinanden). To bevidste afvigelser fra filmen: målene er relative, så det
+   holder fra 390 px til en stor skærm, og teksten bruger appens egne farvevariabler i stedet for filmens
+   faste #ede6dc/#a9a093, så den også kan læses i lys tilstand. Firkanterne er faste — de ER mærket.
+   Hele billedet kommer først efter 400 ms: en varm start skal ikke blinke med det. Mærket er en
+   belønning for at vente, ikke en afgift på at åbne appen. */
+/* Lille, stille udgave af mærket til indstillinger → "om". Her er den en påskrift, ikke en åbning:
+   ingen bevægelse, for "om" er et sted man selv vælger at gå hen, og skærmens egen pano står lige over. */
+/* Målt mod panoen i stedet for gættet: `.pano .nm` er clamp(58px,19vw,104px). I Open Sans 300 fylder
+   "slægten" ~3,46 em (med -.01em sporing) og "indstillinger" ~4,85 em (med -.03em). Bos regel — "slægten"
+   må højst fylde halvdelen af "indstillinger" — giver logo ≤ 0,70 × panoen; her står den på 0,65, altså
+   ~46 % af overskriftens bredde. Undertekst og firkanter følger filmens egne forhold til logoet
+   (46/150 og 80/150), så låsen holder sammen, når den krymper.
+   Dobbelt klasse (.brand.brand-sm) med vilje: med én klasse har reglerne samme vægt som .brand .bl,
+   og så afgør rækkefølgen i filen det — det var grunden til, at de to første forsøg slet ikke virkede. */
+.brand.brand-sm{margin:2px 0 26px}
+.brand.brand-sm .bl{font-size:clamp(38px,12.3vw,68px)}
+.brand.brand-sm .bt{font-size:clamp(13px,4vw,21px);margin-top:1px}
+.brand.brand-sm .bsq{margin-top:14px;gap:clamp(4px,1.1vw,6px)}
+.brand.brand-sm .bsq i{width:clamp(20px,6.5vw,34px);height:clamp(20px,6.5vw,34px)}
+.brand.brand-sm .bl,.brand.brand-sm .bt,.brand.brand-sm .bsq i{animation:none;opacity:1;transform:none}
+.brand{display:flex;flex-direction:column;align-items:flex-start}
+.brand .bl{font-weight:300;font-size:clamp(56px,19vw,150px);line-height:1;color:var(--fg);letter-spacing:-.01em;opacity:0;transform:translateY(14px);animation:bUp .85s cubic-bezier(.2,.7,.2,1) .4s forwards}
+.brand .bt{font-weight:300;font-size:clamp(18px,5.9vw,46px);color:var(--sub);margin-top:6px;opacity:0;animation:bFin .7s ease .9s forwards}
+.brand .bsq{display:flex;gap:clamp(5px,1.4vw,11px);margin-top:clamp(18px,5vw,40px)}
+.brand .bsq i{width:clamp(30px,10.2vw,80px);height:clamp(30px,10.2vw,80px);display:block;opacity:0;transform:scale(.55);animation:bPop .55s cubic-bezier(.2,.9,.2,1) forwards}
+.brand .bsq i:nth-child(1){background:#4a3b2e;animation-delay:1.35s}
+.brand .bsq i:nth-child(2){background:#a0522d;animation-delay:1.47s}
+.brand .bsq i:nth-child(3){background:#5a6b3a;animation-delay:1.59s}
+.brand .bsq i:nth-child(4){background:#8c6d2c;animation-delay:1.71s}
+/* Ved oplåsning venter brugeren allerede, så mærket skal i gang med det samme — ingen 400 ms pause.
+   Står efter grundreglerne med vilje: samme vægt, så det er rækkefølgen, der afgør det. */
+.brand.now .bl{animation-delay:0s}
+.brand.now .bt{animation-delay:.45s}
+.brand.now .bsq i:nth-child(1){animation-delay:.75s}
+.brand.now .bsq i:nth-child(2){animation-delay:.84s}
+.brand.now .bsq i:nth-child(3){animation-delay:.93s}
+.brand.now .bsq i:nth-child(4){animation-delay:1.02s}
+/* Ved login dækker hente-skærmen hele skærmen, så træet kan tegne sig færdigt bagved, mens mærket spiller */
+#loading.cover{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;justify-content:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@keyframes bUp{to{opacity:1;transform:none}}
+@keyframes bFin{to{opacity:1}}
+@keyframes bPop{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){ .brand .bl,.brand .bt,.brand .bsq i{animation-duration:.01s;animation-delay:.4s} }
 @media (min-width:600px){ h1{font-size:2.375rem} .hero{grid-template-columns:120px minmax(0,1fr)} .hero .ph{width:120px;height:120px} }
 </style>
 
@@ -326,7 +372,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
   </div>
 
   <section id="loading" aria-live="polite">
-    <div class="pano" aria-hidden="true"><span class="cap">et øjeblik</span><span class="nm">henter træet</span></div>
+    <div class="brand" aria-hidden="true"><span class="bl">slægten</span><span class="bt">altid i lommen</span><span class="bsq"><i></i><i></i><i></i><i></i></span></div>
     <p class="intro" id="loadMsg">Henter familiens data. Næste gang åbner appen med det samme.</p>
   </section>
 
@@ -403,6 +449,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <div class="pano" aria-hidden="true"><span class="cap">appen</span><span class="nm">indstillinger</span></div>
         <div class="pivots" role="tablist" id="spivots"><button role="tab" type="button" data-sp="om" id="sp-om">om</button><button role="tab" type="button" data-sp="pauseskærm" id="sp-pauseskaerm">pauseskærm</button><button role="tab" type="button" data-sp="plakat" id="sp-plakat">plakat</button><button role="tab" type="button" data-sp="forslag" id="sp-forslag">forslag</button><button role="tab" type="button" data-sp="udseende" id="sp-udseende">udseende</button><button role="tab" type="button" data-sp="notifikationer" id="sp-notifikationer">notifikationer</button><button role="tab" type="button" data-sp="versioner" id="sp-versioner">versioner</button></div>
     <div class="spane" data-pane="om" role="tabpanel" hidden>
+      <div class="brand brand-sm" aria-hidden="true"><span class="bl">slægten</span><span class="bt">altid i lommen</span><span class="bsq"><i></i><i></i><i></i><i></i></span></div>
       <p class="pfnote keeper" id="setAdmin" style="color:var(--fg)"></p>
       <p class="pfnote" id="setVer"></p>
       <div class="grp priv" id="privSect"><h2>dine data</h2>
@@ -572,12 +619,34 @@ function showLock(o){
   P={}; VER=null; PHOTOS={}; PHVER=null; PHLIST=null; PHWANT=null; STACK=[];
   ['#homeBtn','#backBtn','#keepBtn','#newsBtn','#settingsBtn','#playBtn','#povLbl','#settings','#news','#pauseBar'].forEach(function(s){ var el=$(s); if(el) el.hidden=true; });
   $('#rail').innerHTML=''; RAILKEY=null;
-  PENDING=o; $('#lockVer').textContent= fmtVer(o.version)? 'Træet er sidst opdateret '+fmtVer(o.version)+'.' : ''; $('#loading').hidden=true; $('#pick').hidden=true; $('#focus').hidden=true; $('#lock').hidden=false;
+  PENDING=o; $('#lockVer').textContent= fmtVer(o.version)? 'Træet er sidst opdateret '+fmtVer(o.version)+'.' : ''; brandShow(false); $('#pick').hidden=true; $('#focus').hidden=true;
   setTimeout(function(){ try{ $('#pw').focus(); }catch(e){} },50);
+}
+/* Oplåsningen er den rigtige plads til åbningsbilledet: nøglen regnes ud med 250.000 PBKDF2-runder,
+   så her venter man altid — uanset forbindelse, på enhver telefon. Hente-skærmen før låsen var forkert
+   valgt: den er væk, før mærket når at begynde. CSS-animationer kører kun én gang ved indlæsning, så
+   elementet klones for at spille forfra. */
+var BRANDT0=null, BRANDMIN=1650;
+function brandShow(on){
+  var ld=$('#loading'); if(!ld) return;
+  if(on){ var b=ld.querySelector('.brand');
+    if(b){ var n=b.cloneNode(true); n.classList.add('now'); b.parentNode.replaceChild(n,b); }
+    BRANDT0=Date.now(); $('#loadMsg').textContent=''; $('#lock').hidden=true; ld.classList.add('cover'); ld.hidden=false; }
+  else { BRANDT0=null; ld.classList.remove('cover'); ld.hidden=true; $('#lock').hidden=false; }
+}
+/* Nøglen regnes ud hurtigere, end mærket kan nå at spille — på en computer er 250.000 runder under 200 ms.
+   Derfor holdes skærmen, til animationen er færdig. Det koster kun tid ved login, altså første gang,
+   efter log ud og efter en ny adgangskode — ikke ved hver åbning. Træet er tegnet færdigt bagved imens. */
+function hideLoading(){
+  var ld=$('#loading'); if(!ld||ld.hidden) return;
+  var wait=BRANDT0? BRANDMIN-(Date.now()-BRANDT0) : 0;
+  var done=function(){ BRANDT0=null; ld.classList.remove('cover'); ld.hidden=true; };
+  if(wait>0) setTimeout(done,wait); else done();
 }
 function unlock(){
   var pw=$('#pw').value; if(pw&&pw.normalize) pw=pw.normalize('NFC'); if(!pw||!PENDING) return;
-  $('#lockMsg').textContent='Åbner…';
+  $('#lockMsg').textContent='';
+  brandShow(true);
   var o=PENDING;
   crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']).then(function(base){
     return crypto.subtle.deriveKey({name:'PBKDF2',salt:ub64(o.salt),iterations:o.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},true,['decrypt']);
@@ -590,7 +659,7 @@ function unlock(){
         apply(JSON.parse(new TextDecoder().decode(buf)),true); loadPhotos();
       });
     });
-  }).catch(function(){ $('#lockMsg').textContent='Forkert adgangskode. Prøv igen.'; var w=$('#pw'); w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); w.select(); });
+  }).catch(function(){ brandShow(false); $('#lockMsg').textContent='Forkert adgangskode. Prøv igen.'; var w=$('#pw'); w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); w.select(); });
 }
 function lockDevice(){
   try{ ['slaegt.key','slaegt.tree.enc','slaegt.photos.enc','slaegt.pov'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
@@ -603,7 +672,7 @@ function apply(j,first){
   var changed=VER!==null; VER=j.version; ingest(j);
   if(POV&&!P[POV]) POV=null; if(CUR&&CUR!=='__pick'&&!P[CUR]) CUR=POV;
   STACK=STACK.filter(function(x){return P[x]});
-  $('#loading').hidden=true; $('#lock').hidden=true;
+  hideLoading(); $('#lock').hidden=true;
   stamp(); if(POV) solve(); if(changed) quiet(); render();
   if(changed&&!first&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
 }
@@ -764,7 +833,11 @@ function render(){
   $('#homeBtn').hidden=!povSet||picking; if(povSet){ $('#homeName').textContent=first(P[POV]); $('#homeBtn').setAttribute('aria-label','Hjem til '+P[POV].n); }
   /* Hjemme er chippen ikke en vej hjem — den er vejen til "hvem er du?". Navnet bliver stående, så man
      altid kan se, hvis træ man kigger på; kun handlingen og oplæsningen skifter. */
-  if(CUR===POV){ $('#homeBtn').setAttribute('aria-current','page'); $('#homeBtn').setAttribute('aria-label','Skift person. Du ser træet fra '+P[POV].n); }
+  /* P[POV] skal slås op betinget: før man har valgt udgangspunkt, er både CUR og POV tomme, så
+     CUR===POV er sandt, og P[POV] findes ikke. Uden vagten kastede render() ved hvert første login
+     (2.9.1), fejlen blev slugt af unlock()'s .catch, som satte "Forkert adgangskode" på en skjult
+     låseskærm — og fra 2.9.2 også afbrød åbningsbilledets hold. */
+  if(CUR===POV){ $('#homeBtn').setAttribute('aria-current','page'); if(P[POV]) $('#homeBtn').setAttribute('aria-label','Skift person. Du ser træet fra '+P[POV].n); }
   else $('#homeBtn').removeAttribute('aria-current');
   $('#keepBtn').hidden=!(picking&&povSet);
   if(picking) $('#backBtn').hidden=true;
@@ -893,9 +966,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.9.1';
+var APP_VERSION='2.9.2';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.9.2',d:'2026-11-02',t:'2026-11-02T14:05:00Z',items:['Når du skriver adgangskoden, viser jeg mit bomærke, mens træet bliver pakket ud bagved. Det sker kun, når du lukker dig ind — ikke hver gang du åbner mig. Forfædrene har ventet længere','Det samme mærke står nu under “om” i indstillinger. Helt stille. Ikke alt skal bevæge sig']},
   {v:'2.9.1',d:'2026-11-02',t:'2026-11-02T13:39:03Z',items:['Små justeringer i brugerfladen. Jeg har ryddet lidt op, både foran og bagved, og fjernet unødig støj for at give mere plads til familien']},
   {v:'2.9',d:'2026-10-27',t:'2026-10-27T09:25:00Z',items:['Øverst på hvert kort står nu det ord, man faktisk bruger: oldemor, tipoldefar, barnebarn. Det præcise slægtsled står under navnet, hvor det ikke råber ad nogen. Begge dele er rigtige, men kun det ene bliver sagt ved kaffebordet']},
   {v:'2.8',d:'2026-10-27',t:'2026-10-27T06:15:00Z',items:['Jeg håndterer billederne klogere nu. De er der, når du åbner mig, i stedet for at nogle gange komme dryssende bagefter']},
