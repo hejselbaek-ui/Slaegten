@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7QZ0WnxOb1tuJrFTfImlXpJ6ARUPwye9msBgMSI+O9I=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BhoKegzrL89yxLuGVJqPclvbp8DcEpvJ77dqUqENOeo=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -71,7 +71,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--fg);outline-off
 .homechip[aria-current="page"]{color:var(--sub);border-color:var(--line)}
 .homechip{transition:color .25s,border-color .25s}
 .homechip:active{background:var(--fg);color:var(--bg)}
-.backchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:0;max-width:42vw;padding:0 14px 0 10px;border:1px solid var(--dim);color:var(--fg);font-size:0.9375rem;margin-right:auto}
+.backchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:0;max-width:42vw;padding:0 12px 0 4px;color:var(--fg);font-size:0.9375rem;margin-right:auto}
 .backchip span{font-size:1.4rem;line-height:1;margin-top:-2px;flex:none}
 .backchip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .backchip:active{background:var(--fg);color:var(--bg)}
@@ -103,6 +103,7 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 @keyframes inL{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes chainIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
 @keyframes settle{from{opacity:0;transform:translateY(.3em)}to{opacity:1;transform:none}}
 @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
 @keyframes toastUp{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
@@ -115,7 +116,8 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 .pane.still .tile,.pane.still .tile.unk{animation:none}
 .pano .nm.settle{animation:settle .55s var(--ease) both}
 .pano .nm.slideL{animation:inL .4s var(--ease) both}
-.path button.here.new{animation:rise .35s var(--ease) both;animation-delay:.12s}
+.path .here.new{animation:rise .35s var(--ease) both;animation-delay:.12s}
+.path .cascade{animation:chainIn .3s var(--ease) both}
 .shake{animation:shake .4s ease-in-out}
 .toast{animation:toastUp .3s var(--ease) both}
 .flyer{position:fixed;left:0;top:0;margin:0;pointer-events:none;z-index:20;white-space:nowrap;transform-origin:0 0;color:var(--fg);font-family:var(--f-ui)}
@@ -124,10 +126,11 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 .path{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;font-size:0.8125rem}
 .path::-webkit-scrollbar{display:none}
 .path .lbl{color:var(--sub);white-space:nowrap;margin-right:4px;font-size:0.75rem;letter-spacing:.08em;text-transform:uppercase}
-.path button{white-space:nowrap;padding:8px 10px;min-height:40px;background:var(--raise);display:flex;align-items:center;gap:6px}
-.path button .dot{width:8px;height:8px;flex:none}
+.path button,.path .here{box-sizing:border-box;white-space:nowrap;padding:8px 10px;min-height:40px;background:var(--raise);display:flex;align-items:center;gap:6px}
+.path button:active{background:var(--fg);color:var(--bg)}
+.path button .dot,.path .here .dot{width:8px;height:8px;flex:none}
 .path .sep{color:var(--dim)}
-.path button.here{background:var(--fg);color:var(--bg)}
+.path .here{background:var(--fg);color:var(--bg)}
 
 /* Pivot */
 .pivots{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;margin-top:6px}
@@ -212,7 +215,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .rail .cap{font-size:0.5625rem;letter-spacing:.12em;color:var(--sub);writing-mode:vertical-rl;transform:rotate(180deg)}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--fg);color:var(--bg);padding:10px 16px;font-size:0.875rem;z-index:9;max-width:calc(100% - 48px)}
-@media (prefers-reduced-motion: reduce){.anim,.m-fwd,.m-back,.m-fly,.pane .tile,.pano .nm.settle,.pano .nm.slideL,.path button.here.new,.shake,.toast{animation:none!important}.m-fly h1{opacity:1}.tile{transition:none}.rail .mark{transition:none}}
+@media (prefers-reduced-motion: reduce){.anim,.m-fwd,.m-back,.m-fly,.pane .tile,.pano .nm.settle,.pano .nm.slideL,.path .here.new,.path .cascade,.shake,.toast{animation:none!important}.m-fly h1{opacity:1}.tile{transition:none}.rail .mark{transition:none}}
 /* Bundbjælke: indstillinger og forældrefokus */
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);
   padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));
@@ -519,10 +522,12 @@ function gen(nm){ return /[sxz]$/i.test(nm)? nm+"'" : nm+'s'; }
 function initials(n){ var w=n.split(/\s+/).filter(function(x){return /^[A-ZÆØÅ]/.test(x)}); if(!w.length) return '?'; return (w[0][0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase(); }
 
 /* ---------- Data: hentes fra tree.json (senere: OneDrive) og tjekkes for ændringer ---------- */
-var TITLE='familien';
+/* Panoramatitlen er appens navn, ikke en etiket for den person, man står på: den er frosset og kommer
+   ikke længere fra træets data (j.title). Et navn kunne læses som den forkerte person; et bomærke kan ikke */
+var TITLE='slægten';
 function ingest(j){
   CHANGES=(j.changes||[]).slice().sort(function(a,b){ return a.t<b.t?1:-1; });
-  P=j.people; TITLE=(j.title||'familien').toLowerCase();
+  P=j.people;
   var cnt={}; Object.keys(P).forEach(function(id){ var w=P[id].n.split(' '); if(w.length<2) return; var l=w[w.length-1]; if(/^[A-ZÆØÅ]/.test(l)) cnt[l]=(cnt[l]||0)+1; });
   var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}), shown=top.slice(0,5).map(function(x){return x.toLowerCase()});
   var fam=document.getElementById('families'); if(fam) fam.textContent=shown.join(' · ')+(top.length>5?' · +'+(top.length-5)+' slægtsnavne':'');
@@ -757,7 +762,10 @@ function render(){
   var picking=CUR==='__pick'||!povSet;
   $('#povLbl').hidden=povSet;
   $('#homeBtn').hidden=!povSet||picking; if(povSet){ $('#homeName').textContent=first(P[POV]); $('#homeBtn').setAttribute('aria-label','Hjem til '+P[POV].n); }
-  if(CUR===POV) $('#homeBtn').setAttribute('aria-current','page'); else $('#homeBtn').removeAttribute('aria-current');
+  /* Hjemme er chippen ikke en vej hjem — den er vejen til "hvem er du?". Navnet bliver stående, så man
+     altid kan se, hvis træ man kigger på; kun handlingen og oplæsningen skifter. */
+  if(CUR===POV){ $('#homeBtn').setAttribute('aria-current','page'); $('#homeBtn').setAttribute('aria-label','Skift person. Du ser træet fra '+P[POV].n); }
+  else $('#homeBtn').removeAttribute('aria-current');
   $('#keepBtn').hidden=!(picking&&povSet);
   if(picking) $('#backBtn').hidden=true;
   $('#pickNow').hidden=!(picking&&povSet); if(picking&&povSet) $('#pickNow').textContent='Du ser lige nu træet fra '+P[POV].n+'.';
@@ -787,7 +795,7 @@ function renderFocus(){
   // panorama-titel: står stille som på en Zune; vejen tilbage er knappen ‹ øverst
   $('#panoNm').textContent=TITLE;
   var prev=STACK[STACK.length-1]||(CUR!==POV?POV:null);
-  $('#backBtn').hidden=!prev; if(prev){ $('#backName').textContent=first(P[prev]); $('#backBtn').setAttribute('aria-label','Tilbage til '+P[prev].n); }
+  $('#backBtn').hidden=!prev||CUR===POV; if(prev){ $('#backName').textContent='tilbage'; $('#backBtn').setAttribute('aria-label','Tilbage til '+P[prev].n); }
   // hero
   var meta=[]; if(years(p)) meta.push(years(p)); if(p.job) meta.push(p.job);
   $('#hero').innerHTML=photoBox(p,'ph')+'<div class="txt"><span class="kin k-'+c+'">'+esc(longKin(CUR))+'</span><h1>'+esc(p.n)+'</h1>'+
@@ -801,10 +809,27 @@ function renderFocus(){
   var st=steps(CUR), chain=[POV].concat(st? st.map(function(s){return s.to}) : []);
   var ph='<span class="lbl">slægtskab</span>';
   if(CUR===POV) ph='<span class="sep">Tryk på et kort for at gå videre i familien.</span>';
-  else chain.forEach(function(id,i){ ph+=(i?'<span class="sep">›</span>':'')+'<button type="button" class="'+(id===CUR?'here':'')+'" data-id="'+id+'"><span class="dot sq c-'+cat(id)+'"></span>'+esc(first(P[id]))+'</button>'; });
+  else { chain.forEach(function(id,i){ var inner='<span class="dot sq c-'+cat(id)+'"></span>'+esc(first(P[id])); ph+=(i?'<span class="sep">›</span>':'')+(id===CUR?'<span class="here">'+inner+'</span>':'<button type="button" data-id="'+id+'">'+inner+'</button>'); }); }
   if(!st&&CUR!==POV) ph+='<span class="sep">ingen forbindelse i træet endnu</span>';
   $('#path').innerHTML=ph; var pe=$('#path'); pe.scrollLeft=pe.scrollWidth;
-  if(DIR==='fwd'){ var hb=pe.querySelector('button.here'); if(hb) hb.classList.add('new'); }
+  var over=pe.scrollWidth-pe.clientWidth;
+  if(DIR==='fwd'&&!REDUCED.matches&&over>24){
+    var run=(pe.__run=(pe.__run||0)+1);
+    var stop=function(){ if(pe.__run===run) pe.__run++; };
+    pe.addEventListener('touchstart',stop,{passive:true}); pe.addEventListener('wheel',stop,{passive:true});
+    var clean=function(){ pe.removeEventListener('touchstart',stop); pe.removeEventListener('wheel',stop); };
+    pe.scrollLeft=0;
+    var t0=null, dur=Math.min(900,320+over*0.55);
+    var step=function(ts){ if(pe.__run!==run){ clean(); return; }
+      if(t0===null) t0=ts; var k=Math.min(1,(ts-t0)/dur);
+      pe.scrollLeft=over*(1-Math.pow(1-k,3));
+      if(k<1) requestAnimationFrame(step); else clean(); };
+    requestAnimationFrame(step);
+  }
+  else if(DIR==='fwd'){ var kk=0, x0=pe.scrollLeft, x1=x0+pe.clientWidth;
+    Array.prototype.forEach.call(pe.children,function(el){ if(el.classList.contains('lbl')) return;
+      var l=el.offsetLeft-pe.offsetLeft; if(l+el.offsetWidth<=x0||l>=x1) return;
+      el.classList.add('cascade'); el.style.animationDelay=(Math.ceil(kk/2)*120)+'ms'; kk++; }); }
   // pivots
   Array.prototype.forEach.call(document.querySelectorAll('#pivots button'),function(b){ b.setAttribute('aria-selected',b.dataset.p===PIVOT?'true':'false'); });
   stripTo($('#pivots'),document.querySelector('#pivots [aria-selected="true"]'),false);
@@ -868,9 +893,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.9';
+var APP_VERSION='2.9.1';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.9.1',d:'2026-11-02',t:'2026-11-02T13:39:03Z',items:['Små justeringer i brugerfladen. Jeg har ryddet lidt op, både foran og bagved, og fjernet unødig støj for at give mere plads til familien']},
   {v:'2.9',d:'2026-10-27',t:'2026-10-27T09:25:00Z',items:['Øverst på hvert kort står nu det ord, man faktisk bruger: oldemor, tipoldefar, barnebarn. Det præcise slægtsled står under navnet, hvor det ikke råber ad nogen. Begge dele er rigtige, men kun det ene bliver sagt ved kaffebordet']},
   {v:'2.8',d:'2026-10-27',t:'2026-10-27T06:15:00Z',items:['Jeg håndterer billederne klogere nu. De er der, når du åbner mig, i stedet for at nogle gange komme dryssende bagefter']},
   {v:'2.7.1',d:'2026-10-25',t:'2026-10-25T18:30:00Z',items:['Du kan nu stryge mellem fanerne under hver person og i indstillingernes sektioner. Siden følger fingeren. Når du har strøget langt nok, lyser næste overskrift op. Slip, og så er du, hvor du skal være. Kirkebøgerne har aldrig været så samarbejdsvillige','De første par gange giver jeg siden et lille puf, så du kan se, at den kan flytte sig. Bedstefar fik også et puf engang. Han flyttede sig ikke']},
@@ -1145,7 +1171,15 @@ $('#sgCopy').addEventListener('click',function(){
   var sel=function(){ var r=document.createRange(); r.selectNodeContents($('#sgText')); var w=getSelection(); w.removeAllRanges(); w.addRange(r); };
   try{ navigator.clipboard.writeText(txt).then(ok,sel); }catch(err){ sel(); }
 });
-$('#homeBtn').addEventListener('click',function(){ STACK=[]; CUR=POV; PIVOT='familie'; render(); window.scrollTo({top:0}); });
+/* Husknappen var en knap, der ikke gjorde noget, når man stod hjemme: man trykkede, og siden tegnede sig
+   selv igen. Nu betyder den dæmpede tilstand noget — du ER hjemme, så et tryk åbner "hvem er du?".
+   Væk hjemmefra er den uændret: fuld farve, fører hjem, så familien skal ikke lære noget nyt.
+   Chippen bliver også stående hjemme, selv om den der er overflydende: det er den, der introducerer hele
+   navigationsrækken første gang man bruger appen, hvor man netop står på sit eget kort.
+   Heltens egen "skift person" bliver: den midt på skærmen er den, man faktisk finder. */
+$('#homeBtn').addEventListener('click',function(){
+  if(CUR===POV){ openPicker(); return; }
+  STACK=[]; CUR=POV; PIVOT='familie'; render(); window.scrollTo({top:0}); });
 var BEFORE=null;
 $('#keepBtn').addEventListener('click',function(){ CUR=BEFORE&&P[BEFORE]?BEFORE:POV; render(); window.scrollTo({top:0}); });
 function openPicker(){ BEFORE=CUR; CUR='__pick'; $('#q').value=''; render(); window.scrollTo({top:0}); }
