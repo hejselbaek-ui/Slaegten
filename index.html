@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-osZprp3TrzFNTVjX0/b1apEUKUKxzijqpidMC8e7VvA=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-cSiKzU5WF9HmM7QIL7DJNgMelR+o5XIC4sRSF0MJjyM=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -196,12 +196,34 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .intro{margin:0;color:var(--sub);max-width:65ch}
 .search{width:100%;box-sizing:border-box;font:inherit;font-size:1rem;padding:10px 12px;background:var(--raise);color:var(--fg);border:1px solid var(--dim);border-radius:0}
 .alpha{display:flex;flex-direction:column;gap:2px}
+/* Knapper er border-box i browserens egen stylesheet, mens den gamle <div> var
+   content-box. Uden denne linje skrumper firkanten fra 48 til 44 og falder ud af
+   skinnen, den deler med miniaturerne. Elementtypen skiftede — firkanten må ikke. */
+.alpha .letter{box-sizing:content-box;text-align:center}
+.alpha .letter.jumped{animation:rise .35s var(--ease) both}
+/* Bogstavgitteret i "spring til". auto-fill giver 5 på telefon og 11 ved 720px-loftet
+   uden filens første width-media query */
+.jumpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:10px;margin-top:4px}
+.jumpgrid button{aspect-ratio:1;font-weight:300;font-size:1.875rem;line-height:1;color:var(--t-own);text-transform:lowercase;border:2px solid var(--t-own);display:grid;place-items:center;text-align:center}
+.jumpgrid button[disabled]{color:var(--dim);border-color:var(--dim);cursor:default}
+.jumpgrid button:not([disabled]):active{background:var(--raise)}
 .alpha .letter{font-weight:300;font-size:1.875rem;color:var(--t-own);text-transform:lowercase;margin-top:10px;width:44px;height:44px;border:2px solid var(--t-own);display:grid;place-items:center;line-height:1}
-.row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);min-width:0}
-.row .rn{font-size:1.0625rem;font-weight:400;min-width:0;overflow-wrap:anywhere}
-.row .ry{font-size:0.8125rem;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Rækken bærer nu et billede, så den er centreret og har samme rytme med og uden foto.
+   58px er komfort, ikke en fejlretning: en række målte ~43,6px før. */
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);min-width:0;min-height:58px}
+.row .rn{font-size:1.0625rem;font-weight:400;min-width:0;overflow-wrap:anywhere;flex:1 1 auto}
+.row .ry{font-size:0.8125rem;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap;flex:0 0 auto}
+/* 48px, fordi .letter er content-box med 2px kant og derfor rendrer 48 — billedkolonnen
+   og bogstavboksene deler én venstreskinne, så alle navne starter på samme x */
+.row .rt{flex:0 0 48px;width:48px;height:48px;object-fit:cover;display:block}
+.row .rt-none{flex:0 0 48px;width:48px}
 .row:active{background:var(--raise)}
 .status{font-size:0.75rem;color:var(--sub);margin:0}
+/* Påmindelsen om udgangspunktet står i terrakotta som #lockNews på låseskærmen —
+   samme greb: en .status løftet ud med farve alene. Kun denne ene, så fodnoten
+   under listen beholder sin dæmpede grå. Førstegangsbrugere ser den aldrig:
+   den tegnes kun, når der allerede ER et udgangspunkt. */
+.pnow{color:var(--t-far);font-size:0.9375rem}
 /* "Indsend billede": hele linjen er knappen, uden knapudseende; pilen er den samme terrakotta som på adgangskodesiden */
 .sendpic{align-self:flex-start;min-height:44px;padding:0;margin:-6px 0;font-size:0.9375rem;color:var(--fg)}
 .sendpic span{color:var(--t-far);font-size:1.15em;margin-left:2px}
@@ -217,7 +239,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .rail .cap{font-size:0.5625rem;letter-spacing:.12em;color:var(--sub);writing-mode:vertical-rl;transform:rotate(180deg)}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--fg);color:var(--bg);padding:10px 16px;font-size:0.875rem;z-index:9;max-width:calc(100% - 48px)}
-@media (prefers-reduced-motion: reduce){.anim,.m-fwd,.m-back,.m-fly,.pane .tile,.pano .nm.settle,.pano .nm.slideL,.path .here.new,.path .cascade,.shake,.toast{animation:none!important}.m-fly h1{opacity:1}.tile{transition:none}.rail .mark{transition:none}}
+@media (prefers-reduced-motion: reduce){.anim,.m-fwd,.m-back,.m-fly,.pane .tile,.pano .nm.settle,.pano .nm.slideL,.path .here.new,.path .cascade,.alpha .letter.jumped,.shake,.toast{animation:none!important}.m-fly h1{opacity:1}.tile{transition:none}.rail .mark{transition:none}}
 /* Bundbjælke: indstillinger og forældrefokus */
 .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);
   padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));
@@ -440,12 +462,11 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
   <section id="pick" hidden>
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="pano" aria-hidden="true"><span class="cap" id="families">familien</span><span class="nm">hvem er du?</span></div>
-      <p class="intro">Vil du gennemse slægten som dig selv eller en anden person? Vælg personen herunder. Alle slægtskaber, farver og generationer regnes ud fra den, du vælger. Pauseskærmen benytter samme person, så den bliver helt personlig.</p>
+      <p class="status pnow" id="pickNow" hidden></p>
+      <p class="intro">Vælg, hvem du vil gå på opdagelse i slægten som — dig selv eller en anden. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.</p>
       <button type="button" class="sendpic" id="sendPic">Mangler et billede? Indsend dit billede her <span aria-hidden="true">→</span></button>
-      <p class="status" id="pickNow" hidden></p>
       <input id="q" class="search" type="search" placeholder="Søg efter navn" autocomplete="off" aria-label="Søg efter navn">
-      <div class="grp" id="pickPhotos"><h2>med billede</h2><div class="tiles" id="photoTiles"></div></div>
-      <div class="grp"><h2>alle personer</h2><div class="alpha" id="alpha"></div></div>
+      <div class="grp"><div class="alpha" id="alpha"></div></div>
       <p class="status" id="status"></p>
     </div>
   </section>
@@ -482,6 +503,14 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <div class="ib"><button class="primarybtn" type="button" id="instBtn" hidden>installér</button><button class="chipbtn" type="button" id="instLater">ikke nu</button></div>
   </div>
 </div>
+<section class="sheet" id="jump" hidden aria-label="Spring til bogstav">
+  <div class="wrap">
+    <div class="bar"><span></span><button class="chipbtn" id="closeJump" type="button">luk</button></div>
+    <div class="pano" aria-hidden="true"><span class="cap">hvem er du?</span><span class="nm">spring til</span></div>
+    <div class="jumpgrid" id="jumpGrid"></div>
+  </div>
+</section>
+
 <section class="sheet" id="news" hidden aria-label="Nyt i træet">
   <div class="wrap">
     <div class="bar"><span></span><button class="chipbtn" id="closeNews" type="button">luk</button></div>
@@ -906,20 +935,46 @@ function render(){
   if(!povSet||CUR==='__pick'){ renderPick(); $('#rail').innerHTML=''; RAILKEY=null; return; }
   renderFocus();
 }
+var PICKL={};
 function renderPick(){
   var q=($('#q').value||'').trim().toLowerCase();
   var ids=Object.keys(P).filter(function(id){ return !q||P[id].n.toLowerCase().indexOf(q)>=0||(P[id].aka||'').toLowerCase().indexOf(q)>=0; });
-  var ph=ids.filter(function(id){return P[id].photo});
-  $('#pickPhotos').hidden=!ph.length;
-  $('#photoTiles').innerHTML=ph.map(function(id){ return tile(id,{lt:''}); }).join('');
   ids.sort(function(a,b){ return P[a].n.localeCompare(P[b].n,'da'); });
-  var html='', L='';
-  ids.forEach(function(id){ var l=P[id].n[0].toLowerCase(); if(l!==L){ L=l; html+='<div class="letter">'+esc(l)+'</div>'; }
-    html+='<button type="button" class="row" data-id="'+id+'"><span class="rn">'+esc(P[id].n)+'</span><span class="ry">'+years(P[id])+'</span></button>'; });
+  /* Kun de rigtige fotografier får en miniature. Tegnede stand-ins ville vise synlige
+     dubletter — kun 44 forskellige fordelt på resten — og to ens ansigter otte rækker
+     fra hinanden læses som en fejl. Rækker uden foto beholder en tom rende, så navnene
+     flugter, og en miniature betyder dermed noget: der findes et bevaret billede. */
+  var html='', L='', have={};
+  ids.forEach(function(id){ var p=P[id], l=p.n[0].toLowerCase();
+    if(l!==L){ L=l; have[l]=1; html+='<button type="button" class="letter" data-l="'+esc(l)+'">'+esc(l)+'</button>'; }
+    html+='<button type="button" class="row" data-id="'+id+'">'+
+      (p.photo? '<img class="rt" src="'+p.photo+'" alt="">' : '<span class="rt-none" aria-hidden="true"></span>')+
+      '<span class="rn">'+esc(p.n)+'</span><span class="ry">'+years(p)+'</span></button>'; });
   $('#alpha').innerHTML=html||'<p class="empty">Ingen fundet.</p>';
-  // tiles in pick are neutral magenta
-  Array.prototype.forEach.call($('#photoTiles').children,function(t){ t.className=t.className.replace(/c-\w+/,'c-own'); });
+  PICKL=have;
 }
+/* ---------- "spring til": alfabetet som et af appens egne ark ---------- */
+var DKALPHA='abcdefghijklmnopqrstuvwxyzæøå'.split('');
+function openJump(){
+  /* Alle 29 vises. De uden nogen er dæmpede og døde, så alfabetet beholder sin
+     velkendte form — man sigter efter, hvor m altid er, i stedet for at læse sig frem. */
+  $('#jumpGrid').innerHTML=DKALPHA.map(function(l){
+    return '<button type="button" data-jump="'+l+'"'+(PICKL[l]?'':' disabled')+'>'+l+'</button>'; }).join('');
+  $('#jump').hidden=false; replay($('#jump').querySelector('.wrap'),'m-fwd');
+}
+function closeJump(){ $('#jump').hidden=true; }
+$('#closeJump').addEventListener('click',closeJump);
+$('#alpha').addEventListener('click',function(e){ if(e.target.closest('.letter')) openJump(); });
+$('#jumpGrid').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-jump]'); if(!b||b.disabled) return;
+  closeJump();
+  var h=$('#alpha').querySelector('.letter[data-l="'+b.dataset.jump+'"]');
+  if(!h) return;
+  /* Ingen blød rulning: bevægelsen hører til i zoomet, ikke i rulningen — man lander,
+     hvor man skal være. Overskriften siger "her" i det øjeblik, arket forsvinder. */
+  h.scrollIntoView();
+  h.classList.remove('jumped'); void h.offsetWidth; h.classList.add('jumped');
+});
 function renderFocus(){
   if(typeof armInstallBar==='function') armInstallBar();
   if(typeof armPauseHint==='function') setTimeout(armPauseHint,7000);
@@ -1026,9 +1081,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.10';
+var APP_VERSION='2.11';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.11',d:'2026-11-09',t:'2026-11-09T15:12:00Z',items:['Jeg har ryddet op i ‘hvem er du?’ startsiden. Billederne er flyttet ned til navnene, hvor de hørte hjemme. Du kan stadig søge efter navne i slægten, men nu kan du også trykke på et bogstav og springe gennem alfabetet. Jeg har 160 mennesker at holde styr på, og de færreste af dem hedder noget med A']},
   {v:'2.10',d:'2026-11-09',t:'2026-11-09T13:20:00Z',items:['Ny plakat til print! Hele familien på én væg over sofaen var vist for meget af det gode, så nu kan du også hente din egen anetavle, som kun følger forældrenes vej bagud: dine forældre, deres forældre og så videre, så langt træet rækker. Dine søskende står pænt ved siden af dig, din ægtefælle og dine børn nedenunder. Alle andre grene er væk — så nu er der ingen undskyldning for at hænge den op. Selv tak']},
   {v:'2.9.2',d:'2026-11-02',t:'2026-11-02T14:05:00Z',items:['Når du logger på, vises et nyt logo for appen, mens træet bliver pakket ud bagved. Det sker kun, når du logger på med password — ikke hver gang du åbner appen. Både du og vores forfædre har ventet længe nok']},
   {v:'2.9.1',d:'2026-11-02',t:'2026-11-02T13:39:03Z',items:['Små justeringer i brugerfladen. Jeg har ryddet lidt op, både foran og bagved, og fjernet unødig støj for at give mere plads til familien']},
@@ -1095,7 +1151,9 @@ function back(){
   DIR='back'; FLY=null; render(); window.scrollTo({top:0});
 }
 function choosePov(id){ POV=id; store('slaegt.pov',id); STACK=[]; CUR=id; PIVOT='familie'; solve(); render(); window.scrollTo({top:0}); }
-window.addEventListener('popstate',function(){ if(CUR==='__pick'){ CUR=POV; render(); } else if(STACK.length) back(); });
+/* Arket åbner INDE i vælgeren, så det skal lukkes før vælger-grenen kører — ellers
+   smider Androids tilbage brugeren helt ud af vælgeren og lader arket stå tilbage. */
+window.addEventListener('popstate',function(){ if(!$('#jump').hidden){ closeJump(); return; } if(CUR==='__pick'){ CUR=POV; render(); } else if(STACK.length) back(); });
 
 document.addEventListener('click',function(e){
   var t=e.target.closest('[data-id]');
@@ -1251,7 +1309,7 @@ function swipeHint(){
 }
 $('#settingsBtn').addEventListener('click',openSettings);
 $('#closeSettings').addEventListener('click',closeSettings);
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!$('#jump').hidden){ closeJump(); return; } if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
 function sgType(){ var t=$('#sgType').value; $('#sgNameWrap').hidden=t!=='ny'; $('#sgRelWrap').hidden=t!=='ny';
   $('#sgRelHint').textContent= t==='ny'? '(den nye person hænger sammen med)' : '(som forslaget handler om)'; }
 $('#sgType').addEventListener('change',sgType);
@@ -1317,7 +1375,9 @@ $('#homeBtn').addEventListener('click',function(){
   STACK=[]; CUR=POV; PIVOT='familie'; render(); window.scrollTo({top:0}); });
 var BEFORE=null;
 $('#keepBtn').addEventListener('click',function(){ CUR=BEFORE&&P[BEFORE]?BEFORE:POV; render(); window.scrollTo({top:0}); });
-function openPicker(){ BEFORE=CUR; CUR='__pick'; $('#q').value=''; render(); window.scrollTo({top:0}); }
+/* Vælgeren var den eneste store flade, der poppede hårdt ind, mens man forlod den
+   med bevægelse. Samme idiom som de to ark, intet nyt. */
+function openPicker(){ BEFORE=CUR; CUR='__pick'; $('#q').value=''; closeJump(); render(); window.scrollTo({top:0}); replay($('#pick').firstElementChild,'m-fwd'); }
 $('#hero').addEventListener('click',function(e){
   if(e.target.closest('#changeBtn')){ e.stopPropagation(); openPicker(); }
   else if(e.target.closest('#rebaseBtn')){ e.stopPropagation(); DIR='fwd'; choosePov(CUR); toast('Træet ses nu fra '+P[POV].n); }
