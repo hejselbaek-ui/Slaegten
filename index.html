@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-riks7tSuIDDP3K6qGyssensgtV9w4g6MWjfkmS5X3vs=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-osZprp3TrzFNTVjX0/b1apEUKUKxzijqpidMC8e7VvA=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -137,6 +137,8 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 .pivots::-webkit-scrollbar{display:none}
 .pivots button{padding-block:6px;font-weight:300;font-size:1.75rem;line-height:1.1;color:var(--off);white-space:nowrap;text-transform:lowercase;transition:color .2s}
 .pivots button[aria-selected="true"]{color:var(--fg)}
+/* Indstillinger: fanerækken må gå bredere end tekstspalten, så alle syv ord er på skærmen. Under 720px bliver margin præcis -16px, som padding ophæver — telefonen er uændret. */
+#spivots{margin-right:max(calc(50% - 50vw), -220px);padding-right:max(16px, env(safe-area-inset-right,0px))}
 .pane{display:flex;flex-direction:column;gap:18px;min-height:240px;touch-action:pan-y}
 .grp{display:flex;flex-direction:column;gap:8px}
 .grp h2{margin:0;font-size:0.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
@@ -256,9 +258,54 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 @keyframes kenburns{0%{opacity:0;transform:scale(1.18) translate(3%,2%)}12%{opacity:.85}85%{opacity:.85}100%{opacity:0;transform:scale(1.02) translate(-2%,-1%)}}
 @keyframes hintOut{0%,70%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion: reduce){.pause .prow.a,.pause .prow.b{animation:none}.pause .fname{animation:featIn 9s ease both}.pause .fphoto img{animation:featIn 9s ease both}}
-.hugebox{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border:1px dashed var(--dim);font-size:0.9375rem;line-height:1.45;color:var(--sub)}
-.hugebox b{color:var(--fg);font-weight:600}
-.hugebox .huge{font-weight:300;font-size:2.6rem;line-height:1;letter-spacing:-.02em;color:var(--t-far)}
+.hugeline{display:block;font-weight:300;font-size:2.6rem;line-height:1;letter-spacing:-.02em;color:var(--t-far);margin:2px 0 -2px}
+/* ---- Din egen anetavle: kun i det usynlige lag, derfor a- foran alt ---- */
+.ana{width:max-content}
+.ana .a-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.ana .a-titles{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ana .a-h1{font-weight:300;font-size:40px;line-height:1.05;margin:0;letter-spacing:-.02em;color:var(--a-ink)}
+.ana .a-stats{margin:0;font-size:13px;color:var(--a-muted)}
+.ana .a-brand{font-size:40px;line-height:1;text-align:right;margin-left:auto}
+.ana .a-bl{font-weight:300;font-size:1em;line-height:1;letter-spacing:-.01em;color:var(--a-ink)}
+.ana .a-bt{font-weight:300;font-size:.307em;line-height:1.2;color:var(--a-muted);margin-top:.22em}
+.ana .a-bs{display:flex;justify-content:flex-end;gap:.073em;margin-top:.267em}
+.ana .a-bs i{width:.533em;height:.533em;display:block}
+.ana .a-bs i:nth-child(1){background:#4a3b2e}
+.ana .a-bs i:nth-child(2){background:#a0522d}
+.ana .a-bs i:nth-child(3){background:#5a6b3a}
+.ana .a-bs i:nth-child(4){background:#8c6d2c}
+.ana .a-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin:14px 0 0;padding:0;list-style:none;font-size:13px;color:var(--a-muted)}
+.ana .a-legend li{display:flex;align-items:center;gap:6px}
+.ana .a-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.ana .a-dot.a-far{background:var(--a-far)}
+.ana .a-dot.a-mor{background:var(--a-mor)}
+.ana .a-sw{width:14px;height:10px;border:1px dashed var(--a-ghost);border-radius:2px;display:inline-block}
+.ana .a-canvas{position:relative;margin-top:18px}
+.ana .a-canvas svg{position:absolute;left:0;top:0;overflow:visible}
+.ana .a-canvas path{fill:none;stroke:var(--a-ghost);stroke-width:1.4}
+.ana .a-box{position:absolute;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:9px;align-items:center;text-align:left;background:var(--a-card);border:1px solid var(--a-line);border-radius:5px;padding:7px 10px;color:var(--a-ink)}
+.ana .a-box.a-center{background:var(--a-ink);color:var(--a-paper);border-color:var(--a-ink)}
+.ana .a-box.a-center .a-rel,.ana .a-box.a-center .a-chain,.ana .a-box.a-center .a-yrs,.ana .a-box.a-center .a-wed{color:var(--a-paper);opacity:.75}
+.ana .a-txt{display:flex;flex-direction:column;gap:1px;min-width:0}
+.ana .a-rel{font-size:12px;line-height:15px;letter-spacing:.01em;color:var(--a-muted);white-space:normal;overflow-wrap:anywhere}
+.ana .a-chain{font-size:12px;line-height:15px;color:var(--a-muted);opacity:.9;white-space:normal;overflow-wrap:anywhere}
+.ana .a-box.a-far .a-rel{color:var(--a-far)}
+.ana .a-box.a-mor .a-rel{color:var(--a-mor)}
+.ana .a-nm{font-weight:600;font-size:14px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ana .a-yrs{font-size:12px;color:var(--a-muted);font-variant-numeric:tabular-nums}
+.ana .a-wed{font-size:12px;line-height:15px;color:var(--a-muted);white-space:normal;overflow-wrap:anywhere}
+.ana .a-box.a-hs{align-items:start}
+.ana .a-sibs{grid-column:1 / -1;margin-top:6px;padding-top:5px;border-top:1px dashed var(--a-line);display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:15px;color:var(--a-muted)}
+.ana .a-sibs b{font-weight:600;letter-spacing:.04em;text-transform:uppercase;font-size:11px}
+.ana .a-sbrow{display:block}
+.ana .a-sb{color:var(--a-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ana .a-box.a-unk{background:transparent;border:1px dashed var(--a-ghost);color:var(--a-muted);grid-template-columns:1fr;font-size:12px;padding:4px 10px}
+.ana .a-ph{width:38px;height:38px;border-radius:50%;overflow:hidden;border:1px dashed var(--a-ghost);display:grid;place-items:center;font-size:12px;color:var(--a-ghost);background:var(--a-paper)}
+.ana .a-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ana .a-ph.a-filled{border:1px solid var(--a-line)}
+.ana .a-box.a-center .a-ph{border-color:currentColor;color:inherit;background:transparent}
+.ana .a-spouse{position:absolute;font-size:12px;color:var(--a-muted);text-align:center;white-space:nowrap}
+.ana .a-foot{font-size:13px;color:var(--a-muted);margin:56px 0 0;max-width:90ch;line-height:1.45}
 .spane{display:flex;flex-direction:column;gap:14px;min-height:50vh;touch-action:pan-y}
 .spane[hidden]{display:none}
 .spane .grp h2{font-size:0.75rem}
@@ -452,6 +499,11 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
       <div class="brand brand-sm" aria-hidden="true"><span class="bl">slægten</span><span class="bt">altid i lommen</span><span class="bsq"><i></i><i></i><i></i><i></i></span></div>
       <p class="pfnote keeper" id="setAdmin" style="color:var(--fg)"></p>
       <p class="pfnote" id="setVer"></p>
+      <div class="grp" id="instSect"><h2>installér appen</h2><p class="pfnote" id="instText"></p><button class="primarybtn" type="button" id="instBtn2" hidden>installér appen</button></div>
+      <div class="grp" id="logoutSect"><h2>log ud</h2>
+        <p class="pfnote">Glemmer appens nøgle på denne telefon. Har telefonen selv gemt adgangskoden, udfylder den den igen. Dit valg af person og udseende bliver husket.</p>
+        <button class="primarybtn" type="button" id="logoutBtn">log ud</button>
+      </div>
       <div class="grp priv" id="privSect"><h2>dine data</h2>
         <p class="pfnote">Alt i træet er låst med familiens adgangskode. Navne, datoer og billeder ligger krypteret, også der, hvor appen bor på nettet, så ingen udenforstående kan læse dem. Adgangskoden bliver på din telefon og sendes ingen steder hen. Appen bruger ingen cookies, ingen statistik og ingen reklamer. Børn vises kun som tegning, og om dit eget billede skal med, bestemmer du selv.</p>
         <p class="pfnote">Telefonen husker nøglen, så træet er aldrig mere låst end selve telefonen. Har du ladet telefonen gemme adgangskoden, udfylder den den også selv igen efter log ud. Det er telefonens skærmlås, der passer på træet.</p>
@@ -464,13 +516,8 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
           </ul>
         </details>
       </div>
-      <div class="grp" id="instSect"><h2>installér appen</h2><p class="pfnote" id="instText"></p><button class="primarybtn" type="button" id="instBtn2" hidden>installér appen</button></div>
     
 
-      <div class="grp" id="logoutSect"><h2>log ud</h2>
-        <p class="pfnote">Glemmer appens nøgle på denne telefon. Har telefonen selv gemt adgangskoden, udfylder den den igen. Dit valg af person og udseende bliver husket.</p>
-        <button class="chipbtn" type="button" id="logoutBtn" style="align-self:flex-start;font-size:15px;padding:8px 18px">log ud</button>
-      </div>
     
     </div>
     <div class="spane" data-pane="pauseskærm" role="tabpanel" hidden>
@@ -481,10 +528,23 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     
     </div>
     <div class="spane" data-pane="plakat" role="tabpanel" hidden>
-      <p class="pfnote" style="color:var(--fg)">Hele familien på én plakat som PDF. Den er den samme for alle, og den bliver opdateret, når træet gør.</p>
-      <div class="hugebox"><span class="huge">it’s huuuuuge</span><span>Plakaten er <b id="pdfDims">2,8 meter bred og 60 cm høj</b>. Det er ikke en fejl, familien er bare stor. På telefonen kan du zoome helt ind på hvert navn. Til papir skal den printes som banner hos en printshop. En udgave til A3 og A2 er på vej.</span></div>
-      <button class="primarybtn" type="button" id="pdfGet" disabled>gør klar …</button>
-      <p class="pfnote" id="pdfMsg" role="status"></p>
+      <p class="pfnote" style="color:var(--fg)">Her kan du downloade hele familien på én plakat. Eller vælge en plakat med din egen anetavle, der kun følger forældrenes vej bagud. Begge som PDF.</p>
+      <div class="grp" style="margin-top:4px">
+        <h2>hele familien</h2>
+        <p class="pfnote">Hele familien på én plakat. Den er den samme for alle, og den bliver opdateret, når træet gør.</p>
+        <span class="hugeline">it’s huuuuuge</span>
+        <p class="pfnote"><b id="pdfDims">2,8 meter bred og 60 cm høj</b>. Det er ikke en fejl, familien er bare stor. På telefonen kan du zoome helt ind på hvert navn. Til papir skal den printes som banner hos en printshop.</p>
+        <button class="primarybtn" type="button" id="pdfGet" disabled>gør klar …</button>
+        <p class="pfnote" id="pdfMsg" role="status"></p>
+      </div>
+      <div class="grp" style="margin-top:26px">
+        <h2>din egen anetavle</h2>
+        <p class="pfnote">En anetavle følger forældrenes vej bagud: dine forældre, deres forældre og så videre, så langt træet rækker. Dine søskende står ved siden af dig, din ægtefælle og dine børn nedenunder. Alle andre grene er væk — derfor fylder den langt mindre end familieplakaten.</p>
+        <div class="form"><label>hvis anetavle?<select id="anaWho"></select></label></div>
+        <p class="pfnote" id="anaNote"></p>
+        <button class="primarybtn" type="button" id="anaGet">hent din anetavle</button>
+        <p class="pfnote" id="anaMsg" role="status"></p>
+      </div>
     </div>
     <div class="spane" data-pane="forslag" role="tabpanel" hidden>
       <p class="pfnote" id="sgIntro"></p>
@@ -966,9 +1026,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.9.2';
+var APP_VERSION='2.10';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.10',d:'2026-11-09',t:'2026-11-09T13:20:00Z',items:['Ny plakat til print! Hele familien på én væg over sofaen var vist for meget af det gode, så nu kan du også hente din egen anetavle, som kun følger forældrenes vej bagud: dine forældre, deres forældre og så videre, så langt træet rækker. Dine søskende står pænt ved siden af dig, din ægtefælle og dine børn nedenunder. Alle andre grene er væk — så nu er der ingen undskyldning for at hænge den op. Selv tak']},
   {v:'2.9.2',d:'2026-11-02',t:'2026-11-02T14:05:00Z',items:['Når du logger på, vises et nyt logo for appen, mens træet bliver pakket ud bagved. Det sker kun, når du logger på med password — ikke hver gang du åbner appen. Både du og vores forfædre har ventet længe nok']},
   {v:'2.9.1',d:'2026-11-02',t:'2026-11-02T13:39:03Z',items:['Små justeringer i brugerfladen. Jeg har ryddet lidt op, både foran og bagved, og fjernet unødig støj for at give mere plads til familien']},
   {v:'2.9',d:'2026-10-27',t:'2026-10-27T09:25:00Z',items:['Øverst på hvert kort står nu det ord, man faktisk bruger: oldemor, tipoldefar, barnebarn. Det præcise slægtsled står under navnet, hvor det ikke råber ad nogen. Begge dele er rigtige, men kun det ene bliver sagt ved kaffebordet']},
@@ -1120,7 +1181,7 @@ function setSPane(k,dir){
   if(dir!=='none') replay(cur, SPORDER.indexOf(k)>=SPORDER.indexOf(prev)?'m-fwd':'m-back');
   stripTo($('#spivots'),document.querySelector('#spivots [aria-selected="true"]'),true);
   $('#settings').scrollTop=0;
-  if(k==='plakat') preparePdf();
+  if(k==='plakat'){ preparePdf(); anaRefresh(); }
 }
 /* ---------- Familieplakat som PDF (låst med familiens adgangskode) ---------- */
 var PDFFILE=null, PDFVER=null, PDFBUSY=false;
@@ -1453,6 +1514,484 @@ function armPauseHint(){
 function closePauseHint(){ store('slaegt.pausehint','1'); $('#pauseBar').hidden=true; }
 $('#pauseGo').addEventListener('click',function(){ closePauseHint(); setTimeout(startPause,60); });
 $('#pauseNo').addEventListener('click',closePauseHint);
+
+/* ---------- Din egen anetavle ---------- */
+/* ===================== Din egen anetavle =====================
+   Tegner en anetavle for én person i et usynligt lag og skriver den som PDF.
+   Alt ligger i sin egen lukning, så intet navn kan støde sammen med appens egne.
+   Skriften er appens egen Open Sans; i PDF'en bliver den til Helvetica.
+   Tavlens klasser har alle a- foran, fordi .nm .ph .txt og .unk findes i forvejen. */
+var ANA=(function(){
+var PX=72/96, BW=204, BH=76, UH=36, CW=238, URH=90, GAP=22;
+var CENTER=null, RELMAP={}, CHAINMAP={}, MEAS=null, ROOT=null, CV=null;
+
+/* ---- Helvetica-bredder, 1/1000 em. Kun de to vægte PDF'en bruger. ---- */
+var HW={r:{},b:{}};
+(function(){
+ var r='278 278 355 556 556 889 667 191 333 333 389 584 278 333 278 278 556 556 556 556 556 556 556 556 556 556 278 278 584 584 584 556 1015 667 667 722 722 667 611 778 722 278 500 667 556 833 722 778 667 778 722 667 611 722 667 944 667 667 611 278 278 278 469 556 333 556 556 500 556 556 278 556 556 222 222 500 222 833 556 556 556 556 333 500 278 556 500 722 500 500 500 334 260 334 584';
+ var b='278 333 474 556 556 889 722 238 333 333 389 584 278 333 278 278 556 556 556 556 556 556 556 556 556 556 333 333 584 584 584 611 975 722 722 722 722 667 611 778 722 278 556 722 611 833 722 778 667 778 722 667 611 722 667 944 667 667 611 333 278 333 584 556 333 556 611 556 611 556 333 611 611 278 278 556 278 889 611 611 611 611 389 556 333 611 556 778 556 556 500 389 280 389 584';
+ r.split(' ').forEach(function(w,i){ HW.r[32+i]=+w; });
+ b.split(' ').forEach(function(w,i){ HW.b[32+i]=+w; });
+ /* Latin-1 og de danske tegn */
+ var hi={160:278,161:333,162:556,163:556,164:556,165:556,166:260,167:556,168:333,169:737,170:370,171:556,172:584,173:333,174:737,175:333,176:400,177:584,178:333,179:333,180:333,181:556,182:537,183:278,184:333,185:333,186:365,187:556,188:834,189:834,190:834,191:611,192:667,193:667,194:667,195:667,196:667,197:667,198:1000,199:722,200:667,201:667,202:667,203:667,204:278,205:278,206:278,207:278,208:722,209:722,210:778,211:778,212:778,213:778,214:778,215:584,216:778,217:722,218:722,219:722,220:722,221:667,222:667,223:611,224:556,225:556,226:556,227:556,228:556,229:556,230:889,231:500,232:556,233:556,234:556,235:556,236:278,237:278,238:278,239:278,240:556,241:556,242:556,243:556,244:556,245:556,246:556,247:584,248:611,249:556,250:556,251:556,252:556,253:500,254:556,255:500};
+ var hib={160:278,161:333,162:556,163:556,164:556,165:556,166:280,167:556,168:333,169:737,170:370,171:556,172:584,173:333,174:737,175:333,176:400,177:584,178:333,179:333,180:333,181:611,182:556,183:278,184:333,185:333,186:365,187:556,188:834,189:834,190:834,191:611,192:722,193:722,194:722,195:722,196:722,197:722,198:1000,199:722,200:667,201:667,202:667,203:667,204:278,205:278,206:278,207:278,208:722,209:722,210:778,211:778,212:778,213:778,214:778,215:584,216:778,217:722,218:722,219:722,220:722,221:667,222:667,223:611,224:556,225:556,226:556,227:556,228:556,229:556,230:889,231:556,232:556,233:556,234:556,235:556,236:278,237:278,238:278,239:278,240:611,241:611,242:611,243:611,244:611,245:611,246:611,247:584,248:611,249:611,250:611,251:611,252:611,253:556,254:611,255:556};
+ Object.keys(hi).forEach(function(k){ HW.r[k]=hi[k]; });
+ Object.keys(hib).forEach(function(k){ HW.b[k]=hib[k]; });
+})();
+
+/* ---- små hjælpere ---- */
+function aEl(tag,cls,txt){ var e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; }
+function aIni(t){ var w=t.replace(/\(.*?\)/g,' ').split(/\s+/).filter(function(x){return /^[A-ZÆØÅ]/.test(x)}); if(!w.length) return '?'; return (w[0][0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase(); }
+function relName(path){ if(!path.length) return ''; var w=path.map(function(x){return x==='f'?'far':'mor'}), out=[]; for(var i=0;i<w.length;i+=2) out.push(w.slice(i,i+2).join('')); return out.join('s '); }
+function kinWord(path){ var n=path.length; if(!n) return ''; if(n<=2) return relName(path); return new Array(n-2).join('tip')+'olde'+(path[n-1]==='f'?'far':'mor'); }
+function kinChain(path){ return path.length>=3?relName(path):''; }
+function nLines(t){ var cpl=21, lines=0, cur=0;
+  (t||'').split(' ').forEach(function(w){ while(w.length>cpl){ if(cur){ lines++; cur=0; } lines++; w=w.slice(cpl); }
+    var L=w.length+(cur?1:0); if(cur&&cur+L>cpl){ lines++; cur=w.length; } else cur+=L; });
+  return lines+(cur?1:0); }
+function relH(path){ var c=kinChain(path); return (nLines(kinWord(path))-1)*15 + (c?nLines(c)*15+2:0); }
+function sibLabel(c,s){ var full=P[c].f&&P[c].m&&P[s].f===P[c].f&&P[s].m===P[c].m;
+  var base=P[s].s==='F'?'søster':(P[s].s==='M'?'bror':'søskende'); return full?base:'halv'+base; }
+/* appens data: ægtefæller ligger på p.sp som {id,txt}, i kronologisk rækkefølge */
+function spouses(id){ return (P[id]&&P[id].sp)?P[id].sp.slice():[]; }
+function sibsOf(id){ var p=P[id], out=[]; [p.f,p.m].forEach(function(q){ if(q&&P[q]) P[q].kids.forEach(function(k){ if(k!==id&&out.indexOf(k)<0) out.push(k); }); }); return out; }
+function sibName(k){ var q=P[k], yb=yr(q.b), yd=yr(q.d), yy=yb&&yd?yb+'–'+yd:yb; return q.n.replace(/ Hejselbæk$/,'')+(yy?' ('+yy+')':''); }
+function sibSpouse(k){ var s=spouses(k); return s.length?s[s.length-1]:null; }
+function sibText(k){ var sp=sibSpouse(k); return sibName(k)+(sp?' · gift med '+P[sp.id].n.split(' ')[0]:''); }
+function sibLines(t,wid){
+  if(!MEAS){ MEAS=aEl('span'); MEAS.style.cssText='position:absolute;left:-9999px;top:0;white-space:nowrap;font-family:var(--f-ui);font-size:12px'; document.body.appendChild(MEAS); }
+  var W=wid||BW-22, words=t.split(' '), lines=1, cur='';
+  for(var i=0;i<words.length;i++){ var tr=cur?cur+' '+words[i]:words[i]; MEAS.textContent=tr;
+    if(cur&&MEAS.getBoundingClientRect().width>W){ lines++; cur=words[i]; } else cur=tr; }
+  return lines; }
+function boxH(id){ var ks=sibsOf(id); if(!ks.length) return BH; var n=1; ks.forEach(function(k){ n+=sibLines(sibText(k)); }); return BH+14+15*n; }
+function wedText(w){ var ns=w.map(function(x){ return P[x.id].n.split(' ')[0]; }); return 'gift med '+ns[0]+(ns.length>1?', senere '+ns.slice(1).join(' og '):''); }
+function wedH(w){ return w.length? sibLines(wedText(w),BW-67)*15 : 0; }
+
+/* ---- layout + tegning, som i anetavle-artefaktet ---- */
+function build(center){
+  var nodes=[], paths=[], depth=0, known=0;
+  RELMAP={}; CHAINMAP={}; RELMAP[center]='';
+  function xOf(gen,dir){ return dir*(BW/2+14+(gen-1)*CW); }
+  function place(item,gen,dir,path,cur){
+    depth=Math.max(depth,gen);
+    if(!item.id){ var y0u=cur.y+UH/2; cur.y+=URH; var nu={unk:item.label,gen:gen,dir:dir,x:xOf(gen,dir),y:y0u,h:UH}; nodes.push(nu); return nu; }
+    var p=P[item.id]; known++; RELMAP[item.id]=kinWord(path); CHAINMAP[item.id]=kinChain(path);
+    var wed=spouses(item.id);
+    var h=boxH(item.id)+relH(path)+wedH(wed), i0=nodes.length, y0=cur.y, par=[];
+    if(p.f||p.m){
+      par.push(place(p.f?{id:p.f}:{label:'Far · ikke i træet endnu'},gen+1,dir,path.concat('f'),cur));
+      par.push(place(p.m?{id:p.m}:{label:'Mor · ikke i træet endnu'},gen+1,dir,path.concat('m'),cur));
+    } else par.push(place({label:'Forældre · ikke i træet endnu'},gen+1,dir,path.concat('f'),cur));
+    var y=(par[0].y+par[par.length-1].y)/2, need=y0+h/2-y;
+    if(need>0){ for(var k=i0;k<nodes.length;k++) nodes[k].y+=need; y+=need; cur.y+=need; }
+    if(cur.y<y+h/2+16) cur.y=y+h/2+16;
+    var n={id:p.id,gen:gen,dir:dir,x:xOf(gen,dir),y:y,h:h,side:path[0]==='f'?'far':'mor',
+           rel:kinWord(path),chain:kinChain(path),wed:wed,hs:sibsOf(p.id).length>0};
+    nodes.push(n); par.forEach(function(q){ n.par=n.par||[]; n.par.push(q); });
+    return n;
+  }
+  var c=P[center], left=null,right=null, curL={y:0},curR={y:0};
+  if(c.f||c.m){
+    left=place(c.f?{id:c.f}:{label:'Far · ikke i træet endnu'},1,-1,['f'],curL);
+    right=place(c.m?{id:c.m}:{label:'Mor · ikke i træet endnu'},1,1,['m'],curR);
+    var dy=left.y-right.y;
+    nodes.forEach(function(n){ if(dy>0&&n.dir===1) n.y+=dy; if(dy<0&&n.dir===-1) n.y-=dy; });
+  } else { left=place({label:'Forældre · ikke i træet endnu'},1,-1,['f'],curL); left.x=0; }
+  var bottom=0; nodes.forEach(function(n){ bottom=Math.max(bottom,n.y+n.h/2); });
+  var rowY=bottom+70+BH/2, row=[];
+  if(c.f||c.m){ var pool=[]; [c.f,c.m].forEach(function(q){ if(q) P[q].kids.forEach(function(k){ if(pool.indexOf(k)<0) pool.push(k); }); }); row=pool; }
+  else row=[center];
+  var W=row.length*BW+(row.length-1)*GAP, x0=-W/2+BW/2;
+  var rowNodes=row.map(function(id,i){
+    var n={id:id,gen:0,x:x0+i*(BW+GAP),y:rowY,h:BH,center:id===center,rel:id===center?'centrum':sibLabel(center,id)};
+    if(id!==center) RELMAP[id]=n.rel; nodes.push(n); return n; });
+  var cNode=rowNodes.filter(function(n){return n.center})[0];
+  var sp=spouses(center), kidNodes=[];
+  if(c.kids.length){
+    var ky=rowY+BH/2+(sp.length?44:0)+70+BH/2;
+    var KW=c.kids.length*BW+(c.kids.length-1)*GAP, kx0=cNode.x-KW/2+BW/2;
+    kidNodes=c.kids.map(function(id,i){ var n={id:id,gen:-1,x:kx0+i*(BW+GAP),y:ky,h:BH,
+      rel:P[id].s==='F'?'datter':(P[id].s==='M'?'søn':'barn')}; RELMAP[id]=n.rel; nodes.push(n); return n; });
+  }
+  nodes.forEach(function(n){ if(!n.par) return;
+    var xe=n.x+n.dir*BW/2, xm=xe+n.dir*(CW-BW)/2;
+    n.par.forEach(function(q){ paths.push('M'+xe+','+n.y+' H'+xm+' V'+q.y+' H'+(q.x-n.dir*BW/2)); }); });
+  var barY=rowY-BH/2-26;
+  if(c.f||c.m){
+    var py=left.y, lx=left.x+BW/2, rx=right?right.x-BW/2:lx, mid=(lx+rx)/2;
+    paths.push('M'+lx+','+py+' H'+rx);
+    paths.push('M'+mid+','+py+' V'+barY);
+    var xs=rowNodes.map(function(n){return n.x}).concat([mid]);
+    paths.push('M'+Math.min.apply(null,xs)+','+barY+' H'+Math.max.apply(null,xs));
+    rowNodes.forEach(function(n){ paths.push('M'+n.x+','+barY+' V'+(n.y-BH/2)); });
+  } else paths.push('M'+left.x+','+(left.y+UH/2)+' V'+(rowY-BH/2));
+  if(kidNodes.length){
+    var kb=kidNodes[0].y-BH/2-26, top=cNode.y+BH/2+(sp.length?44:0);
+    paths.push('M'+cNode.x+','+top+' V'+kb);
+    var kxs=kidNodes.map(function(n){return n.x}).concat([cNode.x]);
+    paths.push('M'+Math.min.apply(null,kxs)+','+kb+' H'+Math.max.apply(null,kxs));
+    kidNodes.forEach(function(n){ paths.push('M'+n.x+','+kb+' V'+(n.y-BH/2)); });
+  }
+  var minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
+  nodes.forEach(function(n){ minX=Math.min(minX,n.x-BW/2); maxX=Math.max(maxX,n.x+BW/2);
+    minY=Math.min(minY,n.y-n.h/2); maxY=Math.max(maxY,n.y+n.h/2); });
+  if(sp.length) maxY=Math.max(maxY,cNode.y+BH/2+18*sp.length+10);
+  var pad=36, ox=pad-minX, oy=pad-minY, w=maxX-minX+pad*2, h=maxY-minY+pad*2;
+
+  CV.innerHTML=''; CV.style.width=w+'px'; CV.style.height=h+'px';
+  CV.insertAdjacentHTML('beforeend','<svg width="'+w+'" height="'+h+'" aria-hidden="true"><g transform="translate('+ox+','+oy+')">'+
+    paths.map(function(d){return '<path d="'+d+'"/>'}).join('')+'</g></svg>');
+  nodes.forEach(function(n){
+    var b;
+    if(n.unk) b=aEl('div','a-box a-unk',n.unk);
+    else {
+      var p=P[n.id];
+      b=aEl('div','a-box'+(n.center?' a-center':'')+(n.side?' a-'+n.side:''));
+      var im=pic(p), ph=aEl('div','a-ph'+(im?' a-filled':''));
+      if(im){ var g=new Image(); g.src=im; g.alt=''; ph.appendChild(g); } else ph.textContent=aIni(p.n);
+      var t=aEl('div','a-txt');
+      if(n.rel) t.appendChild(aEl('span','a-rel',n.rel));
+      if(n.chain) t.appendChild(aEl('span','a-chain',n.chain));
+      t.appendChild(aEl('span','a-nm',p.n));
+      var y=years(p); if(y) t.appendChild(aEl('span','a-yrs',y));
+      if(n.wed&&n.wed.length){ var wv=aEl('span','a-wed','gift med ');
+        n.wed.forEach(function(x,i){ if(i) wv.appendChild(document.createTextNode(i===1?', senere ':' og '));
+          wv.appendChild(aEl('span','a-wedn',P[x.id].n.split(' ')[0])); });
+        t.appendChild(wv); }
+      b.appendChild(ph); b.appendChild(t);
+      if(n.hs){ b.classList.add('a-hs'); var sd=aEl('div','a-sibs'); sd.appendChild(aEl('b',null,'Søskende'));
+        sibsOf(n.id).forEach(function(k){
+          var rw=aEl('span','a-sbrow'); rw.appendChild(aEl('span','a-sb',sibName(k)));
+          var s2=sibSpouse(k);
+          if(s2){ var gm=aEl('span','a-gm',' · gift med '); gm.appendChild(aEl('span','a-gmn',P[s2.id].n.split(' ')[0])); rw.appendChild(gm); }
+          sd.appendChild(rw); });
+        b.appendChild(sd); }
+    }
+    b.style.left=(n.x-BW/2+ox)+'px'; b.style.top=(n.y-n.h/2+oy)+'px';
+    b.style.width=BW+'px'; b.style.height=n.h+'px';
+    CV.appendChild(b);
+  });
+  if(sp.length){
+    var s=aEl('div','a-spouse');
+    sp.forEach(function(x){
+      var line=aEl('div');
+      line.appendChild(document.createTextNode('⚭ '));
+      line.appendChild(aEl('span','a-spn',P[x.id].n));
+      if(x.txt&&x.txt!=='gift') line.appendChild(document.createTextNode(' · '+x.txt));
+      s.appendChild(line); });
+    s.style.left=(cNode.x+ox-160)+'px'; s.style.width='320px'; s.style.top=(cNode.y+BH/2+6+oy)+'px';
+    CV.appendChild(s);
+  }
+  return {w:w,h:h,known:known,depth:depth};
+}
+/* ---- siden omkring tavlen: overskrift, mærke, signatur, kilder ---- */
+var KILDER='Kilder: kirkebøger og folketællinger på Arkivalieronline · Erling Agesen, Lars Larsen (Agesen) og efterkommere (2020) · Verner Andersen, Slægten Hejselbæk (1986) · hejselbaek.dk · arkiv.dk · Slægtsbog for slægten Hejselbæk, udg. Evald Hejselbæk (ca. 1970) · stamtræet "Familien Hejselbæk – 100 år" · Hans Ellekilde, "Heksen Maren Graa i Thorning". Kilde betyder fundet i et dokument; Oplyst betyder fortalt af familien; per slægtsbog betyder fra slægtsbogen og endnu ikke tjekket i kirkebog.';
+
+function scaffold(){
+  var r=aEl('div','ana');
+  /* fast lyst papir, uafhængigt af appens tema - PDF'en skal se ens ud hos alle */
+  r.style.cssText='position:fixed;left:-20000px;top:0;z-index:-1;'+
+    '--a-paper:#ffffff;--a-card:#fbfcfa;--a-ink:#1d221e;--a-muted:#5d665f;--a-line:#c9d0c7;'+
+    '--a-far:#2c5c4e;--a-mor:#7b3854;--a-ghost:#98a198;'+
+    'background:var(--a-paper);color:var(--a-ink);font-family:var(--f-ui);padding:28px 32px;box-sizing:border-box';
+  var head=aEl('div','a-head');
+  var titles=aEl('div','a-titles');
+  titles.appendChild(aEl('h2','a-h1',''));
+  titles.appendChild(aEl('p','a-stats',''));
+  head.appendChild(titles);
+  var br=aEl('div','a-brand');
+  br.appendChild(aEl('div','a-bl','slægten'));
+  br.appendChild(aEl('div','a-bt','altid i lommen'));
+  var bs=aEl('div','a-bs'); for(var i=0;i<4;i++) bs.appendChild(aEl('i'));
+  br.appendChild(bs);
+  head.appendChild(br);
+  r.appendChild(head);
+  var lg=aEl('ul','a-legend');
+  [['a-dot a-far','Fars side'],['a-dot a-mor','Mors side'],['a-sw','Ikke i træet endnu']].forEach(function(x){
+    var li=aEl('li'); li.appendChild(aEl('span',x[0])); li.appendChild(document.createTextNode(x[1])); lg.appendChild(li); });
+  r.appendChild(lg);
+  CV=aEl('div','a-canvas'); r.appendChild(CV);
+  r.appendChild(aEl('p','a-foot',KILDER));
+  document.body.appendChild(r);
+  return r;
+}
+
+/* ---- PDF: bytes skrevet i hånden, ingen biblioteker ---- */
+function Out(){ this.parts=[]; this.len=0; }
+Out.prototype.push=function(u8){ this.parts.push(u8); this.len+=u8.length; };
+Out.prototype.str=function(s){ this.push(new TextEncoder().encode(s)); };
+Out.prototype.join=function(){ var a=new Uint8Array(this.len),o=0; this.parts.forEach(function(p){ a.set(p,o); o+=p.length; }); return a; };
+function b64dec(s){ var b=atob(s), a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
+var CP={0x2013:150,0x2014:151,0x2018:145,0x2019:146,0x201C:147,0x201D:148,0x2022:149,0x2026:133,0x2030:137,0x20AC:128};
+function enc(str){ var o=[]; for(var i=0;i<str.length;i++){ var c=str.codePointAt(i); if(c>0xFFFF) i++;
+  o.push(c===0xA0?32:(c<256?c:(CP[c]||0x3F))); } return o; }
+function pdfStr(s){ var b=enc(s), o='';
+  for(var i=0;i<b.length;i++){ var x=b[i];
+    if(x===40||x===41||x===92) o+='\\'+String.fromCharCode(x);
+    else if(x<32||x>126) o+='\\'+('000'+x.toString(8)).slice(-3);
+    else o+=String.fromCharCode(x); }
+  return '('+o+')'; }
+function tw(s,size,bold){ var t=bold?HW.b:HW.r, b=enc(s), w=0;
+  for(var i=0;i<b.length;i++) w+=(t[b[i]]!==undefined?t[b[i]]:278); return w/1000*size; }
+function col(c){ var m=/rgba?\(([^)]+)\)/.exec(c); if(!m) return null;
+  var p=m[1].split(',').map(parseFloat); if(p.length>3&&p[3]===0) return null;
+  return [p[0]/255,p[1]/255,p[2]/255]; }
+function nf(x){ return (Math.round(x*100)/100).toString(); }
+function rg(c){ return nf(c[0])+' '+nf(c[1])+' '+nf(c[2]); }
+function jpeg(u8){ var i=2;
+  while(i<u8.length){ if(u8[i]!==0xFF){ i++; continue; }
+    var mk=u8[i+1], L=(u8[i+2]<<8)|u8[i+3];
+    if(mk>=0xC0&&mk<=0xCF&&mk!==0xC4&&mk!==0xC8&&mk!==0xCC)
+      return {h:(u8[i+5]<<8)|u8[i+6], w:(u8[i+7]<<8)|u8[i+8], c:u8[i+9]};
+    i+=2+L; }
+  return {w:1,h:1,c:3}; }
+function ring(cx,cy,r){ var k=0.5523*r;
+  return nf(cx+r)+' '+nf(cy)+' m '+nf(cx+r)+' '+nf(cy+k)+' '+nf(cx+k)+' '+nf(cy+r)+' '+nf(cx)+' '+nf(cy+r)+' c '+
+    nf(cx-k)+' '+nf(cy+r)+' '+nf(cx-r)+' '+nf(cy+k)+' '+nf(cx-r)+' '+nf(cy)+' c '+
+    nf(cx-r)+' '+nf(cy-k)+' '+nf(cx-k)+' '+nf(cy-r)+' '+nf(cx)+' '+nf(cy-r)+' c '+
+    nf(cx+k)+' '+nf(cy-r)+' '+nf(cx+r)+' '+nf(cy-k)+' '+nf(cx+r)+' '+nf(cy)+' c '; }
+function circle(x,y,w,h){ return ring(x+w/2,y+h/2,Math.min(w,h)/2); }
+/* ⚭ findes ikke i Helvetica; den tegnes som to ringe */
+var DRAW={}; DRAW[0x26AD]=function(o){
+  /* ringene skaleres til den bredde browseren gav tegnet, så de aldrig støder ind i navnet */
+  var av=o.w||o.size*0.9, r=Math.min(o.size*0.26, av/3.6), cy=o.y+o.size*0.30, x=o.x+(av-r*3.6)/2;
+  return rg(o.fill)+' RG '+nf(o.size*0.075)+' w '+ring(x+r,cy,r)+ring(x+r*2.6,cy,r)+'S'; };
+
+function collect(root){
+  var base=root.getBoundingClientRect(), H=base.height, ops=[], imgs={}, clip=null;
+  function X(v){ return (v-base.left)*PX; }
+  function Y(v){ return (H-(v-base.top))*PX; }
+  var ctx=document.createElement('canvas').getContext('2d');
+
+  function svgPaths(svg){
+    Array.prototype.forEach.call(svg.querySelectorAll('path'),function(p){
+      var g=p.parentNode, tr=(g.getAttribute('transform')||'').match(/translate\(([-\d.]+)[, ]+([-\d.]+)\)/);
+      var ox=tr?parseFloat(tr[1]):0, oy=tr?parseFloat(tr[2]):0, bx=svg.getBoundingClientRect();
+      var cs=getComputedStyle(p), st=col(cs.stroke)||[0,0,0], lw=parseFloat(cs.strokeWidth)||1;
+      var pts=[], cx=0, cy=0;
+      (p.getAttribute('d')||'').replace(/([MHV])([-\d.]+)(?:,([-\d.]+))?/g,function(_,c2,a,b){
+        a=parseFloat(a); if(c2==='M'){ cx=a; cy=parseFloat(b); } else if(c2==='H') cx=a; else cy=a;
+        pts.push([cx,cy]); return ''; });
+      if(pts.length<2) return;
+      ops.push({t:'path',pts:pts.map(function(q){ return [X(bx.left+ox+q[0]),Y(bx.top+oy+q[1])]; }),stroke:st,lw:lw*PX,clip:clip});
+    }); }
+
+  function text(node,parent,cs){
+    var raw=node.nodeValue;
+    var disp=cs.textTransform==='uppercase'?raw.toUpperCase():cs.textTransform==='lowercase'?raw.toLowerCase():raw;
+    var size=parseFloat(cs.fontSize), wt=parseInt(cs.fontWeight,10)||400, bold=wt>=600, fill=col(cs.color)||[0,0,0];
+    ctx.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
+    var m=ctx.measureText('Hxg'), asc=m.fontBoundingBoxAscent, desc=m.fontBoundingBoxDescent;
+    var pb=parent.getBoundingClientRect(), hid=/hidden|clip/.test(getComputedStyle(parent).overflow);
+    var rng=document.createRange(), lines=[], cur=null;
+    for(var i=0;i<raw.length;i++){
+      rng.setStart(node,i); rng.setEnd(node,i+1);
+      var rr=rng.getClientRects()[0]; if(!rr||(rr.width===0&&rr.height===0)) continue;
+      var top=Math.round(rr.top*10)/10, ch={i:i,l:rr.left,r:rr.right};
+      if(!cur||Math.abs(cur.top-top)>1){ cur={top:top,h:rr.height,ch:[ch]}; lines.push(cur); }
+      else cur.ch.push(ch);
+    }
+    lines.forEach(function(L){
+      if(hid&&L.top>=pb.bottom-1) return;
+      var by=L.top+(L.h-(asc+desc))/2+asc, runs=[], run=null;
+      L.ch.forEach(function(c2){
+        var code=disp.codePointAt(c2.i);
+        if(DRAW[code]){ runs.push({draw:code,l:c2.l,r:c2.r}); run=null; return; }
+        if(!run){ run={s:'',l:c2.l,r:c2.r}; runs.push(run); }
+        run.s+=disp[c2.i]; run.r=c2.r; });
+      runs.forEach(function(R){
+        if(R.draw!==undefined){ ops.push({t:'glyph',g:R.draw,x:X(R.l),y:Y(by),size:size*PX,w:(R.r-R.l)*PX,fill:fill,clip:clip}); return; }
+        if(!R.s.trim()) return;
+        var nat=tw(R.s,size,bold), want=R.r-R.l;
+        ops.push({t:'text',s:R.s,x:X(R.l),y:Y(by),size:size*PX,bold:bold,fill:fill,clip:clip,
+                  tz:nat>0?Math.max(55,Math.min(150,want/nat*100)):100});
+      });
+    });
+  }
+
+  function walk(el){
+    var cs=getComputedStyle(el);
+    if(cs.display==='none'||cs.visibility==='hidden') return;
+    var r=el.getBoundingClientRect(), save=clip;
+    if(/hidden|clip|auto|scroll/.test(cs.overflow+cs.overflowX+cs.overflowY)&&el!==root){
+      var c2={x:X(r.left),y:Y(r.bottom),w:r.width*PX,h:r.height*PX};
+      clip=clip?{x:Math.max(clip.x,c2.x),y:Math.max(clip.y,c2.y),
+        w:Math.min(clip.x+clip.w,c2.x+c2.w)-Math.max(clip.x,c2.x),
+        h:Math.min(clip.y+clip.h,c2.y+c2.h)-Math.max(clip.y,c2.y)}:c2;
+    }
+    if(el!==root&&r.width>0&&r.height>0&&el.tagName!=='svg'&&!el.closest('svg')){
+      var rad=parseFloat(cs.borderTopLeftRadius)||0, round=rad>=Math.min(r.width,r.height)/2-0.5;
+      var bg=col(cs.backgroundColor);
+      if(bg) ops.push({t:'rect',x:X(r.left),y:Y(r.bottom),w:r.width*PX,h:r.height*PX,fill:bg,round:round,clip:clip});
+      var S=['Top','Right','Bottom','Left'].map(function(k){ return {w:parseFloat(cs['border'+k+'Width'])||0,st:cs['border'+k+'Style'],c:col(cs['border'+k+'Color'])}; });
+      var liveS=S.filter(function(s){ return s.w>0&&s.st!=='none'&&s.st!=='hidden'&&s.c; });
+      var all4=liveS.length===4&&S.every(function(s){ return s.w===S[0].w&&s.st===S[0].st; });
+      if(all4) ops.push({t:'rect',x:X(r.left)+S[0].w*PX/2,y:Y(r.bottom)+S[0].w*PX/2,
+        w:(r.width-S[0].w)*PX,h:(r.height-S[0].w)*PX,stroke:S[0].c,lw:S[0].w*PX,
+        dash:S[0].st==='dashed',dotted:S[0].st==='dotted',round:round,clip:clip});
+      else if(liveS.length){
+        var E={Top:[r.left,r.top,r.right,r.top],Right:[r.right,r.top,r.right,r.bottom],
+               Bottom:[r.left,r.bottom,r.right,r.bottom],Left:[r.left,r.top,r.left,r.bottom]};
+        ['Top','Right','Bottom','Left'].forEach(function(k,i){
+          var s=S[i]; if(!(s.w>0&&s.st!=='none'&&s.st!=='hidden'&&s.c)) return;
+          var e=E[k], h2=s.w*PX/2, pts=(k==='Top'||k==='Bottom')
+            ? [[X(e[0]),Y(e[1])+(k==='Top'?-h2:h2)],[X(e[2]),Y(e[3])+(k==='Top'?-h2:h2)]]
+            : [[X(e[0])+(k==='Left'?h2:-h2),Y(e[1])],[X(e[2])+(k==='Left'?h2:-h2),Y(e[3])]];
+          ops.push({t:'path',pts:pts,stroke:s.c,lw:s.w*PX,dash:s.st==='dashed',dotted:s.st==='dotted',clip:clip});
+        });
+      }
+    }
+    if(el.tagName==='svg'){ svgPaths(el); clip=save; return; }
+    if(el.tagName==='IMG'&&el.src&&el.src.indexOf('data:image/jpeg')===0){
+      var key=null; Object.keys(imgs).forEach(function(k){ if(imgs[k]===el.src) key=k; });
+      if(!key){ key='Im'+(Object.keys(imgs).length+1); imgs[key]=el.src; }
+      var pr=el.parentNode.getBoundingClientRect(), pcs=getComputedStyle(el.parentNode);
+      var prad=parseFloat(pcs.borderTopLeftRadius)||0;
+      var rnd=prad>=Math.min(pr.width,pr.height)/2-0.5?{x:X(pr.left),y:Y(pr.bottom),w:pr.width*PX,h:pr.height*PX}:null;
+      ops.push({t:'img',key:key,x:X(r.left),y:Y(r.bottom),w:r.width*PX,h:r.height*PX,round:rnd,clip:clip});
+    }
+    for(var c3=el.firstChild;c3;c3=c3.nextSibling){
+      if(c3.nodeType===1) walk(c3);
+      else if(c3.nodeType===3&&c3.nodeValue.trim()) text(c3,el,cs);
+    }
+    clip=save;
+  }
+  walk(root);
+  return {ops:ops,imgs:imgs,w:base.width*PX,h:H*PX};
+}
+
+function stream(ops){
+  var c=[];
+  ops.forEach(function(o){
+    var pre='q ';
+    if(o.clip&&o.clip.w>0&&o.clip.h>0) pre+=nf(o.clip.x)+' '+nf(o.clip.y)+' '+nf(o.clip.w)+' '+nf(o.clip.h)+' re W n ';
+    var dash=o.dash?'['+nf(o.lw*2)+' '+nf(o.lw*2)+'] 0 d ':(o.dotted?'['+nf(o.lw)+' '+nf(o.lw*1.6)+'] 0 d ':'');
+    if(o.t==='path'){
+      var s=pre+rg(o.stroke)+' RG '+nf(o.lw)+' w 1 J 1 j '+dash+nf(o.pts[0][0])+' '+nf(o.pts[0][1])+' m ';
+      for(var i=1;i<o.pts.length;i++) s+=nf(o.pts[i][0])+' '+nf(o.pts[i][1])+' l ';
+      c.push(s+'S Q');
+    } else if(o.t==='rect'){
+      var sh=o.round?circle(o.x,o.y,o.w,o.h):nf(o.x)+' '+nf(o.y)+' '+nf(o.w)+' '+nf(o.h)+' re ';
+      c.push(o.fill?pre+rg(o.fill)+' rg '+sh+'f Q':pre+rg(o.stroke)+' RG '+nf(o.lw)+' w '+dash+sh+'S Q');
+    } else if(o.t==='img'){
+      var s2=pre; if(o.round) s2+=circle(o.round.x,o.round.y,o.round.w,o.round.h)+'W n ';
+      c.push(s2+nf(o.w)+' 0 0 '+nf(o.h)+' '+nf(o.x)+' '+nf(o.y)+' cm /'+o.key+' Do Q');
+    } else if(o.t==='glyph'){ c.push(pre+DRAW[o.g](o)+' Q'); }
+    else if(o.t==='text'){
+      c.push(pre+'BT /'+(o.bold?'F2':'F1')+' '+nf(o.size)+' Tf '+nf(o.tz)+' Tz '+rg(o.fill)+' rg '+
+        nf(o.x)+' '+nf(o.y)+' Td '+pdfStr(o.s)+' Tj ET Q');
+    }
+  });
+  return c.join('\n');
+}
+
+function assemble(got){
+  var out=new Out(), offs=[], n=0;
+  function obj(body,raw){ n++; offs[n]=out.len; out.str(n+' 0 obj\n'); out.str(body);
+    if(raw){ out.str('\nstream\n'); out.push(raw); out.str('\nendstream'); }
+    out.str('\nendobj\n'); return n; }
+  out.str('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+  var keys=Object.keys(got.imgs), io={};
+  keys.forEach(function(k){
+    var u8=b64dec(got.imgs[k].split(',')[1]), f=jpeg(u8);
+    io[k]=obj('<</Type/XObject/Subtype/Image/Width '+f.w+'/Height '+f.h+'/ColorSpace '+
+      (f.c===1?'/DeviceGray':f.c===4?'/DeviceCMYK':'/DeviceRGB')+
+      '/BitsPerComponent 8/Filter/DCTDecode/Length '+u8.length+'>>',u8); });
+  var f1=obj('<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>');
+  var f2=obj('<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>');
+  var sb=new TextEncoder().encode(stream(got.ops));
+  var cont=obj('<</Length '+sb.length+'>>',sb);
+  var xo=keys.map(function(k){ return '/'+k+' '+io[k]+' 0 R'; }).join(' ');
+  var pagesN=n+1, pageN=n+2;
+  var pages=obj('<</Type/Pages/Kids['+pageN+' 0 R]/Count 1>>');
+  var page=obj('<</Type/Page/Parent '+pages+' 0 R/MediaBox[0 0 '+nf(got.w)+' '+nf(got.h)+']'+
+    '/Resources<</Font<</F1 '+f1+' 0 R/F2 '+f2+' 0 R>>'+(xo?'/XObject<<'+xo+'>>':'')+'>>/Contents '+cont+' 0 R>>');
+  var cat=obj('<</Type/Catalog/Pages '+pages+' 0 R>>');
+  var xref=out.len;
+  out.str('xref\n0 '+(n+1)+'\n0000000000 65535 f \n');
+  for(var i=1;i<=n;i++) out.str(('0000000000'+offs[i]).slice(-10)+' 00000 n \n');
+  out.str('trailer\n<</Size '+(n+1)+'/Root '+cat+' 0 R>>\nstartxref\n'+xref+'\n%%EOF\n');
+  return out.join();
+}
+
+/* ---- offentligt: mål og fil ---- */
+function render(center){
+  if(ROOT){ ROOT.remove(); ROOT=null; }
+  ROOT=scaffold();
+  var d=build(center);
+  CV.style.position='relative';
+  ROOT.querySelector('.a-h1').textContent='Anetavle for '+P[center].n;
+  ROOT.querySelector('.a-stats').textContent=(d.known? d.known+' kendte aner over '+(d.depth-1)+' generationer':'Ingen kendte aner endnu')+' · tomme felter viser, hvor der kan forskes videre';
+  return d;
+}
+function sizeOf(center){
+  var d=render(center), r=ROOT.getBoundingClientRect();
+  var mm=25.4/96, w=Math.round(r.width*mm), h=Math.round(r.height*mm);
+  ROOT.remove(); ROOT=null;
+  return {wmm:w,hmm:h,known:d.known,depth:d.depth};
+}
+function pdf(center){
+  render(center);
+  var got=collect(ROOT);
+  var bytes=assemble(got);
+  var name=('Anetavle for '+P[center].n).replace(/[\\\/:*?"<>|]/g,'')+'.pdf';
+  ROOT.remove(); ROOT=null;
+  return {file:new File([bytes],name,{type:'application/pdf'}),
+          wmm:Math.round(got.w/72*25.4), hmm:Math.round(got.h/72*25.4), bytes:bytes.length};
+}
+return {size:sizeOf, pdf:pdf};
+})();
+
+var ANAWHO=null, ANAPOV=null;
+function anaFill(){
+  var sel=$('#anaWho'); if(!sel) return;
+  /* skifter man udgangspunkt, skifter "din egen" også - ellers bliver et gammelt valg hængende */
+  if(ANAPOV!==POV){ ANAWHO=null; ANAPOV=POV; }
+  var ids=Object.keys(P).sort(function(a,b){ return P[a].n.localeCompare(P[b].n,'da'); });
+  var want=(ANAWHO&&P[ANAWHO])?ANAWHO:((POV&&P[POV])?POV:ids[0]);
+  sel.innerHTML=ids.map(function(id){ return '<option value="'+id+'"'+(id===want?' selected':'')+'>'+
+    esc(P[id].n)+(years(P[id])?' ('+years(P[id])+')':'')+'</option>'; }).join('');
+  ANAWHO=want;
+}
+function anaRefresh(){
+  if(!VER||!Object.keys(P).length) return;
+  /* læs valget FØR listen bygges om - ellers skriver anaFill() det gamle valg tilbage */
+  var sel=$('#anaWho');
+  if(sel.options.length&&sel.value&&P[sel.value]) ANAWHO=sel.value;
+  anaFill();
+  var who=$('#anaWho').value; ANAWHO=who;
+  /* linjen under listen siger hvorfor det er den person - udgangspunktet, ikke hvor man sidst var */
+  var n=$('#anaNote');
+  if(!POV||!P[POV]) n.innerHTML='Du har ikke valgt et udgangspunkt i appen endnu, så tavlen tager den, der står ovenfor. Vælg en anden, hvis den skal handle om en anden.';
+  else if(who===POV) n.innerHTML='<b>'+esc(P[who].n)+'</b> er dit udgangspunkt i appen, så tavlen handler om '+(P[who].s==='F'?'hende':'ham')+'. Vælg en anden ovenfor, hvis den skal handle om en anden.';
+  else n.innerHTML='Du har valgt <b>'+esc(P[who].n)+'</b>. Dit udgangspunkt i appen er stadig <b>'+esc(P[POV].n)+'</b> — det her ændrer kun tavlen.';
+  try{
+    var s=ANA.size(who);
+    /* samme form som familieplakatens linje: PDF, størrelse · mål. Størrelsen kendes først, når filen er lavet */
+    $('#anaMsg').textContent='PDF · '+s.wmm+' × '+s.hmm+' mm.';
+  }catch(e){ $('#anaMsg').textContent=''; }
+}
+/* MB som familieplakaten, men kB under 0,1 MB - ellers stod der "0 MB" på de små tavler */
+function anaSize(b){ return b>=100000 ? (Math.round(b/100000)/10).toString().replace('.',',')+' MB' : Math.round(b/1024)+' kB'; }
+function anaDownload(f){
+  var u=URL.createObjectURL(f), a=document.createElement('a'); a.href=u; a.download=f.name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },5000);
+}
+$('#anaWho').addEventListener('change',anaRefresh);
+$('#anaGet').addEventListener('click',function(){
+  var who=$('#anaWho').value; if(!P[who]) return;
+  var b=this; b.disabled=true;
+  try{
+    var r=ANA.pdf(who);
+    $('#anaMsg').textContent='PDF, '+anaSize(r.bytes)+' · '+r.wmm+' × '+r.hmm+' mm.';
+    var canFiles=false; try{ canFiles=!!(navigator.canShare&&navigator.canShare({files:[r.file]})); }catch(e){}
+    if((ANDROID||IOS)&&navigator.share&&canFiles)
+      navigator.share({files:[r.file],title:r.file.name.replace(/\.pdf$/,'')}).catch(function(e){ if(!e||e.name!=='AbortError') anaDownload(r.file); });
+    else anaDownload(r.file);
+  } catch(e){ $('#anaMsg').textContent='Kunne ikke lave din anetavle.'; }
+  finally{ b.disabled=false; }
+});
 })();
 </script>
 <script>
