@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-8pzf8MRd1av/Ai0HKY7xkJc5Brotv2h1X9ZdlE3buRE=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-wEqcRZKPvfAuqhc0En6wka7lG18zzvUniCAGRbzkbKo=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -193,6 +193,20 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .sq.c-own{background:var(--c-own)} .sq.c-far{background:var(--c-far)} .sq.c-mor{background:var(--c-mor)} .sq.c-in{background:var(--c-in)} .sq.c-none{background:var(--c-none)}
 
 /* Vælg person */
+/* Mærkets fire grenfarver som mastehoved under "hvem er du?". Kun på desktop:
+   på telefonen er skærmen en arbejdsliste, og 62px mellem overskrift og søgefelt
+   er en afgift på den mest brugte vej. pointer:fine holder også telefonen i
+   landskab ude, hvor højden er mest knap. 48px er ikke et nyt tal — det er
+   bogstavfirkantens egen størrelse (44 + 2px kant, content-box). */
+.pksq{display:none}
+@media (min-width:600px) and (pointer:fine){
+  .pksq{display:flex;gap:8px}
+  .pksq i{width:48px;height:48px;display:block;flex:none}
+  .pksq i:nth-child(1){background:var(--c-own)}
+  .pksq i:nth-child(2){background:var(--c-far)}
+  .pksq i:nth-child(3){background:var(--c-mor)}
+  .pksq i:nth-child(4){background:var(--c-in)}
+}
 .intro{margin:0;color:var(--sub);max-width:65ch}
 .search{width:100%;box-sizing:border-box;font:inherit;font-size:1rem;padding:10px 12px;background:var(--raise);color:var(--fg);border:1px solid var(--dim);border-radius:0}
 .alpha{display:flex;flex-direction:column;gap:2px}
@@ -280,6 +294,43 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 @keyframes kenburns{0%{opacity:0;transform:scale(1.18) translate(3%,2%)}12%{opacity:.85}85%{opacity:.85}100%{opacity:0;transform:scale(1.02) translate(-2%,-1%)}}
 @keyframes hintOut{0%,70%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion: reduce){.pause .prow.a,.pause .prow.b{animation:none}.pause .fname{animation:featIn 9s ease both}.pause .fphoto img{animation:featIn 9s ease both}}
+/* ---- Forstørret billede ---- */
+.hero button.ph{border:0;padding:0;background:none;font:inherit;display:block;cursor:zoom-in}
+.pv{position:fixed;inset:0;z-index:25;background:#120f0c;display:block;
+  overflow:hidden;animation:fadeIn .25s ease-out both;-webkit-user-select:none;user-select:none;touch-action:pan-y}
+.pv .pvstage{width:100%;height:100%;will-change:transform}
+/* Billederne er beskåret, så der er altid mere billede end skærm. Et langsomt drev gør det synligt —
+   og har personen flere billeder, trækker det samtidig det næste en anelse længere frem. */
+.pv[data-edge="start"] .pvstage{animation:pvdriftL 14s ease-in-out infinite alternate}
+.pv[data-edge="end"] .pvstage{animation:pvdriftR 14s ease-in-out infinite alternate}
+.pv[data-edge="mid"] .pvstage{animation:pvdriftM 16s ease-in-out infinite alternate}
+@keyframes pvdriftL{from{transform:translateX(0)}to{transform:translateX(-30px)}}
+@keyframes pvdriftR{from{transform:translateX(0)}to{transform:translateX(30px)}}
+@keyframes pvdriftM{from{transform:translateX(26px)}to{transform:translateX(-26px)}}
+/* Er der kun ét billede, er der ingen nabo at trække frem, så drevet sker inde i beskæringen. */
+.pv[data-edge="one"] .pvcell img{animation:pvpan 18s ease-in-out infinite alternate}
+@keyframes pvpan{from{object-position:36% 22%}to{object-position:66% 22%}}
+.pv .pvtrack{display:flex;align-items:stretch;width:100%;height:100%;will-change:transform;
+  transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.pv .pvcell{flex:0 0 calc(100% - 5px);position:relative;height:100%;cursor:pointer}
+.pv .pvcell.on{cursor:zoom-out}
+.pv .pvtrack.one .pvcell{flex-basis:100%}
+/* Billedet fylder fladen og tones ud forneden i stedet for at stoppe i en kant.
+   Samme greb som pauseskærmens .fphoto — ingen sorte bjælker, fordi der ingen kanter er. */
+.pv .pvcell img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 22%;
+  -webkit-mask-image:linear-gradient(to bottom,#000 52%,rgba(0,0,0,.35) 82%,transparent 97%);
+  mask-image:linear-gradient(to bottom,#000 52%,rgba(0,0,0,.35) 82%,transparent 97%);
+  /* Det billede, der kigger frem, sover: gråt og nedtonet. Det vågner, når det er dets tur.
+     Samme filtersprog som pauseskærmens .fphoto, intet nyt. */
+  filter:grayscale(.5) brightness(.55);transition:filter .45s ease}
+.pv .pvcell.on img{filter:none}
+/* Navnet, ikke en brugsanvisning. Fladen er åbenlyst noget, man trykker væk. */
+.pv .pvname{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 6vh);
+  padding:0 max(20px, env(safe-area-inset-left,0px));font-weight:300;text-transform:lowercase;
+  font-size:clamp(1.75rem,7.5vw,3.25rem);line-height:1;letter-spacing:-.02em;color:#ede6dc;
+  z-index:2;pointer-events:none;overflow-wrap:anywhere}
+@media (prefers-reduced-motion: reduce){.pv{animation:none}.pv .pvtrack{transition:none}.pv .pvcell img{transition:none}
+  .pv .pvstage,.pv[data-edge="one"] .pvcell img{animation:none}}
 .hugeline{display:block;font-weight:300;font-size:2.6rem;line-height:1;letter-spacing:-.02em;color:var(--t-far);margin:2px 0 -2px}
 /* ---- Din egen anetavle: kun i det usynlige lag, derfor a- foran alt ---- */
 .ana{width:max-content}
@@ -462,6 +513,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
   <section id="pick" hidden>
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="pano" aria-hidden="true"><span class="cap" id="families">familien</span><span class="nm">hvem er du?</span></div>
+      <div class="pksq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <p class="status pnow" id="pickNow" hidden></p>
       <p class="intro">Vælg, hvem du vil gå på opdagelse i slægten som — dig selv eller en anden. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.</p>
       <button type="button" class="sendpic" id="sendPic">Mangler et billede? Indsend dit billede her <span aria-hidden="true">→</span></button>
@@ -682,7 +734,20 @@ var PHLIST=null, PHWANT=null, PHPRE=null;
 function trimPhotos(){ if(!PHLIST) return; Object.keys(PHOTOS).forEach(function(id){ if(!PHLIST[id]) delete PHOTOS[id]; }); }
 /* Tegnede stand-ins til personer uden eget billede. Hvem der får hvilken, står i træets data (p.av). Rigtige billeder går altid forrest. */
 var AVATARS={};
-function pic(p){ return p.photo||(p.av&&AVATARS[p.av])||null; }
+/* Ekstra billeder ud over portrættet. De ligger i deres egen låste fil og hentes først,
+   når nogen rent faktisk forstørrer et billede — ellers skulle hele familien pakkes ud ved hver opstart. */
+var PX=null, PXP=null;
+function loadExtra(){
+  if(PX) return Promise.resolve(PX);
+  if(PXP) return PXP;
+  if(!KEY) return Promise.resolve(null);
+  PXP=fetch('photos-extra.enc.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(dec).then(function(j){ PX=(j&&j.extra)||{}; return PX; })
+    .catch(function(){ PX={}; return PX; });
+  return PXP;
+}
+function photosOf(p){ if(!p) return []; var a=Array.isArray(p.photo)?p.photo.slice():(p.photo?[p.photo]:[]); if(!a.length) return []; var x=PX&&PX[p.id]; return x&&x.length? a.concat(x) : a; }
+function pic(p){ var f=Array.isArray(p.photo)?p.photo[0]:p.photo; return f||(p.av&&AVATARS[p.av])||null; }
 /* Tegningerne ændrer sig aldrig, så browserens egen kopi må gerne bruges. Før hentede jeg 374 kB hver gang */
 var AVP=null;
 function loadAvatars(){ AVP=fetch('avatars.json',{cache:'default'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ AVATARS=(j&&j.avatars)||{}; if(VER){ quiet(); render(); } }).catch(function(){}); return AVP; }
@@ -899,7 +964,11 @@ function genName(g){
 function photoBox(p,cls){
   var c=cat(p.id);
   var src=pic(p);
-  return '<div class="'+cls+' c-'+c+'">'+(src?'<img alt="" src="'+src+'">':'<span class="ini">'+esc(initials(p.n))+'</span>')+'</div>';
+  /* Kun rigtige fotografier kan forstørres. Tegningerne kan ikke, og det siges ingen steder:
+     affordansen er skjult begge veje, og det er med vilje. */
+  var body=src?'<img alt="" src="'+src+'">':'<span class="ini">'+esc(initials(p.n))+'</span>';
+  if(p.photo) return '<button type="button" class="'+cls+' c-'+c+' pvbtn" aria-label="Se billedet af '+esc(p.n)+' stort">'+body+'</button>';
+  return '<div class="'+cls+' c-'+c+'">'+body+'</div>';
 }
 function tile(id,opts){
   opts=opts||{}; var p=P[id], c=cat(id);
@@ -1081,9 +1150,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.11';
+var APP_VERSION='2.12';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.12',d:'2026-11-12',t:'2026-11-12T11:49:03Z',items:['Tryk på billedet af en person, og det folder sig ud og fylder skærmen. Kvaliteten er, som den er med gamle familiefotos. Er der flere billeder af hende eller ham, ligger de klar ved siden af — bare bladr videre med fingeren, eller træk med musen. Har du flere billeder af nogen i familien, så send dem endelig til Bo. Jeg har god plads. Så tilføjes de, når der er plads i kalenderen']},
   {v:'2.11',d:'2026-11-09',t:'2026-11-09T15:12:00Z',items:['Jeg har ryddet op i ‘hvem er du?’ startsiden. Billederne er flyttet ned til navnene, hvor de hørte hjemme. Du kan stadig søge efter navne i slægten, men nu kan du også trykke på en bogstavboks og springe gennem alfabetet. Jeg har 160 mennesker at holde styr på, og de fleste af dem står langt nede i alfabetet. Til gengæld er der også ledige bogstaver til kommende generationer']},
   {v:'2.10',d:'2026-11-09',t:'2026-11-09T13:20:00Z',items:['Ny plakat til print! Hele familien på én væg over sofaen var vist for meget af det gode, så nu kan du også hente din egen anetavle, som kun følger forældrenes vej bagud: dine forældre, deres forældre og så videre, så langt træet rækker. Dine søskende står pænt ved siden af dig, din ægtefælle og dine børn nedenunder. Alle andre grene er væk — så nu er der ingen undskyldning for at hænge den op. Selv tak']},
   {v:'2.9.2',d:'2026-11-02',t:'2026-11-02T14:05:00Z',items:['Når du logger på, vises et nyt logo for appen, mens træet bliver pakket ud bagved. Det sker kun, når du logger på med password — ikke hver gang du åbner appen. Både du og vores forfædre har ventet længe nok']},
@@ -1153,7 +1223,8 @@ function back(){
 function choosePov(id){ POV=id; store('slaegt.pov',id); STACK=[]; CUR=id; PIVOT='familie'; solve(); render(); window.scrollTo({top:0}); }
 /* Arket åbner INDE i vælgeren, så det skal lukkes før vælger-grenen kører — ellers
    smider Androids tilbage brugeren helt ud af vælgeren og lader arket stå tilbage. */
-window.addEventListener('popstate',function(){ if(!$('#jump').hidden){ closeJump(); return; } if(CUR==='__pick'){ CUR=POV; render(); } else if(STACK.length) back(); });
+window.addEventListener('resize',function(){ if(PV) pvSlide(); });
+window.addEventListener('popstate',function(){ if(PVCLOSING){ PVCLOSING=false; return; } if(PV){ closePhoto(true); return; } if(!$('#jump').hidden){ closeJump(); return; } if(CUR==='__pick'){ CUR=POV; render(); } else if(STACK.length) back(); });
 
 document.addEventListener('click',function(e){
   var t=e.target.closest('[data-id]');
@@ -1309,7 +1380,8 @@ function swipeHint(){
 }
 $('#settingsBtn').addEventListener('click',openSettings);
 $('#closeSettings').addEventListener('click',closeSettings);
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(!$('#jump').hidden){ closeJump(); return; } if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
+document.addEventListener('keydown',function(e){ if(PV){ if(e.key==='Escape'){ closePhoto(); return; } if(e.key==='ArrowRight'){ pvGo(PVI+1); return; } if(e.key==='ArrowLeft'){ pvGo(PVI-1); return; } }
+  if(e.key==='Escape'){ if(!$('#jump').hidden){ closeJump(); return; } if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
 function sgType(){ var t=$('#sgType').value; $('#sgNameWrap').hidden=t!=='ny'; $('#sgRelWrap').hidden=t!=='ny';
   $('#sgRelHint').textContent= t==='ny'? '(den nye person hænger sammen med)' : '(som forslaget handler om)'; }
 $('#sgType').addEventListener('change',sgType);
@@ -1379,7 +1451,8 @@ $('#keepBtn').addEventListener('click',function(){ CUR=BEFORE&&P[BEFORE]?BEFORE:
    med bevægelse. Samme idiom som de to ark, intet nyt. */
 function openPicker(){ BEFORE=CUR; CUR='__pick'; $('#q').value=''; closeJump(); render(); window.scrollTo({top:0}); replay($('#pick').firstElementChild,'m-fwd'); }
 $('#hero').addEventListener('click',function(e){
-  if(e.target.closest('#changeBtn')){ e.stopPropagation(); openPicker(); }
+  if(e.target.closest('.pvbtn')){ e.stopPropagation(); openPhoto(CUR); }
+  else if(e.target.closest('#changeBtn')){ e.stopPropagation(); openPicker(); }
   else if(e.target.closest('#rebaseBtn')){ e.stopPropagation(); DIR='fwd'; choosePov(CUR); toast('Træet ses nu fra '+P[POV].n); }
 });
 $('#q').addEventListener('input',renderPick);
@@ -1472,6 +1545,137 @@ loadKey().then(function(){
   }).catch(function(){});
 }).then(function(){ load(true); });
 /* ---------- Pauseskærm (Zune-inspireret) ---------- */
+var PV=null, PVL=[], PVI=0, PVPID=null, PVPOP=false, PVCLOSING=false, PVWHEEL=0;
+/* Forstørrelsen: samme slags flade som pauseskærmen, ikke et ark. Et ark er til tekst, man læser.
+   Billedet fylder bredden, og måtten tager resten — så bliver ingen beskåret. */
+/* Ingen prikker: panoramaet har altid sagt "der er mere" ved at lade indholdet
+   løbe ud over kanten. Det næste billede kigger frem i højre side, og det er hele signalet. */
+/* Hvilende kigger naboen kun lige frem — billedet skal fylde skærmen. Det er drevet, der trækker den frem. */
+var PVPEEK=5;
+function pvOff(i){ return -i*(PV.clientWidth-PVPEEK); }
+function pvSlide(){ var t=PV&&PV.querySelector('.pvtrack'); if(!t) return;
+  t.style.transform='translateX('+pvOff(PVI)+'px)'; pvWake(); }
+function pvWake(){ if(!PV) return;
+  Array.prototype.forEach.call(PV.querySelectorAll('.pvcell'),function(c,i){ c.classList.toggle('on',i===PVI); });
+  /* Driften må aldrig blotte baggrunden i en ende — så ville den lave en kant.
+     Står man forrest, driver den kun til venstre; bagerst kun til højre. */
+  PV.setAttribute('data-edge', PVL.length<2? 'one' : (PVI===0? 'start' : (PVI===PVL.length-1? 'end' : 'mid')));
+  var t=PV.querySelector('.pvtrack'); if(t) t.classList.toggle('one',PVL.length<2); }
+function pvGo(n){ if(!PV||PVL.length<2) return; PVI=Math.max(0,Math.min(PVL.length-1,n)); store('slaegt.pvhint','9'); pvSlide(); }
+/* Samme puf som indstillingernes faner: de to første gange glider strimlen en anelse til side,
+   så det næste billede kigger længere frem og falder på plads igen. Har man først bladret selv,
+   puffer jeg aldrig igen. Med "reducér bevægelse" puffer jeg slet ikke. Her gælder det også en mus:
+   kiggeren er den eneste antydning på begge slags skærme. */
+function pvHint(){
+  var n=+(store('slaegt.pvhint')||0);
+  if(n>=2||REDUCED.matches) return;
+  store('slaegt.pvhint',String(n+1));
+  setTimeout(function(){
+    var t=PV&&PV.querySelector('.pvtrack'); if(!t||!t.animate||PVI!==0) return;
+    var b0=pvOff(0), base=b0+'px', d=(b0-26)+'px', o={duration:1100,easing:'cubic-bezier(.4,0,.2,1)'};
+    t.animate([{transform:'translateX('+base+')'},{transform:'translateX('+d+')',offset:.4},{transform:'translateX('+d+')',offset:.55},{transform:'translateX('+base+')'}],o);
+    var nx=PV.querySelectorAll('.pvcell')[1];
+    if(nx){ var im=nx.querySelector('img'); if(im&&im.animate) im.animate(
+      [{filter:'grayscale(.5) brightness(.55)'},{filter:'grayscale(.2) brightness(.8)',offset:.4},
+       {filter:'grayscale(.2) brightness(.8)',offset:.55},{filter:'grayscale(.5) brightness(.55)'}],o); }
+  },760);
+}
+function openPhoto(id){
+  var p=P[id]; if(!p||PV) return; var list=photosOf(p); if(!list.length) return;
+  PVL=list; PVI=0; PVPID=id;
+  var box=document.querySelector('#hero .ph'), from=box?box.getBoundingClientRect():null;
+  PV=document.createElement('div'); PV.className='pv'; PV.setAttribute('role','dialog');
+  PV.setAttribute('aria-label','Billede af '+p.n+'. Tryk for at lukke.');
+  PV.innerHTML='<div class="pvstage"><div class="pvtrack'+(list.length>1?'':' one')+'">'+list.map(function(u,i){
+      return '<div class="pvcell"><img alt="" '+(i?'loading="lazy" ':'')+'src="'+u+'"></div>'; }).join('')+'</div></div>'+
+    '<div class="pvname">'+esc(p.n)+'</div>';
+  document.body.appendChild(PV);
+  pvWake();
+  if(list.length>1) pvHint();
+  /* Første gang hentes filen, mens billedet allerede folder sig ud. Kommer der flere billeder,
+     sættes de bagpå — kort 1 røres ikke, så udfoldningen bliver ikke afbrudt. */
+  if(!PX) loadExtra().then(function(){
+    if(!PV||PVPID!==id) return;
+    var more=photosOf(p).slice(PVL.length); if(!more.length) return;
+    var t=PV.querySelector('.pvtrack'); if(!t) return;
+    t.insertAdjacentHTML('beforeend', more.map(function(u){ return '<div class="pvcell"><img alt="" loading="lazy" src="'+u+'"></div>'; }).join(''));
+    PVL=PVL.concat(more); t.classList.remove('one'); pvWake(); pvHint();
+  });
+  clearTimeout(IDLET);
+  try{ history.pushState({pv:1},''); PVPOP=true; }catch(e){ PVPOP=false; }
+  var img=PV.querySelector('.pvcell img');
+  if(from&&!REDUCED.matches){
+    /* Billedet folder sig ud fra det lille kvadrat, det kom fra — samme udsnit hele vejen,
+       så ansigtet bliver ikke strakt undervejs. Metros continuum: det, man trykkede på, bliver siden. */
+    var fly=function(){
+      var W=window.innerWidth, H=window.innerHeight;
+      var ins='inset('+from.top+'px '+(W-from.right)+'px '+(H-from.bottom)+'px '+from.left+'px)';
+      var a=img.animate([{clipPath:ins,webkitClipPath:ins,transform:'scale(1.06)'},
+                         {clipPath:'inset(0px)',webkitClipPath:'inset(0px)',transform:'none'}],
+        {duration:460,easing:'cubic-bezier(.2,.8,.2,1)'});
+      var done=function(){ img.style.clipPath=''; img.style.transform=''; };
+      a.onfinish=done; a.oncancel=done; setTimeout(done,760);
+    };
+    if(img.complete) fly(); else img.addEventListener('load',fly,{once:true});
+  }
+  /* Tryk lukker altid. Sidevisning er swipe og prikker — ellers ville et tryk
+     skulle betyde både "næste" og "luk", og så er lukkegestussen ikke til at stole på. */
+  var sx=0, sy=0, moved=false;
+  PV.addEventListener('touchstart',function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; moved=false; },{passive:true});
+  PV.addEventListener('touchmove',function(e){ var t=e.touches[0]; if(Math.abs(t.clientX-sx)>10||Math.abs(t.clientY-sy)>10) moved=true; },{passive:true});
+  PV.addEventListener('touchend',function(e){
+    if(!moved) return; var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){ pvGo(PVI+(dx<0?1:-1)); }
+    else if(dy>80&&Math.abs(dy)>Math.abs(dx)){ closePhoto(); }
+    setTimeout(function(){ moved=false; },0);
+  },{passive:true});
+  /* På en mus er der hverken swipe eller prikker at trykke på, så det billede,
+     der kigger frem, skal selv kunne klikkes frem. Kun det forreste lukker. */
+  PV.addEventListener('click',function(e){
+    if(moved) return;
+    var cell=e.target.closest? e.target.closest('.pvcell') : null;
+    if(cell){ var i=Array.prototype.indexOf.call(cell.parentNode.children,cell); if(i!==PVI){ pvGo(i); return; } }
+    closePhoto();
+  });
+  /* På en mus er der ingen swipe. Så strimlen følger musen på samme måde som en finger:
+     træk, og den hænger ved; slip, og den falder på plads. Et klik uden træk gør som før. */
+  var px=0, pdrag=false;
+  PV.addEventListener('pointerdown',function(e){
+    if(e.pointerType!=='mouse'||e.button!==0||PVL.length<2) return;
+    e.preventDefault(); px=e.clientX; pdrag=true; moved=false;
+    var t=PV.querySelector('.pvtrack'); if(t) t.style.transition='none';
+    try{ PV.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  PV.addEventListener('pointermove',function(e){
+    if(!pdrag) return; var dx=e.clientX-px; if(Math.abs(dx)>6) moved=true;
+    var t=PV.querySelector('.pvtrack'); if(!t) return;
+    var edge=(PVI===0&&dx>0)||(PVI===PVL.length-1&&dx<0);
+    t.style.transform='translateX('+(pvOff(PVI)+(edge?dx/3:dx))+'px)';
+  });
+  var pend=function(e){
+    if(!pdrag) return; pdrag=false; var dx=e.clientX-px;
+    var t=PV.querySelector('.pvtrack'); if(t) t.style.transition='';
+    if(Math.abs(dx)>40) pvGo(PVI+(dx<0?1:-1)); else pvSlide();
+    setTimeout(function(){ moved=false; },0);
+  };
+  PV.addEventListener('pointerup',pend); PV.addEventListener('pointercancel',pend);
+  PV.addEventListener('dragstart',function(e){ e.preventDefault(); });
+  PV.addEventListener('wheel',function(e){
+    var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)? e.deltaX : (e.shiftKey? e.deltaY : 0);
+    if(!d||Math.abs(d)<12) return; var now=Date.now(); if(now-PVWHEEL<420) return; PVWHEEL=now;
+    pvGo(PVI+(d>0?1:-1));
+  },{passive:true});
+}
+function closePhoto(fromPop){
+  if(!PV) return; var el=PV; PV=null; PVL=[]; PVI=0;
+  el.style.transition='opacity .35s'; el.style.opacity='0'; setTimeout(function(){ el.remove(); },380);
+  var b=document.querySelector('#hero .pvbtn'); if(b) try{ b.focus(); }catch(e){}
+  /* Vi lagde selv et trin i historikken, da billedet blev åbnet, så det skal tages af igen.
+     Men appens egen popstate må ikke tro, at det var en navigation — ellers lander man
+     på den forrige person i stedet for den, man stod på. */
+  if(PVPOP&&!fromPop){ PVPOP=false; PVCLOSING=true; try{ history.back(); }catch(e){ PVCLOSING=false; } } else PVPOP=false;
+  armIdle();
+}
 var PAUSE=null, PTIMER=null, WAKE=null, IDLE=store('slaegt.idle')==='1', IDLET=null;
 function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function startPause(){
@@ -1509,7 +1713,7 @@ function stopPause(){
 }
 document.addEventListener('keydown',function(e){ if(PAUSE) stopPause(); });
 document.addEventListener('visibilitychange',function(){ if(!document.hidden&&PAUSE&&navigator.wakeLock&&!WAKE){ try{ navigator.wakeLock.request('screen').then(function(w){ WAKE=w; },function(){}); }catch(e){} } });
-function armIdle(){ clearTimeout(IDLET); if(IDLE&&!PAUSE) IDLET=setTimeout(function(){ if(!$('#lock').hidden||$('#focus').hidden&&$('#pick').hidden) return armIdle(); startPause(); },120000); }
+function armIdle(){ clearTimeout(IDLET); if(IDLE&&!PAUSE) IDLET=setTimeout(function(){ if(PV||!$('#lock').hidden||$('#focus').hidden&&$('#pick').hidden) return armIdle(); startPause(); },120000); }
 ['pointerdown','keydown','scroll','touchstart'].forEach(function(ev){ document.addEventListener(ev,function(){ if(!PAUSE) armIdle(); },{passive:true}); });
 $('#pauseBtn').addEventListener('click',function(e){ e.stopPropagation(); setTimeout(startPause,60); });
 $('#idleSwitch').setAttribute('aria-checked',IDLE?'true':'false');
