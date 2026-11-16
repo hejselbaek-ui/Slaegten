@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-phb9XmJdut3zhs0IL0SzCn8x8kCrG3tOopky2/a61go=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-rjp3yVU89NvCgD/hLvWllTQw+xue/sxfJzohKFnrYB8=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -193,15 +193,41 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .sq.c-own{background:var(--c-own)} .sq.c-far{background:var(--c-far)} .sq.c-mor{background:var(--c-mor)} .sq.c-in{background:var(--c-in)} .sq.c-none{background:var(--c-none)}
 
 /* Vælg person */
-/* Mærkets fire grenfarver som mastehoved under "hvem er du?". Kun på desktop:
-   på telefonen er skærmen en arbejdsliste, og 62px mellem overskrift og søgefelt
-   er en afgift på den mest brugte vej. pointer:fine holder også telefonen i
-   landskab ude, hvor højden er mest knap. 48px er ikke et nyt tal — det er
-   bogstavfirkantens egen størrelse (44 + 2px kant, content-box). */
+/* Mærkets fire grenfarver som mastehoved under "hvem er du?".
+   De står også på telefonen. Farverne er ikke pynt — det er appens egen
+   nøgle (fars side, mors side, dit eget, indgiftet), som hvert kort og hver
+   flise bruger. På vælgerskærmen lærer de nøglen fra sig, lige før man møder
+   den. Og telefonen er netop der, familien er: så længe mærket kun stod på
+   desktop, blev det vist til stort set ingen.
+   Prisen er 43,6px ned til søgefeltet, ikke de 62px den gamle note sagde —
+   firkanten følger nu overskriften (29,6px på telefon mod 48px fast før).
+   Porten er HØJDE ALENE. `pointer` beskriver den PRIMÆRE
+   indtastningsenhed, ikke om der findes en mus: en Windows-maskine med
+   berøringsskærm svarer `coarse`, selv med musen i hånden, og en installeret
+   PWA arver det svar. Målt på en rigtig maskine var både (pointer:fine) og
+   (any-pointer:fine) falske, så firkanterne havde aldrig vist sig på desktop.
+   Det pointer:fine i virkeligheden skulle holde ude, var telefonen i landskab,
+   og det handler om, hvilken vej telefonen vender.
+   Porten er derfor '(orientation:portrait), (min-height:700px)' — ELLER.
+   ADVARSEL, lært den dyre vej: en ren min-height:700px virkede i simulator
+   og svigtede på en rigtig telefon. Adresselinjen æder 100-200px, så en
+   iPhone melder ~650-750 og lander ofte UNDER 700. Mål aldrig en telefon
+   uden browserens kant. Orientering kan adresselinjen ikke ændre, så
+   portræt fanger enhver telefon uanset kant; højdeporten er der kun for
+   desktop, hvor et lavt vindue stadig skal holde dem ude.
+   Størrelserne er forhold, ikke faste tal: siden er 0,4 × overskriften, så
+   mærket følger `clamp(58px,19vw,104px)` i stedet for at stå fast i én
+   pixelstørrelse. Fugen er smal med vilje (0,14 × siden) — ved større
+   mellemrum læses de fire som en farveforklaring, ved smal fuge som ét mærke.
+   Luften omkring rækken er kolonnens egen, 14px, og ikke mere. Referencen
+   havde 0,75 × siden over og 0,9 × under, men det var målt på rækken alene;
+   i spalten, hvor alt andet står med 14px imellem, blev firkanterne skubbet
+   ud med dobbelt luft og kom til at stå for sig selv. Rytmen vinder. */
 .pksq{display:none}
-@media (min-width:600px) and (pointer:fine){
-  .pksq{display:flex;gap:8px}
-  .pksq i{width:48px;height:48px;display:block;flex:none}
+@media (orientation:portrait), (min-height:700px){
+  .pksq{display:flex;--sq:calc(.4 * clamp(58px,19vw,104px));
+    gap:calc(var(--sq) * .14)}
+  .pksq i{width:var(--sq);height:var(--sq);display:block;flex:none}
   .pksq i:nth-child(1){background:var(--c-own)}
   .pksq i:nth-child(2){background:var(--c-far)}
   .pksq i:nth-child(3){background:var(--c-mor)}
@@ -221,7 +247,12 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .jumpgrid button{aspect-ratio:1;font-weight:300;font-size:1.875rem;line-height:1;color:var(--t-own);text-transform:lowercase;border:2px solid var(--t-own);display:grid;place-items:center;text-align:center}
 .jumpgrid button[disabled]{color:var(--dim);border-color:var(--dim);cursor:default}
 .jumpgrid button:not([disabled]):active{background:var(--raise)}
-.alpha .letter{font-weight:300;font-size:1.875rem;color:var(--t-own);text-transform:lowercase;margin-top:10px;width:44px;height:44px;border:2px solid var(--t-own);display:grid;place-items:center;line-height:1}
+/* Under bogstavboksen var der 7px til næste række (2px gab + rækkens 5px
+   padding), mens to rækker imellem sig har 12px. Boksen har en kant, så de
+   7px lod den støde ind i billedet nedenunder. 5px mere giver samme afstand
+   som mellem to rækker. Over den står der stadig 17px, så bogstavet bliver
+   ved med at høre til gruppen under sig. */
+.alpha .letter{font-weight:300;font-size:1.875rem;color:var(--t-own);text-transform:lowercase;margin-top:10px;margin-bottom:5px;width:44px;height:44px;border:2px solid var(--t-own);display:grid;place-items:center;line-height:1}
 /* Rækken bærer nu et billede, så den er centreret og har samme rytme med og uden foto.
    58px er komfort, ikke en fejlretning: en række målte ~43,6px før. */
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);min-width:0;min-height:58px}
@@ -426,6 +457,21 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .ana .a-box.a-center .a-ph{border-color:currentColor;color:inherit;background:transparent}
 .ana .a-spouse{position:absolute;font-size:12px;color:var(--a-muted);text-align:center;white-space:nowrap}
 .ana .a-foot{font-size:13px;color:var(--a-muted);margin:56px 0 0;max-width:90ch;line-height:1.45}
+/* ---- v2: familieblokke ---- */
+.ana .a-sibs h4{margin:0 0 3px;font:600 9px/1.3 var(--f-ui);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--a-ghost)}
+.ana .a-sprow{display:flex;align-items:flex-start;gap:6px;margin:1px 0}
+.ana .a-sph{width:19px;height:19px;border-radius:50%;overflow:hidden;flex:none;margin-top:1px;
+  border:1px solid var(--a-line);background:var(--a-paper)}
+.ana .a-kph{width:15px;height:15px;border-radius:50%;overflow:hidden;flex:none;
+  border:1px solid var(--a-line);background:var(--a-paper)}
+.ana .a-sph img,.ana .a-kph img{width:100%;height:100%;object-fit:cover;display:block}
+.ana .kids{margin:1px 0 2px 25px;padding-left:11px;border-left:1px solid var(--a-line);
+  display:flex;flex-direction:column;gap:1px}
+.ana .krow{display:flex;align-items:flex-start;gap:5px}
+.ana .gk{margin-left:11px;padding-left:10px;border-left:1px solid var(--a-line);
+  color:var(--a-ghost)}
+.ana .a-more{margin-top:4px;font-size:11px;line-height:14px;color:var(--a-ghost)}
 .spane{display:flex;flex-direction:column;gap:14px;min-height:50vh;touch-action:pan-y}
 .spane[hidden]{display:none}
 .spane .grp h2{font-size:0.75rem}
@@ -562,9 +608,13 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
       <div class="pano" aria-hidden="true"><span class="cap" id="families">familien</span><span class="nm">hvem er du?</span></div>
       <div class="pksq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <p class="status pnow" id="pickNow" hidden></p>
-      <p class="intro">Vælg, hvem du vil gå på opdagelse i slægten som — dig selv eller en anden. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.</p>
-      <button type="button" class="sendpic" id="sendPic">Mangler et billede? Indsend dit billede her <span aria-hidden="true">→</span></button>
+      <p class="intro">Vælg, hvem du vil gå på opdagelse i slægten som. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.</p>
       <input id="q" class="search" type="search" placeholder="Søg efter navn" autocomplete="off" aria-label="Søg efter navn">
+      <!-- Forslagslinket står UNDER søgefeltet. Over det kostede det 58px på
+           den mest brugte vej, og på en telefon begyndte søgefeltet først
+           46% nede ad skærmen. Det skjules ikke (den beslutning står) — det
+           er flyttet, så invitationen stadig ses, uden at stå i vejen. -->
+      <button type="button" class="sendpic" id="sendPic">Indsend forslag til ændringer <span aria-hidden="true">→</span></button>
       <div class="grp"><div class="alpha" id="alpha"></div></div>
       <p class="status" id="status"></p>
     </div>
@@ -656,22 +706,32 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     
     </div>
     <div class="spane" data-pane="plakat" role="tabpanel" hidden>
-      <p class="pfnote" style="color:var(--fg)">Her kan du downloade hele familien på én plakat. Eller vælge en plakat med din egen anetavle, der kun følger forældrenes vej bagud. Begge som PDF.</p>
+      <!-- Raekkefoelgen vendt 15. nov (Bo): din egen anetavle oeverst, hele
+           familien under. Med v2 baerer anetavlen soeskende, aegtefaeller og
+           boern i hvert led, saa den er nu den plakat de fleste vil hente.
+           Den tidligere "de to plakater har samme vaerdi"-regel er dermed
+           afloest - citer den ikke mod denne raekkefoelge.
+           Teksten er Bos egen. Ordet "kun" er ude af indledningen: med v2 er
+           det usandt, og versionsnoten aabner med "viser nu mere end
+           foraeldrelinjen opad". Panelteksten er prosa og slutter MED punktum,
+           modsat versionsnoterne. En enkelt lys indledning oeverst, resten
+           daempet .pfnote - appens konvention, tjekket i "om"-panelet. -->
+      <p class="pfnote" style="color:var(--fg)">Her kan du downloade din egen anetavle, der følger forældrenes vej bagud, eller hele familien på én plakat. Begge som PDF.</p>
       <div class="grp" style="margin-top:4px">
-        <h2>hele familien</h2>
-        <p class="pfnote">Hele familien på én plakat. Den er den samme for alle, og den bliver opdateret, når træet gør.</p>
-        <span class="hugeline">it’s huuuuuge</span>
-        <p class="pfnote"><b id="pdfDims">2,8 meter bred og 60 cm høj</b>. Det er ikke en fejl, familien er bare stor. På telefonen kan du zoome helt ind på hvert navn. Til papir skal den printes som banner hos en printshop.</p>
-        <button class="primarybtn" type="button" id="pdfGet" disabled>gør klar …</button>
-        <p class="pfnote" id="pdfMsg" role="status"></p>
-      </div>
-      <div class="grp" style="margin-top:26px">
         <h2>din egen anetavle</h2>
-        <p class="pfnote">En anetavle følger forældrenes vej bagud: dine forældre, deres forældre og så videre, så langt træet rækker. Dine søskende står ved siden af dig, din ægtefælle og dine børn nedenunder. Alle andre grene er væk — derfor fylder den langt mindre end familieplakaten.</p>
+        <p class="pfnote">Anetavlen følger dine forældres vej bagud, deres forældre og så videre, så langt træet rækker. Forældrenes søskende, ægtefæller og børn er med i hvert led, hver med sit foto, hvor der findes et, ellers tegningen fra appen. Dine søskende står ved siden af dig, dine børn nedenunder. Alle andre sidegrene er væk — derfor fylder den langt mindre end familieplakaten.</p>
         <div class="form"><label>hvis anetavle?<select id="anaWho"></select></label></div>
         <p class="pfnote" id="anaNote"></p>
         <button class="primarybtn" type="button" id="anaGet">hent din anetavle</button>
         <p class="pfnote" id="anaMsg" role="status"></p>
+      </div>
+      <div class="grp" style="margin-top:26px">
+        <h2>hele familien</h2>
+        <p class="pfnote">Hele familien på én plakat. Den er den samme for alle, og den bliver opdateret, når træet gør. Hver person vises uden billeder, blot med initialer. Vælg anetavlen, hvis du vil ha billeder med.</p>
+        <span class="hugeline">it’s huuuuuge</span>
+        <p class="pfnote"><b id="pdfDims">2,8 meter bred og 60 cm høj</b>. Det er ikke en fejl, familien er bare stor. På telefonen kan du zoome helt ind på hvert navn. Til papir skal den printes som banner hos en printshop.</p>
+        <button class="primarybtn" type="button" id="pdfGet" disabled>gør klar …</button>
+        <p class="pfnote" id="pdfMsg" role="status"></p>
       </div>
     </div>
     <div class="spane" data-pane="forslag" role="tabpanel" hidden>
@@ -726,7 +786,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
       </div>
       <p class="pfnote">Automatisk følger telefonens indstilling.</p>
       <div class="grp" id="metro" style="margin-top:10px"><h2>inspireret af zune og metro</h2>
-        <p class="pfnote">Jeg er bygget efter Metro, det designsprog Microsoft skabte til Zune og senere Windows Phone. Ordene er selve brugerfladen: store, lette bogstaver i stedet for knapper og pynt. Indholdet først, rammerne bagefter. Og så skulle alting være levende i bevægelse. Navne, der flyver, kort, der rejser sig, sider, der følger fingeren. Det skulle fryde, og det skulle betyde noget.</p>
+        <p class="pfnote">Jeg låner mit udseende fra Metro, det designsprog Microsoft skabte til Zune og senere Windows Phone. Ordene er selve brugerfladen: store, lette bogstaver i stedet for knapper og pynt. Indholdet først, rammerne bagefter. Og så skulle alting være levende i bevægelse. Navne, der flyver, kort, der rejser sig, sider, der følger fingeren. Det skulle fryde, og det skulle betyde noget.</p>
         <p class="pfnote" style="color:var(--fg)">Zune er for længst borte. Principperne er ikke. Familien lever videre.</p>
       </div>
     
@@ -1199,9 +1259,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.13';
+var APP_VERSION='2.14';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+    {v:'2.14',d:'2026-11-16',t:'2026-11-16T06:15:00Z',items:['Du kan hente din egen anetavle som PDF under indstillinger. Den følger dine forældres vej bagud, deres forældre og så videre, så langt træet rækker. Søskende, ægtefæller og børn er nu med i hvert led, hver med sit eget ansigt: et fotografi, hvor der findes et, ellers tegningen fra appen. Tegningerne er der stadig flest af. Tavlen afslører også en del tomme pladser. Dem kan jeg ikke fylde ud selv. Træet vokser, når nogen ringer til en moster og spørger. Jeg tager imod alle gode forslag under indstillinger. Velkommen til den sociale del']},
   {v:'2.13',d:'2026-11-12',t:'2026-11-12T12:21:58Z',items:['Pauseskærmen er optimeret og viser endnu mere information. Noget er ligegyldigt. Husk at slå pauseskærmen til under indstillinger. Under indstillinger finder du flere fancy ting, også den store slægtsplakat til at hænge over sofaen']},
   {v:'2.12',d:'2026-11-12',t:'2026-11-12T11:49:03Z',items:['Tryk på billedet af en person, og det folder sig ud og fylder skærmen. Kvaliteten er, som den er med gamle familiefotos. Er der flere billeder af hende eller ham, ligger de klar ved siden af — bare bladr videre med fingeren, eller træk med musen. Har du flere billeder af nogen i familien, så send dem endelig til Bo. Jeg har god plads. Så tilføjes de, når der er plads i kalenderen']},
   {v:'2.11',d:'2026-11-09',t:'2026-11-09T15:12:00Z',items:['Jeg har ryddet op i ‘hvem er du?’ startsiden. Billederne er flyttet ned til navnene, hvor de hørte hjemme. Du kan stadig søge efter navne i slægten, men nu kan du også trykke på en bogstavboks og springe gennem alfabetet. Jeg har 160 mennesker at holde styr på, og de fleste af dem står langt nede i alfabetet. Til gengæld er der også ledige bogstaver til kommende generationer']},
@@ -1304,7 +1365,16 @@ function vnum(v){ return String(v).split('.').map(function(x){ return ('000'+x).
 /* Versioner med test:true er ikke godkendt af Træets Vogter endnu: de ligger på siden, men familien hører ikke om dem. Fjern test:true for at offentliggøre. */
 var LIVE=CHANGELOG.filter(function(c){ return !c.test; }), LIVEVER=LIVE.length?LIVE[0].v:APP_VERSION;
 var APPBASE=store('slaegt.appbase'); if(!APPBASE){ APPBASE=LIVEVER; store('slaegt.appbase',APPBASE); }
-function appNews(){ return LIVE.filter(function(c){ return vnum(c.v)>vnum(APPBASE); }); }
+/* Panelet er et LOG, ikke et filtreret feed (Bo, 16.11.2026): app- og traenoter er
+   begge bare opdateringer, og ingen af delene vejer tungere end den anden. Er noget
+   uvaesentligt, bliver det slet ikke skrevet ind - udvaelgelsen sker, naar noten
+   skrives, ikke naar den vises. Derfor filtrerer appNews() ikke laengere paa APPBASE:
+   et nyt mobil-install stemplede APPBASE til nyeste version og fik dermed ALDRIG en
+   app-note at se, mens traenoter kom uhindret igennem - klokken saa ud som om kun
+   traeet var blevet opdateret. APPBASE bliver staaende som reserve for seenapp
+   nedenfor, saa et frisk install stadig ikke faar badge for historik, det ikke var
+   med til. Kun visningen aendrer sig; taellingen er uroert. */
+function appNews(){ return LIVE.slice(); }
 function appUnread(){ var seen=store('slaegt.seenapp')||APPBASE; return appNews().filter(function(c){ return vnum(c.v)>vnum(seen); }).length; }
 function unread(){ var s=lastSeen(); return CHANGES.filter(function(c){ return c.t>s; }).length + appUnread(); }
 function updateBadge(){ var n=NOTIFY? unread():0, b=$('#newsBadge'); b.hidden=!n; b.textContent=n>9?'9+':n; $('#newsBtn').setAttribute('aria-label',n? 'Nyheder, '+n+' nye':'Nyheder'); }
@@ -2128,17 +2198,159 @@ function sibLabel(c,s){ var full=P[c].f&&P[c].m&&P[s].f===P[c].f&&P[s].m===P[c].
 function spouses(id){ return (P[id]&&P[id].sp)?P[id].sp.slice():[]; }
 function sibsOf(id){ var p=P[id], out=[]; [p.f,p.m].forEach(function(q){ if(q&&P[q]) P[q].kids.forEach(function(k){ if(k!==id&&out.indexOf(k)<0) out.push(k); }); }); return out; }
 function sibName(k){ var q=P[k], yb=yr(q.b), yd=yr(q.d), yy=yb&&yd?yb+'–'+yd:yb; return q.n.replace(/ Hejselbæk$/,'')+(yy?' ('+yy+')':''); }
-function sibSpouse(k){ var s=spouses(k); return s.length?s[s.length-1]:null; }
-function sibText(k){ var sp=sibSpouse(k); return sibName(k)+(sp?' · gift med '+P[sp.id].n.split(' ')[0]:''); }
+function sibText(k){ var w=spouses(k); return sibName(k)+(w.length?' · '+wedText(w):''); }
 function sibLines(t,wid){
   if(!MEAS){ MEAS=aEl('span'); MEAS.style.cssText='position:absolute;left:-9999px;top:0;white-space:nowrap;font-family:var(--f-ui);font-size:12px'; document.body.appendChild(MEAS); }
   var W=wid||BW-22, words=t.split(' '), lines=1, cur='';
   for(var i=0;i<words.length;i++){ var tr=cur?cur+' '+words[i]:words[i]; MEAS.textContent=tr;
     if(cur&&MEAS.getBoundingClientRect().width>W){ lines++; cur=words[i]; } else cur=tr; }
   return lines; }
-function boxH(id){ var ks=sibsOf(id); if(!ks.length) return BH; var n=1; ks.forEach(function(k){ n+=sibLines(sibText(k)); }); return BH+14+15*n; }
+function boxH(id){
+  if(V2) return BH+nameExtra(id)+famH(id,'sibs');
+  var ks=sibsOf(id); if(!ks.length) return BH; var n=1;
+  ks.forEach(function(k){ n+=sibLines(sibText(k)); }); return BH+14+15*n; }
 function wedText(w){ var ns=w.map(function(x){ return P[x.id].n.split(' ')[0]; }); return 'gift med '+ns[0]+(ns.length>1?', senere '+ns.slice(1).join(' og '):''); }
 function wedH(w){ return w.length? sibLines(wedText(w),BW-67)*15 : 0; }
+
+
+/* ===== v2: familieblokke =================================================
+   Hvert kort baerer de slaegtninge, tavlen ikke selv tegner omkring det.
+   Anekort -> personens soeskende. Kort nedad og til siden -> personens boern.
+   Centrum faar ingen blok; baade soeskende og boern er allerede felter.
+   V2=false giver praecis v1 igen - samme renderer, ét flag. */
+var V2=true;
+var V2_L2_YEARS=true;   /* niveau 2: foedselsaar naar der ingen aegtefaelle er */
+
+function kidsOf(id){ return (P[id]&&P[id].kids)?P[id].kids.slice():[]; }
+function bareName(k){ return P[k].n.replace(/ Hejselbaek$/,'').replace(/ Hejselbæk$/,''); }
+function poss(k){ var f=P[k].n.split(' ')[0].toUpperCase(); return /[SXZ]$/.test(f)?f+"'":f+'S'; }
+
+function l1Text(k){ return sibText(k); }                       /* navn (aar) · gift med … */
+function l2Text(k){ var w=spouses(k);
+  if(w.length) return bareName(k)+' · '+wedText(w);
+  var y=yr(P[k].b); return bareName(k)+(V2_L2_YEARS&&y?' · f. '+y:''); }
+function l3Text(k){ return bareName(k); }                      /* ingen "gift med" paa niveau 3 */
+
+/* tilgaengelige bredder, maalt ud fra indrykningen i CSS'en */
+var L1W=BW-47, L2W=BW-56, L3W=BW-79;
+
+function famModel(id,kind){
+  var mem=(kind==='sibs')?sibsOf(id):kidsOf(id);
+  return mem.map(function(k){
+    return {id:k, kids:kidsOf(k).map(function(c){ return {id:c, gk:kidsOf(c)}; })};
+  });
+}
+/* Kortet viser hoejst tre niveauer. Er der mere bag et barnebarn - aegtefaelle
+   eller boern, under ét - siger kortet det. Henvisningen staar paa kortet,
+   ikke i foden: den optraeder kun paa en haandfuld kort og fortaeller netop
+   dér, hvilke familier der har mere bag sig. */
+function famDeeper(model){
+  return model.some(function(m){
+    return m.kids.some(function(c){
+      return c.gk.some(function(g){ return kidsOf(g).length||spouses(g).length; });
+    });
+  });
+}
+function famKind(n){
+  if(n.center) return null;
+  if(n.gen>=1) return 'sibs';
+  return 'kids';                      /* gen 0 (soeskende til centrum) og gen -1 (boern) */
+}
+/* Hoejden MAALES paa den rigtige blok i stedet for at regnes ud af en formel.
+   En formel skal kende hver margin, hvert gap og at et 19 px portraet er
+   hoejere end sin 15 px linje - og den bliver forkert igen, naeste gang
+   afstandene justeres. Teksten maales allerede paa den maade (sibLines). */
+var FHOST=null;
+function famHost(){
+  if(!FHOST){
+    FHOST=aEl('div','ana');
+    FHOST.style.cssText='position:fixed;left:-30000px;top:0;visibility:hidden;'+
+      '--a-paper:#ffffff;--a-card:#fbfcfa;--a-ink:#1d221e;--a-muted:#5d665f;--a-line:#c9d0c7;'+
+      '--a-far:#2c5c4e;--a-mor:#7b3854;--a-ghost:#98a198;font-family:var(--f-ui)';
+    var box=aEl('div','a-box'); box.style.width=BW+'px'; box.style.height='auto';
+    FHOST.appendChild(box); document.body.appendChild(FHOST);
+  }
+  return FHOST.firstChild;
+}
+/* Navnets egen ombrydning MÅLES. BH er et fast tal (76px), der antager ét
+   navn paa én linje, men `.a-nm` maa fylde to (-webkit-line-clamp:2). Et
+   langt navn — "Marie Kirstine Pedersdatter" — skubbede derfor aarstal og
+   "gift med" ud gennem kortets bund. relH og wedH daekkede slaegtsled og
+   aegtefaeller, men INGEN daekkede navnet. Maalt, ikke regnet: saa holder
+   det ogsaa, naar skriften skifter, og naar der kommer laengere navne. */
+var NCACHE={};
+function nameExtra(id){
+  if(NCACHE[id]!==undefined) return NCACHE[id];
+  var p=P[id]; if(!p) return (NCACHE[id]=0);
+  var host=famHost(); host.textContent='';
+  var ph=aEl('div','a-ph'); ph.textContent=aIni(p.n);   /* saa .a-txt faar rigtig bredde */
+  var t=aEl('div','a-txt'); var s=aEl('span','a-nm',p.n);
+  t.appendChild(s); host.appendChild(ph); host.appendChild(t);
+  var h=s.getBoundingClientRect().height;
+  host.textContent='';
+  var oneLine=Math.ceil(14*1.2);                        /* .a-nm: 14px/1.2 */
+  return (NCACHE[id]=Math.max(0, Math.ceil(h)-oneLine));
+}
+
+var FCACHE={};
+function famH(id,kind){
+  if(!kind) return 0;
+  var key=id+'|'+kind;
+  if(FCACHE[key]!==undefined) return FCACHE[key];
+  var blk=famBlockFor(id,kind);
+  if(!blk) return (FCACHE[key]=0);
+  var host=famHost();
+  host.textContent='';
+  host.appendChild(blk);
+  /* rect udelader margin-top, som skiller blokken fra kortets egen tekst.
+     Rundes OP: overskriften er 9px/1.3 = 11,7px, så højden er brøkdelt, og
+     en nedrunding lader en hårfin stribe tekst stikke ud forneden. */
+  var h=Math.ceil(blk.getBoundingClientRect().height+6)+1;
+  host.textContent='';
+  return (FCACHE[key]=h);
+}
+function mini(k,cls){
+  var e=aEl('div',cls), im=pic(P[k]);
+  if(im){ var g=new Image(); g.src=im; g.alt=''; e.appendChild(g); }
+  return e;
+}
+function famBlock(n){ var k=famKind(n); return k?famBlockFor(n.id,k):null; }
+function famBlockFor(id,kind){
+  var model=famModel(id,kind); if(!model.length) return null;
+  var sd=aEl('div','a-sibs');
+  sd.appendChild(aEl('h4',null,poss(id)+(kind==='sibs'?' SØSKENDE':' BØRN')));
+  model.forEach(function(m){
+    var rw=aEl('div','a-sprow');
+    rw.appendChild(mini(m.id,'a-sph'));
+    rw.appendChild(aEl('span',null,l1Text(m.id)));
+    sd.appendChild(rw);
+    if(!m.kids.length) return;        /* en soeskende uden boern faar ingen streg */
+    var kb=aEl('div','kids');
+    m.kids.forEach(function(c){
+      var kr=aEl('div','krow');
+      kr.appendChild(mini(c.id,'a-kph'));
+      kr.appendChild(aEl('span',null,l2Text(c.id)));
+      kb.appendChild(kr);
+      c.gk.forEach(function(g){ kb.appendChild(aEl('div','gk',l3Text(g))); });
+    });
+    sd.appendChild(kb);
+  });
+  /* '+' og ikke '*': en stjerne er et fodnotetegn, der peger tilbage paa et
+     tegn laengere oppe, og der staar ingen. Et plus siger 'der er mere'. */
+  if(famDeeper(model)) sd.appendChild(aEl('div','a-more','+ Mere info i appen'));
+  return sd;
+}
+
+
+var UCACHE={};
+function unkH(label){
+  if(UCACHE[label]!==undefined) return UCACHE[label];
+  var host=famHost(); var prev=host.className;
+  host.textContent=''; host.className='a-box a-unk'; host.textContent=label;
+  var h=Math.ceil(host.getBoundingClientRect().height);
+  host.textContent=''; host.className=prev;
+  return (UCACHE[label]=Math.max(UH,h));
+}
 
 /* ---- layout + tegning, som i anetavle-artefaktet ---- */
 function build(center){
@@ -2147,7 +2359,7 @@ function build(center){
   function xOf(gen,dir){ return dir*(BW/2+14+(gen-1)*CW); }
   function place(item,gen,dir,path,cur){
     depth=Math.max(depth,gen);
-    if(!item.id){ var y0u=cur.y+UH/2; cur.y+=URH; var nu={unk:item.label,gen:gen,dir:dir,x:xOf(gen,dir),y:y0u,h:UH}; nodes.push(nu); return nu; }
+    if(!item.id){ var uh=V2?unkH(item.label):UH; var y0u=cur.y+uh/2; cur.y+=Math.max(URH,uh+16); var nu={unk:item.label,gen:gen,dir:dir,x:xOf(gen,dir),y:y0u,h:uh}; nodes.push(nu); return nu; }
     var p=P[item.id]; known++; RELMAP[item.id]=kinWord(path); CHAINMAP[item.id]=kinChain(path);
     var wed=spouses(item.id);
     var h=boxH(item.id)+relH(path)+wedH(wed), i0=nodes.length, y0=cur.y, par=[];
@@ -2171,20 +2383,35 @@ function build(center){
     nodes.forEach(function(n){ if(dy>0&&n.dir===1) n.y+=dy; if(dy<0&&n.dir===-1) n.y-=dy; });
   } else { left=place({label:'Forældre · ikke i træet endnu'},1,-1,['f'],curL); left.x=0; }
   var bottom=0; nodes.forEach(function(n){ bottom=Math.max(bottom,n.y+n.h/2); });
-  var rowY=bottom+70+BH/2, row=[];
+  var row=[];
   if(c.f||c.m){ var pool=[]; [c.f,c.m].forEach(function(q){ if(q) P[q].kids.forEach(function(k){ if(pool.indexOf(k)<0) pool.push(k); }); }); row=pool; }
   else row=[center];
+  var rowH=BH;
+  if(V2) row.forEach(function(id){ if(id!==center)
+    rowH=Math.max(rowH,BH+nameExtra(id)+wedH(spouses(id))+famH(id,'kids')); });
+  var rowY=bottom+70+rowH/2;
   var W=row.length*BW+(row.length-1)*GAP, x0=-W/2+BW/2;
   var rowNodes=row.map(function(id,i){
-    var n={id:id,gen:0,x:x0+i*(BW+GAP),y:rowY,h:BH,center:id===center,rel:id===center?'centrum':sibLabel(center,id)};
+    /* 'mig' og ikke 'centrum': hele arket er allerede skrevet i foerste
+       person - 'farfar' betyder MIN fars far. 'mig' goer den grammatik
+       udtrykkelig og fuldender raekken: mig / far / farfar / farfars far. */
+    var n={id:id,gen:0,x:x0+i*(BW+GAP),y:rowY,center:id===center,rel:id===center?'mig':sibLabel(center,id)};
+    /* ægtefællen på kortlinjen, som på anekortene. Centrum er undtaget:
+       tavlen tegner allerede centrums ægtefælle udenfor i .a-spouse. */
+    n.wed=(V2&&id!==center)?spouses(id):[];
+    n.h=BH+(V2?nameExtra(id):0)+wedH(n.wed)+(V2?famH(id,famKind(n)):0);
     if(id!==center) RELMAP[id]=n.rel; nodes.push(n); return n; });
   var cNode=rowNodes.filter(function(n){return n.center})[0];
   var sp=spouses(center), kidNodes=[];
   if(c.kids.length){
-    var ky=rowY+BH/2+(sp.length?44:0)+70+BH/2;
+    var kidH=BH; c.kids.forEach(function(id){ kidH=Math.max(kidH,
+      BH+(V2?nameExtra(id)+wedH(spouses(id))+famH(id,'kids'):0)); });
+    var ky=rowY+rowH/2+(sp.length?44:0)+70+kidH/2;
     var KW=c.kids.length*BW+(c.kids.length-1)*GAP, kx0=cNode.x-KW/2+BW/2;
-    kidNodes=c.kids.map(function(id,i){ var n={id:id,gen:-1,x:kx0+i*(BW+GAP),y:ky,h:BH,
-      rel:P[id].s==='F'?'datter':(P[id].s==='M'?'søn':'barn')}; RELMAP[id]=n.rel; nodes.push(n); return n; });
+    kidNodes=c.kids.map(function(id,i){ var n={id:id,gen:-1,x:kx0+i*(BW+GAP),y:ky,
+      rel:P[id].s==='F'?'datter':(P[id].s==='M'?'søn':'barn')};
+      n.wed=V2?spouses(id):[];
+      n.h=BH+(V2?nameExtra(id):0)+wedH(n.wed)+(V2?famH(id,'kids'):0); RELMAP[id]=n.rel; nodes.push(n); return n; });
   }
   nodes.forEach(function(n){ if(!n.par) return;
     var xe=n.x+n.dir*BW/2, xm=xe+n.dir*(CW-BW)/2;
@@ -2199,11 +2426,12 @@ function build(center){
     rowNodes.forEach(function(n){ paths.push('M'+n.x+','+barY+' V'+(n.y-BH/2)); });
   } else paths.push('M'+left.x+','+(left.y+UH/2)+' V'+(rowY-BH/2));
   if(kidNodes.length){
-    var kb=kidNodes[0].y-BH/2-26, top=cNode.y+BH/2+(sp.length?44:0);
+    var kTop=Math.min.apply(null,kidNodes.map(function(n){return n.y-n.h/2;}));
+    var kb=kTop-26, top=cNode.y+cNode.h/2+(sp.length?44:0);
     paths.push('M'+cNode.x+','+top+' V'+kb);
     var kxs=kidNodes.map(function(n){return n.x}).concat([cNode.x]);
     paths.push('M'+Math.min.apply(null,kxs)+','+kb+' H'+Math.max.apply(null,kxs));
-    kidNodes.forEach(function(n){ paths.push('M'+n.x+','+kb+' V'+(n.y-BH/2)); });
+    kidNodes.forEach(function(n){ paths.push('M'+n.x+','+kb+' V'+(n.y-n.h/2)); });
   }
   var minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
   nodes.forEach(function(n){ minX=Math.min(minX,n.x-BW/2); maxX=Math.max(maxX,n.x+BW/2);
@@ -2232,11 +2460,15 @@ function build(center){
           wv.appendChild(aEl('span','a-wedn',P[x.id].n.split(' ')[0])); });
         t.appendChild(wv); }
       b.appendChild(ph); b.appendChild(t);
-      if(n.hs){ b.classList.add('a-hs'); var sd=aEl('div','a-sibs'); sd.appendChild(aEl('b',null,'Søskende'));
+      if(V2){ var fb=famBlock(n); if(fb){ b.classList.add('a-hs'); b.appendChild(fb); } }
+      else if(n.hs){ b.classList.add('a-hs'); var sd=aEl('div','a-sibs'); sd.appendChild(aEl('b',null,'Søskende'));
         sibsOf(n.id).forEach(function(k){
           var rw=aEl('span','a-sbrow'); rw.appendChild(aEl('span','a-sb',sibName(k)));
-          var s2=sibSpouse(k);
-          if(s2){ var gm=aEl('span','a-gm',' · gift med '); gm.appendChild(aEl('span','a-gmn',P[s2.id].n.split(' ')[0])); rw.appendChild(gm); }
+          var w2=spouses(k);
+          if(w2.length){ var gm=aEl('span','a-gm',' · gift med ');
+            w2.forEach(function(x,i){ if(i) gm.appendChild(document.createTextNode(i===1?', senere ':' og '));
+              gm.appendChild(aEl('span','a-gmn',P[x.id].n.split(' ')[0])); });
+            rw.appendChild(gm); }
           sd.appendChild(rw); });
         b.appendChild(sd); }
     }
@@ -2258,7 +2490,7 @@ function build(center){
   return {w:w,h:h,known:known,depth:depth};
 }
 /* ---- siden omkring tavlen: overskrift, mærke, signatur, kilder ---- */
-var KILDER='Kilder: kirkebøger og folketællinger på Arkivalieronline · Erling Agesen, Lars Larsen (Agesen) og efterkommere (2020) · Verner Andersen, Slægten Hejselbæk (1986) · hejselbaek.dk · arkiv.dk · Slægtsbog for slægten Hejselbæk, udg. Evald Hejselbæk (ca. 1970) · stamtræet "Familien Hejselbæk – 100 år" · Hans Ellekilde, "Heksen Maren Graa i Thorning". Kilde betyder fundet i et dokument; Oplyst betyder fortalt af familien; per slægtsbog betyder fra slægtsbogen og endnu ikke tjekket i kirkebog.';
+var KILDER='Kilder og noter for hver person står i appen: slaegten.hejselbaek.com';
 
 function scaffold(){
   var r=aEl('div','ana');
