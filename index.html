@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-OemIHGWlbkmX4xgdPT04ACJY8EOJN2yotl0Dkje1pKE=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-GAe9ChII6VUyfAQX3VwijsUVHuB0ElDw2KiNTtow9Rs=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -525,6 +525,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .q-opt.q-wrong{border-color:var(--t-far);color:var(--t-far)}
 .q-after{margin-top:18px;display:flex;flex-direction:column;gap:10px}
 .q-score{font-size:2.5rem;font-weight:300;line-height:1;margin:0 0 8px}
+.q-nudge{color:var(--t-far);margin:6px 0 0}
 .q-foot{display:flex;gap:16px;align-items:center;margin-top:28px}
 .q-quit{color:var(--sub);font-size:0.875rem;min-height:44px;background:transparent}
 .q-confirm{border:1px solid var(--dim);padding:14px 16px;margin-top:16px;display:flex;flex-direction:column;gap:10px}
@@ -1751,6 +1752,8 @@ function qDone(){
   var b=$('#qBody'), nm=(P[POV]&&P[POV].n)||'';
   var h='<p class="q-prog">færdig</p><p class="q-score">'+QOK+' af '+QQ.length+'</p>';
   h+='<p class="pfnote keeper" style="color:var(--fg)">'+esc(qVerdict(QOK,QQ.length))+'</p>';
+  /* Opfordringen vises kun, når der er nogen at dele SOM — ellers peger den på en død knap */
+  if(nm && QOK/QQ.length>=0.7) h+='<p class="q-nudge">Jeg synes du skal dele.</p>';
   h+='<div class="grp" style="margin-top:24px"><h2>del dit resultat</h2>'
     +'<p class="pfnote">Du sender dit navn og dit resultat — intet andet. Det kan blive vist i appen, når Bo har set det.</p>'
     +'<button class="primarybtn" type="button" id="qShare">del som '+esc(nm||'dig selv')+'</button>'
@@ -1831,7 +1834,7 @@ function qFeedRows(t){
     return r[iN] && r[iN].trim() && String(r[iG]||'').trim().toUpperCase()==='TRUE';
   }).map(function(r){
     return {when:qWhen(r[iT]), who:r[iN].trim(), score:(r[iS]||'').trim(), of:(r[iA]||'').trim(), t:r[iT]||''};
-  }).reverse();
+  }).sort(function(a,b){ return qStampOf(b.t)-qStampOf(a.t); });
 }
 function qLoadFeed(){
   if(QFBUSY||QROWS) { qRenderLog(); return; }
@@ -1906,11 +1909,16 @@ function qMarkPlayed(){
 
 function qToast(){
   if(!QROWS||!QROWS.length) return;
+  var now=qNowStamp();
   var seen=parseInt(store(QSEEN)||'0',10);
+  /* et mærke forude er noget vrøvl - et felt tastet forkert må ikke lukke munden på toasten */
+  if(seen>now){ seen=now; store(QSEEN,String(now)); }
   var me=(POV&&P[POV]&&P[POV].n)||'';
   var newest=0, pick=null;
   QROWS.forEach(function(r){
-    var st=qStampOf(r.t); if(st>newest) newest=st;
+    var st=qStampOf(r.t);
+    if(st>now) return;                       /* fremtidsdateret: hverken toast eller mærke */
+    if(st>newest) newest=st;
     if(st>seen && r.who!==me && (!pick||st>qStampOf(pick.t))) pick=r;
   });
   /* mærket flyttes uanset hvad, så ens eget resultat ikke ligger og venter på at poppe senere */
