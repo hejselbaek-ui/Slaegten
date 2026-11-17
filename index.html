@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-15S39i7kWS7gQjs9LHdtScd5GWt8bSvOb+HZrOU+qOY=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-NewKKRhqDCaiuvHsqwFRKWyVA2HLHC1p/QHwomosYSM=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -264,6 +264,16 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .row .rt-none{flex:0 0 48px;width:48px}
 .row:active{background:var(--raise)}
 .status{font-size:0.75rem;color:var(--sub);margin:0}
+/* Etiketten over de tre pinnede. Samme 12 px som fodnoten — de to er de eneste
+   to i "hvem er du", så størrelsen er ikke forældreløs. Den trækkes tæt på
+   rækkerne, så den læses som deres overskrift og ikke som en linje for sig. */
+.ishead{margin-bottom:-6px}
+/* Ingen ekstra luft: knappen holder .sendpic's egen rytme, så afstanden er den
+   samme som alle andre i spalten. Bo så 24 px på skærmen og kaldte det for
+   meget. (Hvis en regel her skal veje mere end .sendpic, så skriv den
+   sammensat — .sendpic står længere nede i filen. Samme fælde som
+   .brand.brand-sm.) */
+.sendpic.isoff{color:var(--sub)}
 /* Påmindelsen om udgangspunktet står i terrakotta som #lockNews på låseskærmen —
    samme greb: en .status løftet ud med farve alene. Kun denne ene, så fodnoten
    under listen beholder sin dæmpede grå. Førstegangsbrugere ser den aldrig:
@@ -648,7 +658,16 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
       <div class="pano" aria-hidden="true"><span class="cap" id="families">familien</span><span class="nm">hvem er du?</span></div>
       <div class="pksq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <p class="status pnow" id="pickNow" hidden></p>
-      <p class="intro">Vælg, hvem du vil gå på opdagelse i slægten som. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.</p>
+      <p class="intro" id="pickIntro">Vælg, hvem du vil gå på opdagelse i slægten som. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.</p>
+      <!-- De tre pinnede står OVER søgefeltet, ikke over bogstavlisten: så rører
+           en søgning dem aldrig, og de bliver ikke et fjerde led i alfabetet.
+           Samme rækkeform som resten af listen — én skinne hele vejen ned. -->
+      <p class="status ishead" id="isHead" hidden></p>
+      <div class="grp" id="isPin" hidden><div class="alpha" id="isRows"></div></div>
+      <!-- Vejen ud står, hvor det, man går ud af, er at se. Den navngiver ingen
+           tilstand — ligesom hilsenen — men siger, hvad der sker. Ingen
+           bekræftelse: linket henter de tre tilbage. -->
+      <button type="button" class="sendpic isoff" id="isOff" hidden>Vis ikke jer tre øverst</button>
       <input id="q" class="search" type="search" placeholder="Søg efter navn" autocomplete="off" aria-label="Søg efter navn">
       <!-- Forslagslinket står UNDER søgefeltet. Over det kostede det 58px på
            den mest brugte vej, og på en telefon begyndte søgefeltet først
@@ -862,7 +881,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 <script>
 (function(){
 var $=function(s){return document.querySelector(s)};
-var P={}, VER=null, POV=null, CUR=null, STACK=[], PIVOT='familie', DIST={}, PREV={}, GMIN=0, GMAX=0, LAST=null;
+var P={}, VER=null, POV=null, CUR=null, STACK=[], PIVOT='familie', DIST={}, PREV={}, GMIN=0, GMAX=0, LAST=null, IS=false, PIN=null;
 function store(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){ return null; } }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
 function yr(t){ var m=(t||'').match(/\d{4}/); return m?m[0]:''; }
@@ -987,7 +1006,7 @@ function lockDevice(){
    blev opdateret i baggrunden, kaldte "quiet()" i stedet en true/false-værdi, og hele opdateringen
    faldt lydløst på gulvet: ingen ny tegning, ingen nye billeder. Derfor hedder den nu "first" */
 function apply(j,first){
-  var changed=VER!==null; VER=j.version; ingest(j);
+  var changed=VER!==null; VER=j.version; PIN=j.pin||null; ingest(j);
   if(POV&&!P[POV]) POV=null; if(CUR&&CUR!=='__pick'&&!P[CUR]) CUR=POV;
   STACK=STACK.filter(function(x){return P[x]});
   hideLoading(); $('#lock').hidden=true;
@@ -1165,9 +1184,37 @@ function render(){
   $('#keepBtn').hidden=!(picking&&povSet);
   if(picking) $('#backBtn').hidden=true;
   $('#pickNow').hidden=!(picking&&povSet); if(picking&&povSet) $('#pickNow').textContent='Du ser lige nu træet fra '+P[POV].n+'.';
+  renderPin(picking);
   $('#settingsBtn').hidden=!VER; $('#newsBtn').hidden=!VER||!NOTIFY; updateBadge();
   if(!povSet||CUR==='__pick'){ renderPick(); $('#rail').innerHTML=''; RAILKEY=null; return; }
   renderFocus();
+}
+/* ---------- #is: de pinnede øverst i "hvem er du?" ---------- */
+/* Tilstanden tændes af et #is-link og bæres derefter af et gemt flag, fordi
+   manifestets start_url er "./": en installeret app åbner aldrig det link, der
+   blev trykket på. Token'et sidder efter adgangskodeporten og giver derfor
+   ingen adgang i sig selv — et videresendt link uden adgangskoden er dødt. */
+/* HVEM de tre er, og hvad der står over dem, ligger i den KRYPTEREDE nyttelast
+   (`pin` i tree.enc.json) — ikke her. index.html er offentlig, og alt om
+   levende mennesker bor bag adgangskoden; et barns fornavn er ingen undtagelse.
+   Sidegevinst: kredsen kan ændres uden en udgivelse. */
+var ISINTRO='Jeg har sat jer tre øverst. Vælg, hvem du vil gå på opdagelse i slægten som. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.';
+var DEFINTRO='Vælg, hvem du vil gå på opdagelse i slægten som. Slægtskaber, farver og generationer regnes ud fra dit valg. Det samme gør pauseskærmen.';
+function renderPin(picking){
+  var keys=(PIN&&PIN.keys)||[], on=!!(picking&&IS&&PIN);
+  var ids=on? keys.filter(function(id){ return P[id]; }) : [];
+  $('#isHead').hidden=$('#isPin').hidden=$('#isOff').hidden=!ids.length;
+  if(!ids.length) return;
+  $('#isHead').textContent=PIN.head||'';
+  $('#pickIntro').textContent=ISINTRO;
+  /* UNDTAGELSEN, og den eneste: her bruges pic(), ikke p.photo. Den lange liste
+     svarer på "findes der et fotografi?" — de tre svarer på "er det dig?", og
+     dér skal hvert valg have et ansigt. Uden den ville barnet, funktionen
+     findes for, stå som den eneste uden, under to forældre der begge har et. */
+  $('#isRows').innerHTML=ids.map(function(id){ var p=P[id], f=pic(p);
+    return '<button type="button" class="row" data-id="'+id+'">'+
+      (f? '<img class="rt" src="'+f+'" alt="">' : '<span class="rt-none" aria-hidden="true"></span>')+
+      '<span class="rn">'+esc(p.n)+'</span><span class="ry">'+years(p)+'</span></button>'; }).join('');
 }
 var PICKL={};
 function renderPick(){
@@ -1315,7 +1362,7 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.15';
+var APP_VERSION='2.16';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
     {v:'2.15',d:'2026-11-17',t:'2026-11-17T07:31:00Z',items:['Så er der kommet Quiz i appen — ti hurtige spørgsmål om slægten til de mørke vinteraftener. Du finder den under indstillinger øverst til højre. Desuden vises flere facts i pauseskærmen, de fleste er stadigvæk lidt ligegyldige. Der er ryddet lidt op i brugerfladen. Småting, for det hele ser allerede så godt ud']},
@@ -2058,6 +2105,14 @@ $('#sendPic').addEventListener('click',function(){
   var me=(POV&&P[POV])?POV:null; if(me){ $('#sgFrom').value=me; $('#sgPerson').value=me; }
 });
 
+/* Flaget ryddes, hilsenen falder tilbage til den, alle andre ser. Ingenting går
+   tabt for altid: det samme link tænder den igen, og det siger toasten. */
+$('#isOff').addEventListener('click',function(){
+  IS=false; try{ localStorage.removeItem('slaegt.is'); }catch(e){}
+  $('#pickIntro').textContent=DEFINTRO; render();
+  toast('Jer tre er væk fra toppen. Linket henter dem tilbage.');
+});
+
 // Stryg mellem faner
 var sx=null, sy=null, ORDER=['familie','søskende','detaljer','farver'];
 function setPivot(pv){ if(pv===PIVOT) return; DIR=ORDER.indexOf(pv)>ORDER.indexOf(PIVOT)?'left':'right'; PIVOT=pv; FLY=null; renderFocus(); }
@@ -2121,6 +2176,16 @@ function toast(m){ var el=document.querySelector('.toast'); if(!el){ el=document
   el.textContent=m; el.hidden=false; el.style.animation='none'; void el.offsetWidth; el.style.animation=''; clearTimeout(TT); TT=setTimeout(function(){ el.hidden=true; },3500); }
 
 POV=store('slaegt.pov'); CUR=POV;
+/* Linket inviterer, telefonen husker. Læses FØR oplåsningen, så fragmentet
+   ikke går tabt undervejs — adressen er den samme, men siden tegnes om. */
+function isLink(){ try{ var h=(location.hash||'').toLowerCase();
+  if(h==='#is'){ store('slaegt.is','1'); return true; } }catch(e){} return false; }
+isLink(); IS=store('slaegt.is')==='1';
+/* Er appen allerede åben, når linket trykkes, skifter kun fragmentet: siden
+   hentes ikke igen, og uden den her gjorde linket ingenting. Fundet ved at
+   køre den, ikke ved at læse den. `hashchange` og ikke `popstate` — et nyt
+   fragment lægger en historikpost, det går ikke tilbage i en. */
+window.addEventListener('hashchange',function(){ if(isLink()&&!IS){ IS=true; render(); } });
 // Start straks med låste data fra sidst (åbnes med den gemte nøgle); hent derefter nyeste version
 $('#pwForm').addEventListener('submit',function(e){ e.preventDefault(); unlock(); });
 $('#logoutBtn').addEventListener('click',function(){ try{ localStorage.removeItem('slaegt.key'); }catch(e){} location.reload(); });
