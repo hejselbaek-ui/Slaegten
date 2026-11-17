@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-lb+vnK7oH0qZCd0/SNYg5saVPqwJ4FiXIz+u5zThucc=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Wtuezc/HEfim+4eeXxdUd6GrGQvMoKx2emb/ZHVDr18=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -510,7 +510,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .priv details[open] summary::before{transform:rotate(90deg)}
 .priv ul{margin:0 0 4px;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:0.8125rem;color:var(--sub)}
 @media (prefers-reduced-motion: reduce){.priv summary::before{transition:none}}
-.tiles.big{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tiles.big{grid-template-columns:repeat(2,minmax(0,1fr));max-width:368px}
 /* Indstillinger */
 .sheet{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
 .sheet .wrap{padding-right:max(16px, env(safe-area-inset-right,0px))}
@@ -896,6 +896,7 @@ function initials(n){ var w=n.split(/\s+/).filter(function(x){return /^[A-ZÆØ�
 var TITLE='slægten';
 function ingest(j){
   CHANGES=(j.changes||[]).slice().sort(function(a,b){ return a.t<b.t?1:-1; });
+  if(FIRSTRUN&&!store('slaegt.seen')&&CHANGES.length) store('slaegt.seen',CHANGES[0].t);
   P=j.people;
   var cnt={}; Object.keys(P).forEach(function(id){ var w=P[id].n.split(' '); if(w.length<2) return; var l=w[w.length-1]; if(/^[A-ZÆØÅ]/.test(l)) cnt[l]=(cnt[l]||0)+1; });
   var top=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a]}), shown=top.slice(0,5).map(function(x){return x.toLowerCase()});
@@ -1362,9 +1363,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.16';
+var APP_VERSION='2.17';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.17',d:'2026-11-17',t:'2026-11-17T18:05:00Z',items:['Quizzen gav mig nogle udfordringer, som nu er fixet. Ikke noget at hidse sig op over']},
   {v:'2.16',d:'2026-11-17',t:'2026-11-17T08:53:12Z',items:['Små justeringer i brugerfladen. Svært at se for jer andre, det er bare mig, der er pedantisk. Slut herfra']},
     {v:'2.15',d:'2026-11-17',t:'2026-11-17T07:31:00Z',items:['Så er der kommet Quiz i appen — ti hurtige spørgsmål om slægten til de mørke vinteraftener. Du finder den under indstillinger øverst til højre. Desuden vises flere facts i pauseskærmen, de fleste er stadigvæk lidt ligegyldige. Der er ryddet lidt op i brugerfladen. Småting, for det hele ser allerede så godt ud']},
     {v:'2.14',d:'2026-11-16',t:'2026-11-16T06:15:00Z',items:['Du kan hente din egen anetavle som PDF under indstillinger. Den følger dine forældres vej bagud, deres forældre og så videre, så langt træet rækker. Søskende, ægtefæller og børn er nu med i hvert led, hver med sit eget ansigt: et fotografi, hvor der findes et, ellers tegningen fra appen. Tegningerne er der stadig flest af. Tavlen afslører også en del tomme pladser. Dem kan jeg ikke fylde ud selv. Træet vokser, når nogen ringer til en moster og spørger. Jeg tager imod alle gode forslag under indstillinger. Velkommen til den sociale del']},
@@ -1469,7 +1471,7 @@ function lastSeen(){ return store('slaegt.seen')||''; }
 function vnum(v){ return String(v).split('.').map(function(x){ return ('000'+x).slice(-3); }).join('.'); }
 /* Versioner med test:true er ikke godkendt af Træets Vogter endnu: de ligger på siden, men familien hører ikke om dem. Fjern test:true for at offentliggøre. */
 var LIVE=CHANGELOG.filter(function(c){ return !c.test; }), LIVEVER=LIVE.length?LIVE[0].v:APP_VERSION;
-var APPBASE=store('slaegt.appbase'); if(!APPBASE){ APPBASE=LIVEVER; store('slaegt.appbase',APPBASE); }
+var APPBASE=store('slaegt.appbase'), FIRSTRUN=!APPBASE; if(!APPBASE){ APPBASE=LIVEVER; store('slaegt.appbase',APPBASE); }
 /* Panelet er et LOG, ikke et filtreret feed (Bo, 16.11.2026): app- og traenoter er
    begge bare opdateringer, og ingen af delene vejer tungere end den anden. Er noget
    uvaesentligt, bliver det slet ikke skrevet ind - udvaelgelsen sker, naar noten
@@ -1820,7 +1822,8 @@ function qDone(){
 function qVerdict(ok,n){
   if(ok===n) return 'Alle rigtige. Du har læst efter.';
   if(ok>=n-2) return 'Tæt på. Der er stadig et par huller.';
-  if(ok>=n/2) return 'Solidt resultat. Der er stadig nogen, du ikke har mødt.';
+  if(ok>n/2) return 'Solidt resultat. Der er stadig nogen, du ikke har mødt.';
+  if(ok>=n/2) return 'Det er vel et OK resultat.';
   return 'Det var en hård omgang. Slægten er stor, og der er mange at holde styr på.';
 }
 
@@ -1849,7 +1852,7 @@ function qShare(){
 /* ---------- Resultatloggen ----------
    Læser det udgivne regneark. Kun rækker, Bo har sat hak ved, kommer med — appen
    ser aldrig et resultat, han ikke har set først. Loggen vises først ved tre. */
-var QFEED='https://docs.google.com/spreadsheets/d/e/2PACX-1vSi1PP3T7TjoZAj3hzYV6vR2h-Cqt65DMcQY199MyC6ae6HMek9hujsVOp011Ftl8JM4I7wxsmNZqhG/pub?gid=2120198943&single=true&output=csv';
+var QFEED='https://docs.google.com/spreadsheets/d/e/2PACX-1vSi1PP3T7TjoZAj3hzYV6vR2h-Cqt65DMcQY199MyC6ae6HMek9hujsVOp011Ftl8JM4I7wxsmNZqhG/pub?gid=1987297896&single=true&output=csv';
 var QROWS=null, QFBUSY=false;
 var QMON=['jan.','feb.','mar.','apr.','maj','jun.','jul.','aug.','sep.','okt.','nov.','dec.'];
 
@@ -2686,7 +2689,7 @@ function startPause(){
     el.querySelector('.feat').classList.remove('fact');
     if(turn++%5===4){ var ff=nextFact();
       if(ff){ try{ var w=showFact(el,ff);
-        return setDur(Math.max(PDUR_BASE, Math.min(PDUR_MAX, PDUR_START+w*PDUR_WORD))); }catch(e){} } }
+        return setDur(Math.max(PDUR_BASE, Math.min(PDUR_MAX, PDUR_START+w*PDUR_WORD))); }catch(e){ console.warn('fakta sprang over:', e); } } }
     setDur(PDUR_BASE);
     var id=order[k++%order.length], p=P[id], facts=[];
     var kin= POV&&P[POV]? (id===POV? 'set fra' : longKin(id)) : '';
