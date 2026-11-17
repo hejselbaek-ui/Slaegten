@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-AGrvrSo1L0/wJC0DAyD8Av6pGLsAjihZuvNSRf4Ji8E=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-OemIHGWlbkmX4xgdPT04ACJY8EOJN2yotl0Dkje1pKE=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -1838,7 +1838,7 @@ function qLoadFeed(){
   QFBUSY=true;
   fetch(QFEED+'&t='+Date.now(),{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
   .then(function(t){ QROWS=qFeedRows(t); })
-  .catch(function(){ QROWS=null; })
+  .catch(function(e){ QROWS=null; console.warn('slaegten: resultatfeedet kunne ikke hentes', e); })
   .then(function(){ QFBUSY=false; qRenderLog(); });
 }
 
@@ -1943,7 +1943,7 @@ window.__quizBoot=function(){
   QFBUSY=true;
   fetch(QFEED+'&t='+Date.now(),{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
   .then(function(t){ QROWS=qFeedRows(t); })
-  .catch(function(){ QROWS=null; })
+  .catch(function(e){ QROWS=null; console.warn('slaegten: resultatfeedet kunne ikke hentes', e); })
   .then(function(){ QFBUSY=false; qToast(); });
 };
 
