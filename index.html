@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-NewKKRhqDCaiuvHsqwFRKWyVA2HLHC1p/QHwomosYSM=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-PVtLq1v4GM7GHFSicMmKI3Aaerh23UjUZ5hhepEWRTs=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -1365,6 +1365,7 @@ function renderRail(g){
 var APP_VERSION='2.16';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.16',d:'2026-11-17',t:'2026-11-17T08:53:12Z',items:['Små justeringer i brugerfladen. Jeg har ryddet lidt op, både foran og bagved, og fjernet unødig støj for at give mere plads til familien. Lækkert']},
     {v:'2.15',d:'2026-11-17',t:'2026-11-17T07:31:00Z',items:['Så er der kommet Quiz i appen — ti hurtige spørgsmål om slægten til de mørke vinteraftener. Du finder den under indstillinger øverst til højre. Desuden vises flere facts i pauseskærmen, de fleste er stadigvæk lidt ligegyldige. Der er ryddet lidt op i brugerfladen. Småting, for det hele ser allerede så godt ud']},
     {v:'2.14',d:'2026-11-16',t:'2026-11-16T06:15:00Z',items:['Du kan hente din egen anetavle som PDF under indstillinger. Den følger dine forældres vej bagud, deres forældre og så videre, så langt træet rækker. Søskende, ægtefæller og børn er nu med i hvert led, hver med sit eget ansigt: et fotografi, hvor der findes et, ellers tegningen fra appen. Tegningerne er der stadig flest af. Tavlen afslører også en del tomme pladser. Dem kan jeg ikke fylde ud selv. Træet vokser, når nogen ringer til en moster og spørger. Jeg tager imod alle gode forslag under indstillinger. Velkommen til den sociale del']},
   {v:'2.13',d:'2026-11-12',t:'2026-11-12T12:21:58Z',items:['Pauseskærmen er optimeret og viser endnu mere information. Noget er ligegyldigt. Husk at slå pauseskærmen til under indstillinger. Under indstillinger finder du flere fancy ting, også den store slægtsplakat til at hænge over sofaen']},
@@ -2105,12 +2106,14 @@ $('#sendPic').addEventListener('click',function(){
   var me=(POV&&P[POV])?POV:null; if(me){ $('#sgFrom').value=me; $('#sgPerson').value=me; }
 });
 
-/* Flaget ryddes, hilsenen falder tilbage til den, alle andre ser. Ingenting går
-   tabt for altid: det samme link tænder den igen, og det siger toasten. */
+/* Flaget ryddes, og hilsenen falder tilbage til den, alle andre ser. Toasten
+   lover INGEN vej tilbage, og det er med vilje: i en installeret app ER appen
+   linket, så enhver sætning om "linket" blev læst som "åbn appen igen" — af
+   Bo selv, på hans egen telefon. Vejen tilbage er beskeden fra Bo. */
 $('#isOff').addEventListener('click',function(){
   IS=false; try{ localStorage.removeItem('slaegt.is'); }catch(e){}
   $('#pickIntro').textContent=DEFINTRO; render();
-  toast('Jer tre er væk fra toppen. Linket henter dem tilbage.');
+  toast('Jer tre er væk fra toppen');
 });
 
 // Stryg mellem faner
