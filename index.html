@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-GAe9ChII6VUyfAQX3VwijsUVHuB0ElDw2KiNTtow9Rs=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-M15Bp1iyxNWHaDc91RuugftJWStwgvz4G7qGX2w0ILU=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -1911,8 +1911,10 @@ function qToast(){
   if(!QROWS||!QROWS.length) return;
   var now=qNowStamp();
   var seen=parseInt(store(QSEEN)||'0',10);
-  /* et mærke forude er noget vrøvl - et felt tastet forkert må ikke lukke munden på toasten */
-  if(seen>now){ seen=now; store(QSEEN,String(now)); }
+  /* Et mærke forude er noget vrøvl. Men at sætte det til NU ville kaste det nyeste resultat væk
+     sammen med fejlen, for alt ældre end dette øjeblik ville tælle som set. Derfor regnes runden
+     som om intet var set: telefonen får ét toast og er i trit igen bagefter. */
+  if(seen>now) seen=0;
   var me=(POV&&P[POV]&&P[POV].n)||'';
   var newest=0, pick=null;
   QROWS.forEach(function(r){
