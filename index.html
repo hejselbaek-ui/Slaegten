@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-8MQe6BRbTbLffVvWOpdbn22CI34DWHKiOCX9cN7TuPg=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-15S39i7kWS7gQjs9LHdtScd5GWt8bSvOb+HZrOU+qOY=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -535,7 +535,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .q-as button span{color:var(--t-far);font-size:1.15em;margin-left:2px}
 .q-as button:active{opacity:.6}
 .qtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
-  z-index:14;background:var(--t-far);color:#fff;max-width:calc(100% - 32px);width:340px;
+  z-index:14;background:#a0522d;color:#fff;max-width:calc(100% - 32px);width:340px;
   padding:14px 14px 10px;display:flex;flex-direction:column;gap:2px;animation:toastUp .3s var(--ease) both}
 .qtoast b{font-weight:600;font-size:0.9375rem;line-height:1.35;padding-right:26px}
 .qtoast button.qt-go{align-self:flex-start;color:#fff;background:transparent;font-size:0.9375rem;min-height:44px;padding:0}
@@ -730,12 +730,12 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
         <button class="primarybtn" type="button" id="logoutBtn">log ud</button>
       </div>
       <div class="grp priv" id="privSect"><h2>dine data</h2>
-        <p class="pfnote">Alt i træet er låst med familiens adgangskode. Navne, datoer og billeder ligger krypteret, også der, hvor appen bor på nettet, så ingen udenforstående kan læse dem. Adgangskoden bliver på din telefon og sendes ingen steder hen. Appen bruger ingen cookies, ingen statistik og ingen reklamer. Børn vises kun som tegning, og om dit eget billede skal med, bestemmer du selv.</p>
+        <p class="pfnote">Alt i træet er låst med familiens adgangskode. Navne, datoer og billeder ligger krypteret, også der, hvor appen bor på nettet, så ingen udenforstående kan læse dem. Adgangskoden bliver på din telefon og sendes ingen steder hen. Appen bruger ingen cookies, ingen statistik og ingen reklamer. Deler du dit resultat fra quizzen, sendes kun dit navn og dine point til et regneark hos Google. Intet fra træet forlader appen. Børn vises kun som tegning, og om dit eget billede skal med, bestemmer du selv.</p>
         <p class="pfnote">Telefonen husker nøglen, så træet er aldrig mere låst end selve telefonen. Har du ladet telefonen gemme adgangskoden, udfylder den den også selv igen efter log ud. Det er telefonens skærmlås, der passer på træet.</p>
         <details><summary>for de nysgerrige</summary>
           <ul>
             <li>AES-256-GCM-kryptering. Nøglen regnes ud på telefonen med PBKDF2-SHA256, 250.000 runder.</li>
-            <li>En Content Security Policy sørger for, at kun appens egen kode kører, og at appen kun må tale med sig selv.</li>
+            <li>En Content Security Policy sørger for, at kun appens egen kode kører, og at appen kun taler med sig selv — og med det regneark, quizzens resultater ligger i.</li>
             <li>Skrifttyperne ligger i appen, ikke hos f.eks. Google.</li>
             <li>En låst kopi af træet gemmes på telefonen, så appen også virker uden net.</li>
           </ul>
@@ -1318,6 +1318,7 @@ function renderRail(g){
 var APP_VERSION='2.15';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+    {v:'2.15',d:'2026-11-17',t:'2026-11-17T07:31:00Z',items:['Så er der kommet Quiz i appen — ti hurtige spørgsmål om slægten til de mørke vinteraftener. Du finder den under indstillinger øverst til højre. Desuden vises flere facts i pauseskærmen, de fleste er stadigvæk lidt ligegyldige. Der er ryddet lidt op i brugerfladen. Småting, for det hele ser allerede så godt ud']},
     {v:'2.14',d:'2026-11-16',t:'2026-11-16T06:15:00Z',items:['Du kan hente din egen anetavle som PDF under indstillinger. Den følger dine forældres vej bagud, deres forældre og så videre, så langt træet rækker. Søskende, ægtefæller og børn er nu med i hvert led, hver med sit eget ansigt: et fotografi, hvor der findes et, ellers tegningen fra appen. Tegningerne er der stadig flest af. Tavlen afslører også en del tomme pladser. Dem kan jeg ikke fylde ud selv. Træet vokser, når nogen ringer til en moster og spørger. Jeg tager imod alle gode forslag under indstillinger. Velkommen til den sociale del']},
   {v:'2.13',d:'2026-11-12',t:'2026-11-12T12:21:58Z',items:['Pauseskærmen er optimeret og viser endnu mere information. Noget er ligegyldigt. Husk at slå pauseskærmen til under indstillinger. Under indstillinger finder du flere fancy ting, også den store slægtsplakat til at hænge over sofaen']},
   {v:'2.12',d:'2026-11-12',t:'2026-11-12T11:49:03Z',items:['Tryk på billedet af en person, og det folder sig ud og fylder skærmen. Kvaliteten er, som den er med gamle familiefotos. Er der flere billeder af hende eller ham, ligger de klar ved siden af — bare bladr videre med fingeren, eller træk med musen. Har du flere billeder af nogen i familien, så send dem endelig til Bo. Jeg har god plads. Så tilføjes de, når der er plads i kalenderen']},
