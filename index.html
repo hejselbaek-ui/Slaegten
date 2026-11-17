@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-rjp3yVU89NvCgD/hLvWllTQw+xue/sxfJzohKFnrYB8=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-AGrvrSo1L0/wJC0DAyD8Av6pGLsAjihZuvNSRf4Ji8E=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -353,6 +353,11 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
  background:#ede6dc;transform:translate(50%,-4px)}
 .pause .fsl span{position:absolute;right:68px;font-size:.78rem;letter-spacing:.14em;
  color:#e0916a;font-weight:600;white-space:nowrap;transform:translateY(-7px)}
+.pause .ffl{display:grid;gap:4px;justify-items:end}
+.pause .ffl i{display:block;width:10px;height:10px;background:#3a332c}
+.pause .ffl i.on{background:#a0522d}
+.pause .ffl i.me{background:#ede6dc}
+.pause .fsl-bare span{right:34px}
 .pause .fsh{position:relative;width:34px;height:300px;background:#3a332c;margin-right:0}
 .pause .fsh i{position:absolute;left:0;right:0;bottom:0;display:block;background:#a0522d}
 .pause .fsh span{position:absolute;right:46px;font-size:.72rem;letter-spacing:.14em;
@@ -510,6 +515,40 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .form .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form .preview{width:96px;height:96px;object-fit:cover;border:1px solid var(--line)}
 .primarybtn{background:var(--fg);color:var(--bg);padding:11px 18px;font-size:0.9375rem;align-self:flex-start}
+/* ---------- Slægtsquiz ---------- */
+.q-prog{font-size:0.8125rem;color:var(--sub);margin:0 0 6px}
+.q-ask{font-size:1.25rem;line-height:1.3;font-weight:300;margin:0 0 18px}
+.q-opts{display:flex;flex-direction:column;gap:10px}
+.q-opt{display:block;width:100%;text-align:left;padding:14px 16px;border:1px solid var(--dim);color:var(--fg);font-size:1rem;line-height:1.3;background:transparent;min-height:52px}
+.q-opt:disabled{opacity:1}
+.q-opt.q-right{border-color:var(--t-mor);color:var(--t-mor)}
+.q-opt.q-wrong{border-color:var(--t-far);color:var(--t-far)}
+.q-after{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.q-score{font-size:2.5rem;font-weight:300;line-height:1;margin:0 0 8px}
+.q-foot{display:flex;gap:16px;align-items:center;margin-top:28px}
+.q-quit{color:var(--sub);font-size:0.875rem;min-height:44px;background:transparent}
+.q-confirm{border:1px solid var(--dim);padding:14px 16px;margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.q-row{display:flex;gap:10px;flex-wrap:wrap}
+.q-as{color:var(--t-far);margin:0 0 6px}
+.q-as button{display:block;color:var(--fg);background:transparent;font-size:inherit;min-height:44px;padding:0;margin-top:-2px}
+.q-as button span{color:var(--t-far);font-size:1.15em;margin-left:2px}
+.q-as button:active{opacity:.6}
+.qtoast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
+  z-index:14;background:var(--t-far);color:#fff;max-width:calc(100% - 32px);width:340px;
+  padding:14px 14px 10px;display:flex;flex-direction:column;gap:2px;animation:toastUp .3s var(--ease) both}
+.qtoast b{font-weight:600;font-size:0.9375rem;line-height:1.35;padding-right:26px}
+.qtoast button.qt-go{align-self:flex-start;color:#fff;background:transparent;font-size:0.9375rem;min-height:44px;padding:0}
+.qtoast button.qt-go span{font-size:1.15em;margin-left:2px}
+.qtoast button.qt-x{position:absolute;top:4px;right:4px;width:40px;height:40px;color:#fff;background:transparent;font-size:1.1rem;line-height:1}
+@media (prefers-reduced-motion: reduce){.qtoast{animation:none!important}}
+.q-log{margin-top:28px;display:flex;flex-direction:column;gap:8px}
+.q-log h2{margin:0;font-size:0.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.q-line{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line);font-size:0.9375rem}
+.q-line:last-child{border-bottom:1px solid var(--line)}
+.q-when{color:var(--sub);flex:none;min-width:88px}
+.q-who{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-res{color:var(--t-far);flex:none}
+
 .queue{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
 .queue li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:0.875rem;min-width:0}
 .newslist li{flex-direction:column;gap:2px}
@@ -668,11 +707,18 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     <button class="chipbtn" type="button" id="newsToLog" style="align-self:flex-start;margin-top:6px">se alle appens versioner ›</button>
   </div>
 </section>
+<section class="sheet" id="quiz" hidden aria-label="Slægtsquiz">
+  <div class="wrap">
+    <div class="bar"><span></span><button class="chipbtn" id="qClose" type="button">luk</button></div>
+    <div class="pano" aria-hidden="true"><span class="cap">slægten</span><span class="nm">quiz</span></div>
+    <div id="qBody"></div>
+  </div>
+</section>
 <section class="sheet" id="settings" hidden aria-label="Indstillinger">
   <div class="wrap">
     <div class="bar"><span></span><button class="chipbtn" id="closeSettings" type="button">luk</button></div>
     <div class="pano" aria-hidden="true"><span class="cap">appen</span><span class="nm">indstillinger</span></div>
-        <div class="pivots" role="tablist" id="spivots"><button role="tab" type="button" data-sp="om" id="sp-om">om</button><button role="tab" type="button" data-sp="pauseskærm" id="sp-pauseskaerm">pauseskærm</button><button role="tab" type="button" data-sp="plakat" id="sp-plakat">plakat</button><button role="tab" type="button" data-sp="forslag" id="sp-forslag">forslag</button><button role="tab" type="button" data-sp="udseende" id="sp-udseende">udseende</button><button role="tab" type="button" data-sp="notifikationer" id="sp-notifikationer">notifikationer</button><button role="tab" type="button" data-sp="versioner" id="sp-versioner">versioner</button></div>
+        <div class="pivots" role="tablist" id="spivots"><button role="tab" type="button" data-sp="om" id="sp-om">om</button><button role="tab" type="button" data-sp="pauseskærm" id="sp-pauseskaerm">pauseskærm</button><button role="tab" type="button" data-sp="plakat" id="sp-plakat">plakat</button><button role="tab" type="button" data-sp="quiz" id="sp-quiz">quiz</button><button role="tab" type="button" data-sp="forslag" id="sp-forslag">forslag</button><button role="tab" type="button" data-sp="udseende" id="sp-udseende">udseende</button><button role="tab" type="button" data-sp="notifikationer" id="sp-notifikationer">notifikationer</button><button role="tab" type="button" data-sp="versioner" id="sp-versioner">versioner</button></div>
     <div class="spane" data-pane="om" role="tabpanel" hidden>
       <div class="brand brand-sm" aria-hidden="true"><span class="bl">slægten</span><span class="bt">altid i lommen</span><span class="bsq"><i></i><i></i><i></i><i></i></span></div>
       <p class="pfnote keeper" id="setAdmin" style="color:var(--fg)"></p>
@@ -699,7 +745,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     
     </div>
     <div class="spane" data-pane="pauseskærm" role="tabpanel" hidden>
-      <p class="pfnote">Hele slægten glider forbi i store bogstaver med billeder og små fakta. Tryk hvor som helst for at stoppe.</p>
+      <p class="pfnote" style="color:var(--fg)">Hele slægten glider forbi i store bogstaver med billeder og små fakta. Tryk hvor som helst for at stoppe.</p>
       <button class="primarybtn" type="button" id="pauseBtn">afspil slægten</button>
       <div class="toggle" style="justify-content:space-between;min-height:44px"><span class="tl" id="idleLabel">start af sig selv efter 2 minutter</span><button class="switch" id="idleSwitch" type="button" role="switch" aria-checked="false" aria-labelledby="idleLabel"></button></div>
       <p class="pfnote">Godt på en tablet på bordet til familiefesten. Skærmen holdes tændt, mens pauseskærmen kører.</p>
@@ -734,8 +780,16 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
         <p class="pfnote" id="pdfMsg" role="status"></p>
       </div>
     </div>
+    <div class="spane" data-pane="quiz" role="tabpanel" hidden>
+      <p class="pfnote keeper" style="color:var(--fg)">Ti hurtige spørgsmål om slægten. Du kan tage den så mange gange, du vil — spørgsmålene er ikke de samme to gange.</p>
+      <p class="q-as" id="qAs" hidden></p>
+      <div class="grp"><button class="primarybtn" type="button" id="qStart">tag quizzen</button>
+        <p class="pfnote">Svarene kommer fra træets egne oplysninger. Er noget forkert, er det træet, der skal rettes — og så er der en forslagsformular et par faner henne.</p>
+      </div>
+      <div class="q-log" id="qLog"></div>
+    </div>
     <div class="spane" data-pane="forslag" role="tabpanel" hidden>
-      <p class="pfnote" id="sgIntro"></p>
+      <p class="pfnote" id="sgIntro" style="color:var(--fg)"></p>
       <form class="form" id="suggestForm" novalidate>
         <label>Fra
           <select id="sgFrom"></select>
@@ -784,7 +838,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
         <button type="button" data-theme-opt="light" id="th-light">lys</button>
         <button type="button" data-theme-opt="dark" id="th-dark">mørk</button>
       </div>
-      <p class="pfnote">Automatisk følger telefonens indstilling.</p>
+      <p class="pfnote" style="color:var(--fg)">Automatisk følger telefonens indstilling.</p>
       <div class="grp" id="metro" style="margin-top:10px"><h2>inspireret af zune og metro</h2>
         <p class="pfnote">Jeg låner mit udseende fra Metro, det designsprog Microsoft skabte til Zune og senere Windows Phone. Ordene er selve brugerfladen: store, lette bogstaver i stedet for knapper og pynt. Indholdet først, rammerne bagefter. Og så skulle alting være levende i bevægelse. Navne, der flyver, kort, der rejser sig, sider, der følger fingeren. Det skulle fryde, og det skulle betyde noget.</p>
         <p class="pfnote" style="color:var(--fg)">Zune er for længst borte. Principperne er ikke. Familien lever videre.</p>
@@ -793,11 +847,11 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
     </div>
     <div class="spane" data-pane="notifikationer" role="tabpanel" hidden>
       <div class="toggle" style="justify-content:space-between;min-height:44px"><span class="tl" id="ntLabel">vis nyt i træet</span><button class="switch" id="ntSwitch" type="button" role="switch" aria-checked="true" aria-labelledby="ntLabel"></button></div>
-      <p class="pfnote">Viser et tal på klokken øverst, når der er nyt i træet, og en kort besked, når træet bliver opdateret, mens appen er åben.</p>
+      <p class="pfnote" style="color:var(--fg)">Viser et tal på klokken øverst, når der er nyt i træet, og en kort besked, når træet bliver opdateret, mens appen er åben.</p>
     
     </div>
     <div class="spane" data-pane="versioner" role="tabpanel" hidden>
-      <p class="pfnote" id="appVer"></p>
+      <p class="pfnote" id="appVer" style="color:var(--fg)"></p>
       <ul class="queue" id="changelog"></ul>
     
     </div>
@@ -938,6 +992,7 @@ function apply(j,first){
   hideLoading(); $('#lock').hidden=true;
   stamp(); if(POV) solve(); if(changed) quiet(); render();
   if(changed&&!first&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
+  try{ if(window.__quizBoot) setTimeout(window.__quizBoot,1200); }catch(e){}
 }
 /* Billedfilen står selv for sin version — ikke træets. Ellers kunne appen tro, at en gammel
    kopi var den nyeste, og så holdt den op med at spørge efter billeder igen */
@@ -1259,7 +1314,7 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.14';
+var APP_VERSION='2.15';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
     {v:'2.14',d:'2026-11-16',t:'2026-11-16T06:15:00Z',items:['Du kan hente din egen anetavle som PDF under indstillinger. Den følger dine forældres vej bagud, deres forældre og så videre, så langt træet rækker. Søskende, ægtefæller og børn er nu med i hvert led, hver med sit eget ansigt: et fotografi, hvor der findes et, ellers tegningen fra appen. Tegningerne er der stadig flest af. Tavlen afslører også en del tomme pladser. Dem kan jeg ikke fylde ud selv. Træet vokser, når nogen ringer til en moster og spørger. Jeg tager imod alle gode forslag under indstillinger. Velkommen til den sociale del']},
@@ -1331,11 +1386,11 @@ function back(){
   else if(CUR!==POV) CUR=POV;
   DIR='back'; FLY=null; render(); window.scrollTo({top:0});
 }
-function choosePov(id){ POV=id; store('slaegt.pov',id); STACK=[]; CUR=id; PIVOT='familie'; solve(); render(); window.scrollTo({top:0}); }
+function choosePov(id){ POV=id; store('slaegt.pov',id); STACK=[]; CUR=id; PIVOT='familie'; solve(); render(); window.scrollTo({top:0}); qReturn(); }
 /* Arket åbner INDE i vælgeren, så det skal lukkes før vælger-grenen kører — ellers
    smider Androids tilbage brugeren helt ud af vælgeren og lader arket stå tilbage. */
 window.addEventListener('resize',function(){ if(PV) pvSlide(); });
-window.addEventListener('popstate',function(){ if(PVCLOSING){ PVCLOSING=false; return; } if(PV){ closePhoto(true); return; } if(!$('#jump').hidden){ closeJump(); return; } if(CUR==='__pick'){ CUR=POV; render(); } else if(STACK.length) back(); });
+window.addEventListener('popstate',function(){ if(PVCLOSING){ PVCLOSING=false; return; } if(QPOPPING){ QPOPPING=false; return; } if(!$('#quiz').hidden){ closeQuiz(true); return; } if(PV){ closePhoto(true); return; } if(!$('#jump').hidden){ closeJump(); return; } if(CUR==='__pick'){ CUR=POV; render(); QBACK=false; } else if(STACK.length) back(); });
 
 document.addEventListener('click',function(e){
   var t=e.target.closest('[data-id]');
@@ -1420,7 +1475,7 @@ function openSettings(){
   sgType(); renderChangelog(); refreshInstall(); $('#settings').hidden=false; setSPane('om','none'); replay($('#settings').querySelector('.wrap'),'m-fwd'); $('#settings').scrollTop=0; swipeHint();
 }
 function closeSettings(){ $('#settings').hidden=true; }
-var SPORDER=['om','pauseskærm','plakat','forslag','udseende','notifikationer','versioner'], SPANE='om'; /* Indstillinger åbner altid på "om". Genveje (forslag, versioner) vælger selv deres fane bagefter */
+var SPORDER=['om','pauseskærm','plakat','quiz','forslag','udseende','notifikationer','versioner'], SPANE='om'; /* Indstillinger åbner altid på "om". Genveje (forslag, versioner) vælger selv deres fane bagefter */
 function setSPane(k,dir){
   if(SPORDER.indexOf(k)<0) k='om';
   var prev=SPANE; SPANE=k;
@@ -1431,6 +1486,7 @@ function setSPane(k,dir){
   stripTo($('#spivots'),document.querySelector('#spivots [aria-selected="true"]'),true);
   $('#settings').scrollTop=0;
   if(k==='plakat'){ preparePdf(); anaRefresh(); }
+  if(k==='quiz'){ qWho(); qLoadFeed(); }
 }
 /* ---------- Familieplakat som PDF (låst med familiens adgangskode) ---------- */
 var PDFFILE=null, PDFVER=null, PDFBUSY=false;
@@ -1498,10 +1554,416 @@ function swipeHint(){
       nb.animate([{color:off},{color:on,offset:.4},{color:on,offset:.55},{color:off}],o); }
   },900);
 }
+
+/* ---------- Slægtsquizzen ----------
+   Spørgsmålene bygges ved hver runde ud af træets egne felter — der er ingen gemt pulje.
+   Kun felter, træet selv har: far, mor, fødselsår, ægtefælle, søskende og erhverv.
+   Forkerte svar vælges med samme køn og nærmeste alder, så et gæt ikke kan tages på udseendet alene. */
+var QN=10, QQ=[], QI=0, QOK=0, QPOPPING=false, QSENT=false, QREF='';
+
+function qYear(id){ return parseInt(yr(P[id].b)||yr(P[id].d)||'0',10); }
+/* egne kopier: spouses/sibsOf bor i den anden skriptblok og kan ikke nås herfra */
+function qSp(id){ return (P[id]&&P[id].sp)?P[id].sp.slice():[]; }
+function qSib(id){ var p=P[id], out=[]; [p.f,p.m].forEach(function(q){ if(q&&P[q]&&P[q].kids) P[q].kids.forEach(function(k){ if(k!==id&&out.indexOf(k)<0) out.push(k); }); }); return out; }
+function qDupe(){ var c={}; Object.keys(P).forEach(function(id){ c[P[id].n]=(c[P[id].n]||0)+1; }); return c; }
+var QDUP=null;
+function qLabel(id){ if(!QDUP) QDUP=qDupe(); var p=P[id], y=years(p);
+  return p.n + (QDUP[p.n]>1 && y ? ' ('+y+')' : ''); }
+/* To personer kan hedde det samme (der er to Maren Sørensdatter) — så bærer spørgsmålet årstallene under sig */
+function qSub(id){ if(!QDUP) QDUP=qDupe(); var p=P[id], y=years(p); return (QDUP[p.n]>1&&y)?y:''; }
+function qShuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function qPick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+/* Forkerte personsvar: samme køn, tættest på i alder, aldrig en der også ville være rigtig */
+function qFoils(answerId, banned, n){
+  var want=P[answerId].s, y0=qYear(answerId), pool=[];
+  Object.keys(P).forEach(function(id){
+    if(id===answerId||banned.indexOf(id)>=0) return;
+    if(P[id].s!==want) return;
+    var y=qYear(id); pool.push({id:id, d:(y0&&y)?Math.abs(y-y0):999});
+  });
+  pool.sort(function(a,b){ return a.d-b.d; });
+  var near=pool.slice(0, Math.max(n*4,12));
+  return qShuffle(near).slice(0,n).map(function(x){ return x.id; });
+}
+
+function qBuild(){
+  var ids=Object.keys(P), out=[];
+  function add(q){ if(q&&q.opts.length===3) out.push(q); }
+
+  ids.forEach(function(id){
+    var p=P[id];
+    /* far / mor */
+    ['f','m'].forEach(function(k){
+      var par=p[k]; if(!par||!P[par]) return;
+      var foils=qFoils(par,[id,p.f,p.m].filter(Boolean),2); if(foils.length<2) return;
+      add({ask:'Hvem er '+gen(p.n)+' '+(k==='f'?'far':'mor')+'?', sub:qSub(id),
+            opts:qShuffle([par].concat(foils)), ans:par, kind:'forælder', who:id});
+    });
+    /* fødselsår */
+    var by=yr(p.b);
+    if(by){
+      var n=parseInt(by,10), offs=qShuffle([-9,-7,-5,-4,-3,3,4,5,7,9]).slice(0,2);
+      add({ask:'Hvilket år blev '+p.n+' født?', sub:qSub(id),
+           opts:qShuffle([by, String(n+offs[0]), String(n+offs[1])]), ans:by, kind:'fødselsår', plain:true, who:id});
+    }
+    /* gift med */
+    var sp=qSp(id);
+    if(sp.length===1&&P[sp[0]]){
+      var foils2=qFoils(sp[0],[id].concat(sp),2); if(foils2.length===2)
+      add({ask:'Hvem er '+p.n+' gift med?', sub:qSub(id),
+           opts:qShuffle([sp[0]].concat(foils2)), ans:sp[0], kind:'ægtefælle', who:id});
+    }
+    /* søskende */
+    var sib=qSib(id);
+    if(sib.length){
+      var right=qPick(sib), foils3=qFoils(right,[id].concat(sib),2); if(foils3.length===2)
+      add({ask:'Hvem af disse er søskende med '+p.n+'?', sub:qSub(id),
+           opts:qShuffle([right].concat(foils3)), ans:right, kind:'søskende', who:id});
+    }
+    /* erhverv */
+    if(p.job){
+      var mine=p.job.replace(/\s*\(\d{4}[^)]*\)/g,'').split(';')[0].trim();
+      var others=ids.filter(function(q){ return q!==id && P[q].job; })
+                    .map(function(q){ return P[q].job.replace(/\s*\(\d{4}[^)]*\)/g,'').split(';')[0].trim(); })
+                    .filter(function(t){ return t && t.toLowerCase()!==mine.toLowerCase(); });
+      others=qShuffle(others).filter(function(t,i,a){ return a.indexOf(t)===i; }).slice(0,2);
+      if(mine&&others.length===2)
+        add({ask:'Hvad arbejdede '+p.n+' med?', sub:qSub(id),
+             opts:qShuffle([mine].concat(others)), ans:mine, kind:'erhverv', plain:true, who:id});
+    }
+  });
+  return out;
+}
+
+
+/* ---------- Spørgsmål fra pauseskærmens fakta ----------
+   Tallet er ikke spørgsmålet. "2.346 eller 456 eller 8.700" er et terningkast, og de to
+   forkerte tal er grebet ud af luften. Her er tallet givet, og det er EMNET, der spørges om,
+   så hvert svar bærer sin egen betydning. Derfor overlever kun de fakta, der har et emne. */
+function qFactQs(){
+  var out=[], S=null;
+  try{ S=window.__quizFacts&&window.__quizFacts(); }catch(e){ S=null; }
+  if(!S) return out;
+
+  /* 1. Det hyppigste fornavn — svarene er navne, ikke tal */
+  try{
+    var fn=S.fname||{}, names=Object.keys(fn).filter(function(x){ return x && fn[x]>0; })
+      .sort(function(a,b){ return fn[b]-fn[a]; });
+    /* uafgjort i toppen ville give to rigtige svar */
+    /* fire navne deler andenpladsen, så faste modsvar ville give den samme runde hver gang */
+    var rest=qShuffle(names.slice(1).filter(function(x){ return fn[x]>1; }));
+    if(names.length>=3 && rest.length>=2 && fn[names[0]]>fn[names[1]])
+      out.push({ask:'Hvilket fornavn er der flest af i træet?', sub:'',
+                opts:qShuffle([names[0],rest[0],rest[1]]), ans:names[0], kind:'fakta', plain:true});
+  }catch(e){}
+
+  /* 2. Den største søskendeflok — svarene er forældrepar */
+  try{
+    var sb=S.sibship;
+    if(sb&&sb.n&&sb.father1&&sb.mother1){
+      var right=sb.father1+' og '+sb.mother1;
+      /* modsvar: andre rigtige forældrepar i træet, med færre børn */
+      var pairs={}, ids=Object.keys(P);
+      ids.forEach(function(id){ var q=P[id]; if(q.f&&q.m) { var k=q.f+'|'+q.m; pairs[k]=(pairs[k]||0)+1; } });
+      var alt=qShuffle(Object.keys(pairs).filter(function(k){ return pairs[k]<sb.n && pairs[k]>=3; }))
+        .map(function(k){
+          var fa=P[k.split('|')[0]], mo=P[k.split('|')[1]];
+          if(!fa||!mo) return null;
+          return (fa.n||'').split(/\s+/).slice(0,2).join(' ')+' og '+(mo.n||'').split(/\s+/)[0];
+        }).filter(function(x){ return x && x!==right; });
+      if(alt.length>=2)
+        out.push({ask:'Hvilket par fik flest børn i træet?', sub:'',
+                  opts:qShuffle([right,alt[0],alt[1]]), ans:right, kind:'fakta', plain:true});
+    }
+  }catch(e){}
+
+  /* 3. Den ældst fødte er FORKASTET, ikke glemt: motoren giver kun navnet, og der er TO
+     Maren Sørensdatter i træet (ca. 1760 og ca. 1811). Uden årstal er svaret tvetydigt,
+     og med årstal står svaret skrevet i selve svarmulighederne. Begge veje er dårlige. */
+  return out;
+}
+
+function qStartRound(){
+  var all=qBuild().concat(qFactQs());
+  /* spred typerne, så en runde ikke bliver ti fødselsår */
+  var byKind={}; all.forEach(function(q){ (byKind[q.kind]=byKind[q.kind]||[]).push(q); });
+  Object.keys(byKind).forEach(function(k){ qShuffle(byKind[k]); });
+  /* Højst ÉT faktaspørgsmål pr. runde. Et familiespørgsmål kan gættes ud fra navnene;
+     et faktaspørgsmål kan kun besvares af den, der har set pauseskærmen. Ét er et blink. */
+  if(byKind['fakta']) byKind['fakta']=byKind['fakta'].slice(0,1);
+  var kinds=qShuffle(Object.keys(byKind)), chosen=[], used={}, i=0, skipped=[];
+  /* aldrig samme person to gange i en runde — to spørgsmål om Kim i træk læses som en fejl */
+  while(chosen.length<QN && kinds.length){
+    var k=kinds[i%kinds.length];
+    if(!byKind[k].length){ kinds.splice(i%kinds.length,1); continue; }
+    var q=byKind[k].pop();
+    if(q.who&&used[q.who]) skipped.push(q); else { used[q.who]=1; chosen.push(q); i++; }
+  }
+  while(chosen.length<QN && skipped.length) chosen.push(skipped.pop());
+  qMarkPlayed();
+  QQ=qShuffle(chosen).slice(0,QN); QI=0; QOK=0; QSENT=false;
+  QREF='QZ-'+Math.random().toString(36).slice(2,7).toUpperCase();
+  qRender();
+}
+
+function qRender(){
+  var b=$('#qBody');
+  if(QI>=QQ.length){ qDone(); return; }
+  var q=QQ[QI];
+  var h='<p class="q-prog">spørgsmål '+(QI+1)+' af '+QQ.length+'</p>';
+  h+='<p class="q-ask">'+esc(q.ask)+'</p>';
+  if(q.sub) h+='<p class="pfnote" style="margin:-12px 0 16px">'+esc(q.sub)+'</p>';
+  h+='<div class="q-opts">'+q.opts.map(function(o,n){
+       return '<button class="q-opt" type="button" data-n="'+n+'">'+esc(q.plain?o:qLabel(o))+'</button>'; }).join('')+'</div>';
+  h+='<div class="q-after" id="qAfter" hidden></div>';
+  h+='<div class="q-foot"><button class="q-quit" type="button" id="qQuit">afslut quizzen</button></div>';
+  h+='<div id="qConfirm"></div>';
+  b.innerHTML=h;
+  b.querySelectorAll('.q-opt').forEach(function(el){ el.addEventListener('click',function(){ qAnswer(parseInt(el.dataset.n,10)); }); });
+  $('#qQuit').addEventListener('click',qAskQuit);
+  replay(b,'m-fwd');
+}
+
+function qAnswer(n){
+  var q=QQ[QI], chosen=q.opts[n], right=(chosen===q.ans);
+  if(right) QOK++;
+  var btns=$('#qBody').querySelectorAll('.q-opt');
+  btns.forEach(function(el,i){
+    el.disabled=true;
+    if(q.opts[i]===q.ans) el.classList.add('q-right');
+    else if(i===n) el.classList.add('q-wrong');
+  });
+  var a=$('#qAfter'); a.hidden=false;
+  a.innerHTML='<button class="primarybtn" type="button" id="qNext">'+(QI+1>=QQ.length?'se resultatet':'næste spørgsmål')+'</button>';
+  $('#qNext').addEventListener('click',function(){ QI++; qRender(); });
+}
+
+function qAskQuit(){
+  $('#qConfirm').innerHTML='<div class="q-confirm"><p class="pfnote keeper" style="color:var(--fg)">Afslut quizzen? Runden tæller ikke, og resultatet bliver ikke gemt.</p>'
+    +'<div class="q-row"><button class="primarybtn" type="button" id="qQuitYes">afslut</button>'
+    +'<button class="q-quit" type="button" id="qQuitNo">bliv i quizzen</button></div></div>';
+  $('#qQuitYes').addEventListener('click',function(){ closeQuiz(); });
+  $('#qQuitNo').addEventListener('click',function(){ $('#qConfirm').innerHTML=''; });
+}
+
+function qDone(){
+  var b=$('#qBody'), nm=(P[POV]&&P[POV].n)||'';
+  var h='<p class="q-prog">færdig</p><p class="q-score">'+QOK+' af '+QQ.length+'</p>';
+  h+='<p class="pfnote keeper" style="color:var(--fg)">'+esc(qVerdict(QOK,QQ.length))+'</p>';
+  h+='<div class="grp" style="margin-top:24px"><h2>del dit resultat</h2>'
+    +'<p class="pfnote">Du sender dit navn og dit resultat — intet andet. Det kan blive vist i appen, når Bo har set det.</p>'
+    +'<button class="primarybtn" type="button" id="qShare">del som '+esc(nm||'dig selv')+'</button>'
+    +'<p class="pfnote" id="qShareMsg"></p></div>';
+  h+='<div class="q-foot"><button class="primarybtn" type="button" id="qAgain">tag en til</button>'
+    +'<button class="q-quit" type="button" id="qQuit">luk</button></div>';
+  b.innerHTML=h;
+  $('#qAgain').addEventListener('click',qStartRound);
+  $('#qQuit').addEventListener('click',function(){ closeQuiz(); });
+  $('#qShare').addEventListener('click',qShare);
+  if(!nm) { $('#qShare').disabled=true; $('#qShareMsg').textContent='Vælg først, hvem du er, så ved resultatet, hvem det kommer fra.'; }
+  replay(b,'m-fwd');
+}
+
+function qVerdict(ok,n){
+  if(ok===n) return 'Alle rigtige. Du har læst efter.';
+  if(ok>=n-2) return 'Tæt på. Der er stadig et par huller.';
+  if(ok>=n/2) return 'Solidt resultat. Der er stadig nogen, du ikke har mødt.';
+  return 'Det var en hård omgang. Slægten er stor, og der er mange at holde styr på.';
+}
+
+var QFORM='https://docs.google.com/forms/d/e/1FAIpQLSfDDwQA0u8NgXgMP-C5pLwdgcg2C6ZYyNjuJRe-y83J-tNrnQ/formResponse';
+function qShare(){
+  if(QSENT) return;
+  var nm=(P[POV]&&P[POV].n)||''; if(!nm) return;
+  QSENT=true; $('#qShare').disabled=true; $('#qShareMsg').textContent='sender …';
+  var d=new FormData();
+  d.append('entry.1062076853', nm);
+  d.append('entry.8140332', String(QOK));
+  d.append('entry.967925107', String(QQ.length));
+  d.append('entry.731392067', QREF);
+  d.append('entry.342711129', APP_VERSION);
+  fetch(QFORM,{method:'POST',mode:'no-cors',body:d}).then(function(){
+    $('#qShareMsg').textContent='Sendt. Reference '+QREF+'.';
+  }).catch(function(){
+    QSENT=false; $('#qShare').disabled=false;
+    $('#qShareMsg').textContent='Det kunne ikke sendes. Prøv igen, når du har forbindelse.';
+  });
+}
+
+
+/* ---------- Resultatloggen ----------
+   Læser det udgivne regneark. Kun rækker, Bo har sat hak ved, kommer med — appen
+   ser aldrig et resultat, han ikke har set først. Loggen vises først ved tre. */
+var QFEED='https://docs.google.com/spreadsheets/d/e/2PACX-1vSi1PP3T7TjoZAj3hzYV6vR2h-Cqt65DMcQY199MyC6ae6HMek9hujsVOp011Ftl8JM4I7wxsmNZqhG/pub?gid=2120198943&single=true&output=csv';
+var QROWS=null, QFBUSY=false;
+var QMON=['jan.','feb.','mar.','apr.','maj','jun.','jul.','aug.','sep.','okt.','nov.','dec.'];
+
+/* rigtig csv-læsning: et navn kan indeholde komma, og så holder split(',') ikke */
+function qCsv(t){
+  var rows=[], row=[], cur='', q=false, i=0;
+  for(; i<t.length; i++){
+    var c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){ cur+='"'; i++; } else q=false; } else cur+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(cur); cur=''; }
+    else if(c==='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
+    else if(c!=='\r') cur+=c;
+  }
+  if(cur!==''||row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+
+function qWhen(stamp){
+  var m=(stamp||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(!m) return '';
+  var d=parseInt(m[1],10), mo=parseInt(m[2],10)-1, y=parseInt(m[3],10);
+  var now=new Date();
+  return d+'. '+QMON[mo]+(y===now.getFullYear()?'':' '+y);
+}
+
+function qFeedRows(t){
+  var rows=qCsv(t); if(!rows.length) throw 0;
+  var head=rows.shift().map(function(h){ return h.trim().toLowerCase(); });
+  var iT=head.indexOf('tidsstempel'), iN=head.indexOf('navn'), iS=head.indexOf('score'),
+      iA=head.indexOf('antal'), iG=head.indexOf('godkendt');
+  return rows.filter(function(r){
+    return r[iN] && r[iN].trim() && String(r[iG]||'').trim().toUpperCase()==='TRUE';
+  }).map(function(r){
+    return {when:qWhen(r[iT]), who:r[iN].trim(), score:(r[iS]||'').trim(), of:(r[iA]||'').trim(), t:r[iT]||''};
+  }).reverse();
+}
+function qLoadFeed(){
+  if(QFBUSY||QROWS) { qRenderLog(); return; }
+  QFBUSY=true;
+  fetch(QFEED+'&t='+Date.now(),{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
+  .then(function(t){ QROWS=qFeedRows(t); })
+  .catch(function(){ QROWS=null; })
+  .then(function(){ QFBUSY=false; qRenderLog(); });
+}
+
+function qRenderLog(){
+  var el=$('#qLog'); if(!el) return;
+  if(!QROWS || QROWS.length<3){
+    el.innerHTML='<p class="pfnote">Herunder vises resultaterne, når et par stykker har været igennem.</p>';
+    return;
+  }
+  el.innerHTML='<h2>resultater</h2>'+QROWS.map(function(r){
+    return '<div class="q-line"><span class="q-when">'+esc(r.when)+'</span>'
+      +'<span class="q-who">'+esc(r.who)+'</span>'
+      +'<span class="q-res">'+esc(r.score)+' af '+esc(r.of)+'</span></div>';
+  }).join('');
+}
+
+
+/* ---------- Hvem tager quizzen ----------
+   Resultatet sendes med det navn, appen har som udgangspunkt. Står det ikke på skærmen,
+   kan man ikke opdage, at man er ved at sende som en anden — og en række i arket kan ikke rettes bagefter. */
+var QBACK=false;
+function qWho(){
+  var el=$('#qAs'); if(!el) return;
+  if(POV&&P[POV]){
+    el.hidden=false;
+    el.innerHTML='Du deltager i quizzen som '+esc(P[POV].n)+'. <button type="button" id="qSwitch">Skift person <span aria-hidden="true">→</span></button>';
+    $('#qSwitch').addEventListener('click',function(){ closeSettings(); openPicker(); QBACK=true; });
+  } else {
+    el.hidden=false;
+    el.innerHTML='Appen ved ikke, hvem du er. <button type="button" id="qSwitch">Vælg dig selv <span aria-hidden="true">→</span></button>';
+    $('#qSwitch').addEventListener('click',function(){ closeSettings(); openPicker(); QBACK=true; });
+  }
+}
+/* Vælgeren forlades ad tre veje: man vælger nogen, man trykker behold, eller man går tilbage.
+   Alle tre skal slukke flaget, ellers lander man i quizzen længe efter, på et tilfældigt tidspunkt. */
+function qReturn(){
+  if(!QBACK) return; QBACK=false;
+  openSettings(); setSPane('quiz');
+}
+
+
+/* ---------- Resultat-toasten ----------
+   Et resultat skal være en invitation, ikke en rangliste. Den popper ved åbning, højst én
+   ad gangen uanset hvor mange der er kommet til, og aldrig med ens EGET resultat — det delte
+   man selv for et øjeblik siden.
+   Feedet hentes kun, hvis man selv har spillet. En telefon, der aldrig har åbnet quizzen,
+   taler aldrig med Google — så bliver "appen taler kun med sig selv" ved med at passe for dem. */
+var QPLAYED='slaegt.quizplayed', QSEEN='slaegt.quizseen', QTT=null;
+
+function qStampOf(t){
+  var m=(t||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[ T]+(\d{1,2})[.:](\d{2})[.:](\d{2})/);
+  if(!m) return 0;
+  return +(m[3]+String(m[2]).padStart(2,'0')+String(m[1]).padStart(2,'0')
+          +String(m[4]).padStart(2,'0')+m[5]+m[6]);
+}
+function qNowStamp(){ var d=new Date(), z=function(n){ return String(n).padStart(2,'0'); };
+  return +(''+d.getFullYear()+z(d.getMonth()+1)+z(d.getDate())+z(d.getHours())+z(d.getMinutes())+z(d.getSeconds())); }
+
+/* Første gang nogen spiller, sættes mærket til NU. Ellers mødes man af et resultat fra
+   måneder tilbage — præcis den skævhed, klokkens badge stadig har. */
+function qMarkPlayed(){
+  if(store(QPLAYED)) return;
+  store(QPLAYED,'1'); store(QSEEN,String(qNowStamp()));
+}
+
+function qToast(){
+  if(!QROWS||!QROWS.length) return;
+  var seen=parseInt(store(QSEEN)||'0',10);
+  var me=(POV&&P[POV]&&P[POV].n)||'';
+  var newest=0, pick=null;
+  QROWS.forEach(function(r){
+    var st=qStampOf(r.t); if(st>newest) newest=st;
+    if(st>seen && r.who!==me && (!pick||st>qStampOf(pick.t))) pick=r;
+  });
+  /* mærket flyttes uanset hvad, så ens eget resultat ikke ligger og venter på at poppe senere */
+  if(newest>seen) store(QSEEN,String(newest));
+  if(!pick) return;
+  qShowToast(pick);
+}
+
+function qShowToast(r){
+  var el=document.querySelector('.qtoast'); if(el) el.remove();
+  el=document.createElement('div');
+  el.className='qtoast'; el.setAttribute('role','status'); el.style.position='fixed';
+  var first=(r.who||'').split(/\s+/)[0];
+  el.innerHTML='<b>'+esc(first)+' fik '+esc(r.score)+' af '+esc(r.of)+' i slægtsquizzen.</b>'
+    +'<button class="qt-go" type="button">tag quizzen <span aria-hidden="true">→</span></button>'
+    +'<button class="qt-x" type="button" aria-label="Luk">×</button>';
+  document.body.appendChild(el);
+  var kill=function(){ clearTimeout(QTT); if(el&&el.parentNode) el.remove(); };
+  el.querySelector('.qt-go').addEventListener('click',function(){ kill(); openQuiz(); });
+  el.querySelector('.qt-x').addEventListener('click',kill);
+  /* længere end appens egen toast: den skal nås at læses OG rammes */
+  QTT=setTimeout(kill,9000);
+}
+
+/* Kaldes fra apply() i den anden lukning, når træet står på skærmen */
+window.__quizBoot=function(){
+  if(!store(QPLAYED)) return;
+  if(QROWS){ qToast(); return; }
+  if(QFBUSY) return;
+  QFBUSY=true;
+  fetch(QFEED+'&t='+Date.now(),{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
+  .then(function(t){ QROWS=qFeedRows(t); })
+  .catch(function(){ QROWS=null; })
+  .then(function(){ QFBUSY=false; qToast(); });
+};
+
+function openQuiz(){
+  closeSettings();
+  $('#quiz').hidden=false; $('#quiz').scrollTop=0;
+  try{ history.pushState({q:1},''); }catch(e){}
+  qStartRound();
+}
+function closeQuiz(fromPop){
+  $('#quiz').hidden=true; $('#qBody').innerHTML='';
+  if(!fromPop){ QPOPPING=true; try{ history.back(); }catch(e){ QPOPPING=false; } }
+}
+$('#qStart').addEventListener('click',openQuiz);
+$('#qClose').addEventListener('click',function(){ closeQuiz(); });
+
 $('#settingsBtn').addEventListener('click',openSettings);
 $('#closeSettings').addEventListener('click',closeSettings);
 document.addEventListener('keydown',function(e){ if(PV){ if(e.key==='Escape'){ closePhoto(); return; } if(e.key==='ArrowRight'){ pvGo(PVI+1); return; } if(e.key==='ArrowLeft'){ pvGo(PVI-1); return; } }
-  if(e.key==='Escape'){ if(!$('#jump').hidden){ closeJump(); return; } if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
+  if(e.key==='Escape'){ if(!$('#quiz').hidden){ closeQuiz(); return; } if(!$('#jump').hidden){ closeJump(); return; } if(!$('#settings').hidden) closeSettings(); if(!$('#news').hidden) $('#news').hidden=true; } });
 function sgType(){ var t=$('#sgType').value; $('#sgNameWrap').hidden=t!=='ny'; $('#sgRelWrap').hidden=t!=='ny';
   $('#sgRelHint').textContent= t==='ny'? '(den nye person hænger sammen med)' : '(som forslaget handler om)'; }
 $('#sgType').addEventListener('change',sgType);
@@ -1566,10 +2028,10 @@ $('#homeBtn').addEventListener('click',function(){
   if(CUR===POV){ openPicker(); return; }
   STACK=[]; CUR=POV; PIVOT='familie'; render(); window.scrollTo({top:0}); });
 var BEFORE=null;
-$('#keepBtn').addEventListener('click',function(){ CUR=BEFORE&&P[BEFORE]?BEFORE:POV; render(); window.scrollTo({top:0}); });
+$('#keepBtn').addEventListener('click',function(){ CUR=BEFORE&&P[BEFORE]?BEFORE:POV; render(); window.scrollTo({top:0}); qReturn(); });
 /* Vælgeren var den eneste store flade, der poppede hårdt ind, mens man forlod den
    med bevægelse. Samme idiom som de to ark, intet nyt. */
-function openPicker(){ BEFORE=CUR; CUR='__pick'; $('#q').value=''; closeJump(); render(); window.scrollTo({top:0}); replay($('#pick').firstElementChild,'m-fwd'); }
+function openPicker(){ QBACK=false; BEFORE=CUR; CUR='__pick'; $('#q').value=''; closeJump(); render(); window.scrollTo({top:0}); replay($('#pick').firstElementChild,'m-fwd'); }
 $('#hero').addEventListener('click',function(e){
   if(e.target.closest('.pvbtn')){ e.stopPropagation(); openPhoto(CUR); }
   else if(e.target.closest('#changeBtn')){ e.stopPropagation(); openPicker(); }
@@ -1891,9 +2353,60 @@ function factStats(){
          i:((typeof CHANGELOG!=='undefined')?CHANGELOG.length:1)-1,
          first:(typeof CHANGELOG!=='undefined'&&CHANGELOG.length)?CHANGELOG[CHANGELOG.length-1].v:'',
          latest:(typeof CHANGELOG!=='undefined'&&CHANGELOG.length)?CHANGELOG[0].v:''};
+  /* Blodsslægtskab: fælles ane, kun f/m, aldrig ægteskab. Anesættet tæller personen SELV med,
+     ellers deler man ikke aner med sin egen oldefar. Udregnes, aldrig skrevet som tal — så
+     overtager et nyt barn selv skærmen ved næste fødsel. */
+  var ANC={};
+  function ancOf(id,guard){
+    if(ANC[id]) return ANC[id];
+    if(guard&&guard[id]) return {};
+    guard=guard||{}; guard[id]=1;
+    var set={}; set[id]=1; var q=P[id];
+    if(q){ [q.f,q.m].forEach(function(up){ if(up&&P[up]){ var u=ancOf(up,guard); for(var k in u) set[k]=1; } }); }
+    ANC[id]=set; return set;
+  }
+  for(i=0;i<ids.length;i++) ancOf(ids[i]);
+  var kbest=null, kn=-1;
+  for(i=0;i<ids.length;i++){
+    var A=ANC[ids[i]], c=0;
+    for(var jj=0;jj<ids.length;jj++){
+      if(jj===i) continue;
+      var B=ANC[ids[jj]], hit=false;
+      for(var k2 in A){ if(B[k2]){ hit=true; break; } }
+      if(hit) c++;
+    }
+    if(c>kn){ kn=c; kbest=ids[i]; }
+  }
+  if(kbest) S.kin={name:P[kbest].n, n:kn, of:ids.length-1, born:factYear(P[kbest].b)||'',
+                   pron:(P[kbest].s==='F'?'Hun':'Han')};
+
+  /* Hullet i versionsnumrene FINDES, så det ikke går stille galt, hvis endnu et nummer springes over */
+  (function(){
+    if(typeof CHANGELOG==='undefined'||!CHANGELOG.length) return;
+    var seen={}, list=[];
+    CHANGELOG.forEach(function(c){
+      var m=/^(\d+)\.(\d+)/.exec(c.v||''); if(!m) return;
+      var key=m[1]+'.'+m[2]; if(!seen[key]){ seen[key]=1; list.push({ma:+m[1],mi:+m[2],v:key}); }
+    });
+    list.sort(function(a,b){ return a.ma-b.ma || a.mi-b.mi; });
+    for(var q=1;q<list.length;q++){
+      if(list[q].ma===list[q-1].ma && list[q].mi-list[q-1].mi>1){
+        S.app.gap=list[q-1].ma+'.'+(list[q-1].mi+1);
+        S.app.gapFrom=list[q-1].v; S.app.gapTo=list[q].v; return;
+      }
+    }
+  })();
+
   S.file=FFILE;
   FSTAT=S; return S;
 }
+/* Broen til quizzen. Motoren og quizzen bor i hver sin lukning, og quizzen må ikke regne
+   de samme tal ud en gang til — så ville de to kunne skride fra hinanden, som engine.js
+   gjorde det. Her rækkes KUN de tre værdier ud, quizzen spørger om. */
+window.__quizFacts=function(){
+  var S=factStats();
+  return {fname:S.fname, span:S.span, sibship:S.sibship};
+};
 function factPair(a,b){
   var A=P[a], B=P[b]; if(!A||!B) return null;
   var ma=/^\s*(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(A.b||''), mb=/^\s*(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(B.b||'');
@@ -1961,12 +2474,37 @@ function factVis(v,S){
     return h+'<em class="b">'+esc(String(toS))+'</em></div>';
   }
   if(t==='slot'){
-    var slots=+factFill('{'+v.slots+'}',S)||+v.slots||7;
-    var idx=+factFill('{'+v.index+'}',S)||0, lab=factFill('{'+v.label+'}',S);
+    var slots=(typeof v.slots==='number')?v.slots:(+factFill('{'+v.slots+'}',S)||+v.slots||7);
+    var idx=(typeof v.index==='number')?v.index:(+factFill('{'+v.index+'}',S)||0);
+    var lab=factFill('{'+v.label+'}',S);
+    /* Tom tilstand: intet hak og ingen prik på pladsen — hullet ER billedet. Den bruger
+       derfor INTET af markørstylingen nedenfor; det er en enklere tilstand, ikke et nyt kald. */
+    if(v.bare){
+      h='<div class="fsl fsl-bare">';
+      for(i=0;i<slots;i++){ var bt=(i*(292/(slots-1))).toFixed(1);
+        if(i!==idx) h+='<u style="top:'+bt+'px"></u>'; }
+      h+='<span style="top:'+(idx*(292/(slots-1))).toFixed(1)+'px">'+esc(lab)+'</span>';
+      return h+'</div>';
+    }
     h='<div class="fsl">';
     for(i=0;i<slots;i++){ var top=(i*(292/(slots-1))).toFixed(1);
       h+='<u class="'+(i===idx?'on':'')+'" style="top:'+top+'px"></u>';
       if(i===idx) h+='<b style="top:'+top+'px"></b><span style="top:'+top+'px">'+esc(lab)+'</span>'; }
+    return h+'</div>';
+  }
+  /* Et felt af mærker, ét per person eller per time. Mærkerne ER tallet: man genkender
+     formen i stedet for at tælle den. 'me' sætter ét lyst mærke SIDST i de tændte, dér hvor
+     terrakotta møder slukket — øverst til venstre ville det læses som en farvelegende. */
+  if(t==='field'){
+    var fn=(typeof v.n==='number')?v.n:(+factFill('{'+v.n+'}',S)||0);
+    var lit=(typeof v.on==='number')?v.on:(+factFill('{'+v.on+'}',S)||0);
+    var fc=+v.cols||10;
+    if(!fn) return '';
+    h='<div class="ffl" style="grid-template-columns:repeat('+fc+',10px)">';
+    for(i=0;i<fn;i++){
+      var fcl = i<lit ? 'on' : ((v.me&&i===lit) ? 'me' : '');
+      h+='<i'+(fcl?' class="'+fcl+'"':'')+'></i>';
+    }
     return h+'</div>';
   }
   if(t==='share'){
