@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Wtuezc/HEfim+4eeXxdUd6GrGQvMoKx2emb/ZHVDr18=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ZFKc+x0DLyXnXxidcBT+y1cCpdTJS7NwF0AcMcp1QKo=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -26,7 +26,7 @@
 /* Layout: Zune/Metro-panorama til telefon. Stor, beskåret "forrige person" øverst (tryk = tilbage), fokusperson, pivot-faner, flade kort i slægtsfarver. Generationslineal i højre kant. */
 :root{
   /* Jordfarver: umbra, terrakotta, mos og okker på varm, mørk muld */
-  --bg:#15120f; --fg:#ede6dc; --sub:#a39888; --dim:#4a4239; --line:#2a241e; --raise:#1f1b17;
+  --bg:#15120f; --fg:#ede6dc; --sub:#a39888; --dim:#4a4239; --line:#2a241e; --raise:#1f1b17; --sq-mix:40%; --sq-base:var(--bg);
   --c-own:#4a3b2e; --c-far:#a0522d; --c-mor:#5a6b3a; --c-in:#8c6d2c; --c-none:#4a4239;
   --t-own:#d9c7b3; --t-far:#e0916a; --t-mor:#b0c287; --t-in:#d8b870;
   --tile-ink:#f6f1ea; --off:#8a7d6d; --on:#5a6b3a;
@@ -34,11 +34,11 @@
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --bg:#f3efe7; --fg:#221c16; --sub:#6b6155; --dim:#c9bfb1; --line:#e2dacd; --raise:#e9e3d8;
+  --bg:#f3efe7; --fg:#221c16; --sub:#6b6155; --dim:#c9bfb1; --line:#e2dacd; --raise:#e9e3d8; --sq-mix:60%; --sq-base:var(--sub);
   --c-own:#4a3b2e; --c-none:#8a7f72; --off:#9d9283;
   --t-own:#4a3b2e; --t-far:#8f4524; --t-mor:#4b5a2f; --t-in:#735920; color-scheme:light }}
 :root[data-theme="light"]{
-  --bg:#f3efe7; --fg:#221c16; --sub:#6b6155; --dim:#c9bfb1; --line:#e2dacd; --raise:#e9e3d8;
+  --bg:#f3efe7; --fg:#221c16; --sub:#6b6155; --dim:#c9bfb1; --line:#e2dacd; --raise:#e9e3d8; --sq-mix:60%; --sq-base:var(--sub);
   --c-own:#4a3b2e; --c-none:#8a7f72; --off:#9d9283;
   --t-own:#4a3b2e; --t-far:#8f4524; --t-mor:#4b5a2f; --t-in:#735920; color-scheme:light }
 
@@ -261,7 +261,21 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 /* 48px, fordi .letter er content-box med 2px kant og derfor rendrer 48 — billedkolonnen
    og bogstavboksene deler én venstreskinne, så alle navne starter på samme x */
 .row .rt{flex:0 0 48px;width:48px;height:48px;object-fit:cover;display:block}
-.row .rt-none{flex:0 0 48px;width:48px}
+/* Rækker uden fotografi får en flad firkant i slægtsfarverne i stedet for en tom rende.
+   Farven er FORDELING, ikke slægtskab: den følger personens plads i den fulde alfabetiske
+   liste (i%4), så hver person altid har samme farve, også mens der søges, og ingen to
+   naboer i den ufiltrerede liste får samme. Vælgeren kender ikke et udgangspunkt endnu. */
+.row .rt-none{flex:0 0 48px;width:48px;height:48px}
+/* Dæmpet mod baggrunden, så fotografierne bliver det kraftigste i listen igen.
+   --sq-mix/--sq-base: mørkt dæmpes 40% mod baggrunden, lyst 60% mod --sub.
+   Lyst må IKKE dæmpes mod baggrunden: det kan kun lysne, og farverne bliver blege.
+   Mod --sub falder kuløren i stedet, mens mørkheden består — dæmpet, ikke udvasket.
+   Første linje er fuld farve og gælder, hvis browseren ikke kender color-mix. */
+.row .rt-none.c-own{background:var(--c-own);background:color-mix(in srgb,var(--c-own) var(--sq-mix),var(--sq-base))}
+.row .rt-none.c-far{background:var(--c-far);background:color-mix(in srgb,var(--c-far) var(--sq-mix),var(--sq-base))}
+.row .rt-none.c-mor{background:var(--c-mor);background:color-mix(in srgb,var(--c-mor) var(--sq-mix),var(--sq-base))}
+.row .rt-none.c-in{background:var(--c-in);background:color-mix(in srgb,var(--c-in) var(--sq-mix),var(--sq-base))}
+.row .rt-none.c-none{background:var(--c-none);background:color-mix(in srgb,var(--c-none) var(--sq-mix),var(--sq-base))}
 .row:active{background:var(--raise)}
 .status{font-size:0.75rem;color:var(--sub);margin:0}
 /* Etiketten over de tre pinnede. Samme 12 px som fodnoten — de to er de eneste
@@ -312,6 +326,12 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .keeper{display:flex;align-items:flex-start;gap:12px;min-width:0}
 .keeper svg{flex:none;width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;color:var(--fg);margin-top:-2px}
 .keeper.small svg{width:26px;height:26px;stroke-width:1.8;color:var(--sub);margin-top:-3px}
+/* Låseskærmens keeper: barnet er #askPw med min-height:44px for tapmålet, så kassen er
+   højere end sin synlige tekst. Med flex-start blev ikonet hængt op i kassens TOP og stod
+   ~12 px for højt. Centrér i stedet, og nulstil den -3px, der kompenserede for flex-start.
+   Scoped til id, så indstillingernes keeper (#setAdmin, flydende tekst) er urørt. */
+#lockAdmin{align-items:center}
+#lockAdmin svg{margin-top:0}
 .keeper span{min-width:0}
 .pause{position:fixed;inset:0;z-index:30;background:#120f0c;color:#ede6dc;overflow:hidden;cursor:pointer;animation:fadeIn .8s ease-out both;-webkit-user-select:none;user-select:none}
 .pause .stage{position:absolute;left:50%;top:50%;width:240vmax;transform:translate(-50%,-50%) rotate(-14deg);display:flex;flex-direction:column;gap:.6vmax}
@@ -510,7 +530,6 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .priv details[open] summary::before{transform:rotate(90deg)}
 .priv ul{margin:0 0 4px;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:0.8125rem;color:var(--sub)}
 @media (prefers-reduced-motion: reduce){.priv summary::before{transition:none}}
-.tiles.big{grid-template-columns:repeat(2,minmax(0,1fr));max-width:368px}
 /* Indstillinger */
 .sheet{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
 .sheet .wrap{padding-right:max(16px, env(safe-area-inset-right,0px))}
@@ -1007,7 +1026,7 @@ function lockDevice(){
    blev opdateret i baggrunden, kaldte "quiet()" i stedet en true/false-værdi, og hele opdateringen
    faldt lydløst på gulvet: ingen ny tegning, ingen nye billeder. Derfor hedder den nu "first" */
 function apply(j,first){
-  var changed=VER!==null; VER=j.version; PIN=j.pin||null; ingest(j);
+  var changed=VER!==null; VER=j.version; PIN=j.pin||null; ingest(j); PKC=null;
   if(POV&&!P[POV]) POV=null; if(CUR&&CUR!=='__pick'&&!P[CUR]) CUR=POV;
   STACK=STACK.filter(function(x){return P[x]});
   hideLoading(); $('#lock').hidden=true;
@@ -1214,10 +1233,17 @@ function renderPin(picking){
      findes for, stå som den eneste uden, under to forældre der begge har et. */
   $('#isRows').innerHTML=ids.map(function(id){ var p=P[id], f=pic(p);
     return '<button type="button" class="row" data-id="'+id+'">'+
-      (f? '<img class="rt" src="'+f+'" alt="">' : '<span class="rt-none" aria-hidden="true"></span>')+
+      (f? '<img class="rt" src="'+f+'" alt="">' : '<span class="rt-none '+pkc(id)+'" aria-hidden="true"></span>')+
       '<span class="rn">'+esc(p.n)+'</span><span class="ry">'+years(p)+'</span></button>'; }).join('');
 }
 var PICKL={};
+/* Farverne i vælgerens tomme render. Nulstilles i apply(), så nye personer fordeles med. */
+var PKSQ=['c-own','c-far','c-mor','c-in'], PKC=null;
+function pkc(id){
+  if(!PKC){ PKC={}; Object.keys(P).sort(function(a,b){ return P[a].n.localeCompare(P[b].n,'da'); })
+    .forEach(function(x,i){ PKC[x]=PKSQ[i%4]; }); }
+  return PKC[id]||'c-none';
+}
 function renderPick(){
   var q=($('#q').value||'').trim().toLowerCase();
   var ids=Object.keys(P).filter(function(id){ return !q||P[id].n.toLowerCase().indexOf(q)>=0||(P[id].aka||'').toLowerCase().indexOf(q)>=0; });
@@ -1230,7 +1256,7 @@ function renderPick(){
   ids.forEach(function(id){ var p=P[id], l=p.n[0].toLowerCase();
     if(l!==L){ L=l; have[l]=1; html+='<button type="button" class="letter" data-l="'+esc(l)+'">'+esc(l)+'</button>'; }
     html+='<button type="button" class="row" data-id="'+id+'">'+
-      (p.photo? '<img class="rt" src="'+p.photo+'" alt="">' : '<span class="rt-none" aria-hidden="true"></span>')+
+      (p.photo? '<img class="rt" src="'+p.photo+'" alt="">' : '<span class="rt-none '+pkc(id)+'" aria-hidden="true"></span>')+
       '<span class="rn">'+esc(p.n)+'</span><span class="ry">'+years(p)+'</span></button>'; });
   $('#alpha').innerHTML=html||'<p class="empty">Ingen fundet.</p>';
   PICKL=have;
@@ -1363,9 +1389,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.17';
+var APP_VERSION='2.18';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.18',d:'2026-11-18',t:'2026-11-18T13:45:19Z',items:['De tomme pladser i listen, hvor du vælger dig selv eller en ukendt faster, har fået farve. Der mangler billeder, men det er bedre end ingenting']},
   {v:'2.17',d:'2026-11-17',t:'2026-11-17T18:05:00Z',items:['Quizzen gav mig nogle udfordringer, som nu er fixet. Ikke noget at hidse sig op over']},
   {v:'2.16',d:'2026-11-17',t:'2026-11-17T08:53:12Z',items:['Små justeringer i brugerfladen. Svært at se for jer andre, det er bare mig, der er pedantisk. Slut herfra']},
     {v:'2.15',d:'2026-11-17',t:'2026-11-17T07:31:00Z',items:['Så er der kommet Quiz i appen — ti hurtige spørgsmål om slægten til de mørke vinteraftener. Du finder den under indstillinger øverst til højre. Desuden vises flere facts i pauseskærmen, de fleste er stadigvæk lidt ligegyldige. Der er ryddet lidt op i brugerfladen. Småting, for det hele ser allerede så godt ud']},
