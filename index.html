@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vAVTG1EySgNIBDDzavfU5E4DnlSK+c6UtaaEqd+/+74=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-B6IItYsNKpATkJNJF0M5r2lICt1hAYws0ZOTjJeYqrc=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -160,6 +160,28 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 .tile .ln{font-size:0.875rem;font-weight:600;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tile .ly{font-size:0.75rem;opacity:.85;font-variant-numeric:tabular-nums}
 .tile.unk{background:transparent;border:1px dashed var(--dim);color:var(--sub);cursor:default}
+/* Plusset er kortets INDHOLD, ikke et mærke i et hjørne: kortet er næsten hul, og et lille
+   ikon i en kant ville læses som krom. Stort og tyndt fylder det tomrummet, præcis som
+   appens øvrige hierarki bæres af overdimensioneret tynd skrift uden kasse om sig.
+   Farven arves (currentColor = .tile.unk's var(--sub)), så der tages INGEN palet-beslutning:
+   de fire grenfarver er legenden og terrakotta er udgangspunktets påmindelse — et farvet
+   plus ville påstå en betydning, det ikke har. Størrelse og bevægelse gør arbejdet.
+   Tegnet er et SIGNAL, ikke en kontrol: ingen ring, ingen kant, intet knapkrom. Hele
+   kortet er målet (~132 px mod plussets 40). */
+.tile.unk.add{cursor:pointer}
+.tile.unk.add:active{opacity:.6}
+.tile.unk .plus{position:absolute;top:0;left:0;right:0;bottom:26px;display:flex;align-items:center;justify-content:center;
+  font-size:40px;font-weight:200;line-height:1;color:currentColor;pointer-events:none}
+/* Ankomsten er hele pointen: fliserne stiger ind med rise .42s i 38 ms kaskade, og plusset
+   kommer FØRST et slag efter, den er faldet til ro — man fanger bevægelse et sted, der lige
+   er blevet stille. Ét anslag, aldrig en løkke: et pulserende plus bliver enten tapet inden
+   for en uge eller værre, en alarm om en savnet slægtning. De to kort forskydes mod hinanden
+   med de samme 38 ms, så de ikke fyrer i takt. */
+@keyframes plusIn{from{opacity:0;transform:scale(.70)}to{opacity:1;transform:none}}
+.pane .tile.unk .plus{animation:plusIn .38s var(--ease) 900ms backwards}
+.pane .tiles .tile.unk:nth-child(2) .plus{animation-delay:938ms}
+.pane.still .tile.unk .plus{animation:none}
+
 .tile.self{outline:2px solid var(--fg);outline-offset:-2px}
 .tile.self::after{content:"her";position:absolute;top:6px;right:8px;font-size:0.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--fg);color:var(--bg);padding:1px 6px}
 .cap2{font-size:0.75rem;color:var(--sub);margin-top:-2px}
@@ -398,6 +420,24 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
  color:#7d7264;white-space:nowrap}
 .pause .fsh span.lo{top:14px}
 .pause .fsh span.hi{bottom:14px;color:#e0916a;font-weight:600}
+/* Et sted: prikken og navnet over koordinaterne. Højrestillet stak, ingen absolut
+   positionering — derfor gælder akse-fælden fra .fsp/.fsl ikke her. Men kassens bredde
+   sættes af den bredeste linje: koordinaterne er bredere end begge stednavne i dag, så
+   intet flytter sig. Et LÆNGERE stednavn i et fremtidigt faktum ville skubbe
+   billedsproget af aksen. Prikken og etiketten er .fsl b og .fsl span i ny indpakning. */
+.pause .fpl{text-align:right}
+.pause .fpl .pin{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-bottom:7px}
+.pause .fpl .pin b{display:block;width:9px;height:9px;border-radius:50%;background:#ede6dc;flex:none}
+.pause .fpl .pin span{font-size:.78rem;letter-spacing:.14em;color:#e0916a;font-weight:600;text-transform:uppercase;white-space:nowrap}
+/* Buen er den ÆGTE storcirkelbue: 86,8 grader giver en pilhøjde på 20 % af korden, og det
+   er dét, tallene herunder tegner — ikke et pyntesving. Bliver den nogensinde for flad:
+   forlæng korden, uddyb ikke buen. Buer venstre om med prikkerne på højre kant som alle
+   andre mærker, og etiketterne hænger til venstre, tæt på prikken. */
+.pause .farc{position:relative;width:70px;height:310px}
+.pause .farc svg{display:block}
+.pause .farc em{position:absolute;right:26px;font-style:normal;font-size:.78rem;letter-spacing:.14em;color:#e0916a;font-weight:600;white-space:nowrap;text-transform:uppercase}
+.pause .farc em.t{top:2px}
+.pause .farc em.b{top:294px}
 .pause .fco,.pause .fle{text-align:right;font-size:.95rem;letter-spacing:.12em;color:#7d7264;
  line-height:1.9;max-width:46vw}
 .pause .fle{color:#e0916a;font-size:1.05rem;letter-spacing:.3em}
@@ -1261,7 +1301,21 @@ function tile(id,opts){
 }
 /* Tom forælder: relationen regnes ud præcis som for et udfyldt kort — den tomme far/mor-plads får samme udgangspunkt-relative slægtsled som en udfyldt søskendeplads ville (fx "morfars farfars farfar"). Personen er bare ikke i træet endnu (den, der kigger, kender måske godt navnet) */
 function emptyKin(sex){ var base=steps(CUR); if(!base) return sex; var t=term(base.concat([{k:'U',to:(sex==='mor'?'__mor__':'__far__'),from:CUR}])); return (t==null||t==='')?sex:t; }
-function unknown(rel){ return '<div class="tile unk"><span class="lab"><span class="lt">'+esc(rel)+'</span><span class="ly">ikke i træet endnu</span></span></div>'; }
+/* Tom plads med et plus: kortet bliver en knap, der åbner forslag med barnet og
+   "forælder til" sat. Uden 'of' (et menneske at hænge forslaget på) bliver det som før —
+   en død flise. Aldrig på børn: en tom barneplads findes ikke, og appen skal ikke spørge
+   til børn, der måske ikke er der. */
+function unknown(rel,of,kind){
+  var lab='<span class="lab"><span class="lt">'+esc(rel)+'</span><span class="ly">ikke i træet endnu</span></span>';
+  /* Bevidst en almindelig div, IKKE en <button>: browserens eget stylesheet sætter
+     box-sizing:border-box på knapper, og det har allerede én gang skrumpet et element
+     i denne app i stilhed (.letter, 48 → 44 px ved 2.11). Kortet har både aspect-ratio
+     og en 1 px kant, så det kunne ske igen. En div, der lytter efter et tryk, måler
+     præcis som i dag. */
+  if(!of||!P[of]) return '<div class="tile unk">'+lab+'</div>';
+  return '<div class="tile unk add" data-add="'+(kind==='sib'?'sib':'par')+'" data-of="'+esc(of)+'">'+
+    '<span class="plus" aria-hidden="true">+</span>'+lab+'</div>';
+}
 function group(title,inner,extra){ return '<div class="grp"><h2>'+title+'</h2>'+(extra||'')+'<div class="tiles">'+inner+'</div></div>'; }
 function mark(t){ return esc(t).replace(/\s*\(per slægtsbog[^)]*\)/g,' <span class="badge">per slægtsbog</span>'); }
 /* Ægteskabet deles af to personer, men kildelisten gør ikke: står slægtsbogen kun under den
@@ -1421,12 +1475,12 @@ function renderFocus(){
 }
 function pane(p){
   if(PFOCUS){
-    var tl=(p.f?tile(p.f):unknown(emptyKin('far')))+(p.m?tile(p.m):unknown(emptyKin('mor')));
+    var tl=(p.f?tile(p.f):unknown(emptyKin('far'),p.id))+(p.m?tile(p.m):unknown(emptyKin('mor'),p.id));
     var end=!p.f&&!p.m? '<p class="pfnote">Sporet slutter her. Forældrene er ikke i træet endnu.</p>' : '<p class="pfnote">Tryk på en forælder for at gå en generation op. Tryk på ‹ og navnet øverst for at gå ned igen. Vælg “alle” eller stryg til højre for at se hele familien.</p>';
     return '<div class="grp"><h2>forældre</h2><div class="tiles big">'+tl+'</div>'+end+'</div>';
   }
   if(PIVOT==='familie'){
-    var par=(p.f?tile(p.f):unknown(emptyKin('far')))+(p.m?tile(p.m):unknown(emptyKin('mor')));
+    var par=(p.f?tile(p.f):unknown(emptyKin('far'),p.id))+(p.m?tile(p.m):unknown(emptyKin('mor'),p.id));
     var html=group('forældre',par);
     if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(function(){ var cap=unmark(s.txt||'').trim(); if(!cap||cap.toLowerCase()==='gift') return '';
       /* ⚭ kun foran en vielsesdato - en fritekst som "senere gift" skal ikke have et symbol */
@@ -1436,7 +1490,15 @@ function pane(p){
   }
   if(PIVOT==='søskende'){
     var sib=Object.keys(P).filter(function(id){ var q=P[id]; return (p.f&&q.f===p.f)||(p.m&&q.m===p.m); });
-    if(sib.length<=1) return '<div class="grp"><h2>søskende</h2><p class="empty">Ikke i træet endnu.</p></div>';
+    /* INGEN forældretest: kortet vises, hver gang der er nul søskende — alle 88. Træet kan
+       ikke holde søskende uden en forælder (søskende er afledt af delt f/m), men den forælder
+       er ét fornavn, og den oprettes ved modtagelsen, når forslaget kommer ind. Bos afgørelse
+       efter at have skudt den tidligere 33-regel ned: dét er en opfølgning, han alligevel
+       ville stille, ikke en grund til at lade være med at spørge.
+       Overskriften er VÆK med vilje: pivotordet "søskende" ER rudens titel, og de andre ruders
+       h2'er er UNDERoverskrifter (FORÆLDRE, GIFT MED, BØRN). Kortet bærer ordet i stedet.
+       Ret den ikke tilbage. */
+    if(sib.length<=1) return '<div class="grp"><div class="tiles">'+unknown('søskende',p.id,'sib')+'</div></div>';
     sib.sort(function(a,b){ return (yr(P[a].b)||'9999').localeCompare(yr(P[b].b)||'9999'); });
     return group('søskendeflokken, ældst først',sib.map(function(id){ return tile(id,{self:id===p.id}); }).join(''),'<p class="empty" style="font-size:13px">'+(sib.length-1)+' søskende. Rammen viser '+esc(first(p))+'.</p>');
   }
@@ -1473,9 +1535,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.19';
+var APP_VERSION='2.20';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.20',d:'2026-11-23',t:'2026-11-23T15:08:32Z',items:['Tomme pladser sagde ‘Ikke i træet endnu’ siden begyndelsen. Nu svarer de, når du trykker på et lille +, så du kan sende detaljer ind om far, mor eller søskende. Træets vogter godkender alt, ellers opstår der kaos. Pauseskærmen viser flere facts. Over and out']},
   {v:'2.19',d:'2026-11-23',t:'2026-11-23T13:11:08Z',items:['Der er travlt under seneste nyt med appopdateringer. Ikke alt er lige interessant. Derfor kan du nu vælge at se alle nyheder, kun nyheder fra træet eller kun fra appen. Når du klikker på fasters billede og ser det i fuld skærm, kunne det give et lille hop. Det er slut nu. På quiz-siden gør jeg opmærksom på, at dit resultat først vises, når Bo er nået igennem køen. Hvis du logger ud af appen, gemmer jeg ikke længere, hvem du havde valgt at se slægten fra. Andre indstillinger bevares. Et lille ⚭ er tilføjet alle bryllupsdatoer. Uden ⚭ var det jo bare datoer. Det var vist det vigtigste']},
   {v:'2.18',d:'2026-11-18',t:'2026-11-18T13:45:19Z',items:['De tomme pladser i listen, hvor du vælger dig selv eller en ukendt faster, har fået farve. Der mangler billeder, men det er bedre end ingenting']},
   {v:'2.17',d:'2026-11-17',t:'2026-11-17T18:05:00Z',items:['Quizzen gav mig nogle udfordringer, som nu er fixet. Ikke noget at hidse sig op over']},
@@ -2264,6 +2327,21 @@ $('#hero').addEventListener('click',function(e){
 });
 $('#q').addEventListener('input',renderPick);
 /* Indsend billede: åbner forslag med "Billede af en person" valgt, og den, man ser træet fra, som afsender og person */
+/* Ét sted, der åbner forslag forudfyldt. 'Fra' sættes til udgangspunktet, som #sendPic
+   gør — det er den, der sender, ikke den, forslaget handler om. */
+function sgSeed(type,person,rel){
+  openSettings(); setSPane('forslag');
+  $('#sgType').value=type; sgType();
+  var me=(POV&&P[POV])?POV:null; if(me) $('#sgFrom').value=me;
+  if(person&&P[person]) $('#sgPerson').value=person;
+  if(rel) $('#sgRel').value=rel;
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest? e.target.closest('[data-add]') : null; if(!b) return;
+  var k=b.getAttribute('data-add'), of=b.getAttribute('data-of');
+  if(k==='par') sgSeed('ny',of,'forælder til');
+  else if(k==='sib') sgSeed('ny',of,'søskende til');
+});
 $('#sendPic').addEventListener('click',function(){
   openSettings(); setSPane('forslag');
   $('#sgType').value='foto'; sgType();
@@ -2787,7 +2865,21 @@ function factVis(v,S){
       if(src){ out+='<img alt="" src="'+src+'">'; got++; } }
     return got? out+'</div>' : '';
   }
-  if(t==='coords') return '<div class="fco">'+esc(factFill(v.text,S))+'</div>';
+  if(t==='coords'){
+    var co='<div class="fco">'+esc(factFill(v.text,S))+'</div>';
+    /* Navnet står både som overskrift og ved prikken. Bos grund: på en bred skærm står
+       billedsproget i modsatte hjørne af sin egen sætning, og en navngivet prik gør det
+       selvbærende dér, hvor det står — uden at spejle eller forstørre noget. */
+    if(!v.place) return co;
+    return '<div class="fpl"><div class="pin"><b></b><span>'+esc(factFill(v.place,S))+'</span></div>'+co+'</div>';
+  }
+  if(t==='arc'){
+    return '<div class="farc"><em class="t">'+esc(factFill(v.top,S))+'</em><em class="b">'+esc(factFill(v.bottom,S))+'</em>'+
+      '<svg width="70" height="310" viewBox="0 0 70 310" aria-hidden="true">'+
+      '<path d="M 64 9 Q -52 155 64 301" fill="none" stroke="#8c6d2c" stroke-opacity=".75" stroke-width="1"/>'+
+      '<circle cx="64" cy="9" r="4.5" fill="#ede6dc"/><circle cx="64" cy="301" r="4.5" fill="#ede6dc"/>'+
+      '</svg></div>';
+  }
   if(t==='letters') return '<div class="fle">'+esc(factFill(v.text,S))+'</div>';
   return '';
 }
