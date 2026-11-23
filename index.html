@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ZFKc+x0DLyXnXxidcBT+y1cCpdTJS7NwF0AcMcp1QKo=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vAVTG1EySgNIBDDzavfU5E4DnlSK+c6UtaaEqd+/+74=' 'sha256-U+qMQiTsrAItdgeU2Sq1+JqmxgA/uvzhk15NoQBwvYY='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
@@ -163,6 +163,7 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 .tile.self{outline:2px solid var(--fg);outline-offset:-2px}
 .tile.self::after{content:"her";position:absolute;top:6px;right:8px;font-size:0.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--fg);color:var(--bg);padding:1px 6px}
 .cap2{font-size:0.75rem;color:var(--sub);margin-top:-2px}
+.wsym{font-size:0.9em;line-height:1}
 /* Mørkekammer: på computer med mus fremkaldes billedet, og navneskiltet trækker sig tilbage. Klassen .mouse sættes først, når en rigtig mus bevæger sig (Windows lyver nogle gange om, at der ikke er en). Telefoner får intet af det.
    Med "reducér bevægelse" slået til fremkaldes farverne stadig, men intet flytter sig. */
   .mouse .tile.has-photo img{filter:saturate(.8) contrast(.94) brightness(1.04);transition:filter 1.2s ease}
@@ -172,7 +173,10 @@ h1{font-weight:300;font-size:1.875rem;line-height:1.1;margin:0;letter-spacing:-.
 @media (prefers-reduced-motion:no-preference){
   .mouse .tile.has-photo img{object-position:50% 50%;transform:scale(1.06);
     transition:object-position .9s var(--ease),transform 1.1s var(--ease),filter 1.2s ease}
-  .mouse .tile.has-photo .lt,.mouse .tile.has-photo .ly{max-height:2.6em;transition:max-height .45s var(--ease),opacity .25s ease}
+  /* overflow:hidden hører til max-height. Uden den klippes kassen, men ikke teksten, og et
+     langt slægtsled som "barnebarns svigerfars" — der brækkes hvor som helst og bliver tre
+     linjer i en smal flise — lagde sig oven på navnet, indtil man holdt musen over. */
+  .mouse .tile.has-photo .lt,.mouse .tile.has-photo .ly{max-height:3.9em;overflow:hidden;transition:max-height .45s var(--ease),opacity .25s ease}
   .mouse .tile.has-photo:hover img,.mouse .tile.has-photo:focus-visible img{object-position:50% 18%;transform:scale(1);transition-delay:90ms}
   .mouse .tile.has-photo:hover .lt,.mouse .tile.has-photo:hover .ly,.mouse .tile.has-photo:focus-visible .lt,.mouse .tile.has-photo:focus-visible .ly{max-height:0;transition-delay:90ms}
 }
@@ -422,7 +426,10 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 @keyframes pvdriftM{from{transform:translateX(26px)}to{transform:translateX(-26px)}}
 /* Er der kun ét billede, er der ingen nabo at trække frem, så drevet sker inde i beskæringen. */
 .pv[data-edge="one"] .pvcell img{animation:pvpan 18s ease-in-out infinite alternate}
-@keyframes pvpan{from{object-position:36% 22%}to{object-position:66% 22%}}
+/* Drevet starter dér, hvor billedet står i forvejen (50%). Før begyndte det på 36%, og så
+   sprang beskæringen i det øjeblik, animationen blev sat på — usynligt ved åbning, fordi
+   udfoldningen dækkede det, men tydeligt hvis tilstanden afgøres et øjeblik senere. */
+@keyframes pvpan{from{object-position:50% 22%}to{object-position:66% 22%}}
 .pv .pvtrack{display:flex;align-items:stretch;width:100%;height:100%;will-change:transform;
   transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .pv .pvcell{flex:0 0 calc(100% - 5px);position:relative;height:100%;cursor:pointer}
@@ -437,6 +444,23 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
      Samme filtersprog som pauseskærmens .fphoto, intet nyt. */
   filter:grayscale(.5) brightness(.55);transition:filter .45s ease}
 .pv .pvcell.on img{filter:none}
+/* Bred skærm: cover beskærer LODRET, ikke vandret. Et kvadratisk portræt skaleres
+   efter bredden, så ved 2:1 er kun halvdelen af billedet på skærmen. Målt på tre
+   portrætter: hovedet fylder 64-80% af kvadratet. Det KAN ikke være der på én gang,
+   og intet object-position retter det — valget står mellem, hvad man undværer.
+   Bos valg, og det rigtige: undvær toppen. At klippe issen er almindeligt i et
+   portræt; at klippe munden er det ikke. Derfor 50% — kvadratet centreret — hvor
+   et bånd centreret om HOVEDET (26%) gav hår og pande ned til næsen.
+   Drevet er flyttet med: samme udsving på 12 point, nu 50 -> 62%, så hagen kommer
+   helt med i løbet af en cyklus. Bevægelsen STARTER i hvilestillingen, ellers rykker
+   beskæringen i det øjeblik animationen sættes på — den fejl er rettet én gang før.
+   Udtoningen forneden røres IKKE: den hører til rammen og navnet, ikke til billedet.
+   Den vandrette pvpan slås fra: den flytter intet, når der ikke er vandret overløb. */
+@keyframes pvpanY{from{object-position:50% 50%}to{object-position:50% 62%}}
+@media (min-aspect-ratio: 4/3){
+  .pv .pvcell img{object-position:50% 50%}
+  .pv[data-edge="one"] .pvcell img{animation:pvpanY 18s ease-in-out infinite alternate}
+}
 /* Navnet, ikke en brugsanvisning. Fladen er åbenlyst noget, man trykker væk. */
 .pv .pvname{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 6vh);
   padding:0 max(20px, env(safe-area-inset-left,0px));font-weight:300;text-transform:lowercase;
@@ -536,6 +560,15 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .seg{display:flex;border:1px solid var(--dim);max-width:100%}
 .seg button{flex:1;padding:10px 8px;min-height:44px;font-size:0.875rem;text-align:center;color:var(--sub);text-transform:lowercase}
 .seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+/* Klokkens filter: rækkerne bliver stående, kun synligheden skifter — ingen gentegning,
+   og ingen af de to slags noter bliver nogensinde markeret som læst af at være skjult. */
+.newslist.only-tree li[data-nk="app"],.newslist.only-app li[data-nk="tree"]{display:none}
+/* Målt: tre pivotord i fuld størrelse fylder 372 px mod 358 px ved 390 px skærm, så "kun app"
+   lå uden for kanten. Indstillingernes strimmel må gerne løbe ud — den har otte faner, og man
+   ved, man skal stryge. Et filter med tre valg skal kunne ses helt. Derfor en anelse mindre her,
+   hvilket også holder det under overskriften i stedet for ved siden af den. */
+#newsFilter{margin-bottom:10px}
+#newsFilter button{font-size:1.5rem}
 .demo{display:inline-block;font-size:0.6875rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--c-in);color:var(--tile-ink);padding:2px 8px}
 .form{display:flex;flex-direction:column;gap:12px;min-width:0}
 .form label{font-size:0.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);display:flex;flex-direction:column;gap:5px}
@@ -587,6 +620,40 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .newslist .kind-app{background:var(--c-far)}
 .newslist .when{font-size:0.75rem;color:var(--sub);font-variant-numeric:tabular-nums}
 .newslist li.unread .when::before{content:"●";color:var(--t-far);margin-right:6px}
+/* Lange noter klippes til fem linjer, så ruden kan skimmes. De længste fylder elleve linjer, de
+   korteste to — derfor må klippet ikke være en fast regel for alle: hver række MÅLES, når ruden
+   åbnes, og kun den, der faktisk er for lang, får .clip og dermed en knap. Ellers ville halvdelen
+   af noterne have et "se mere", der ikke afslørede noget.
+   "se mere" LIGGER OVEN PÅ den femte linje, ikke under den, og det er ikke pynt: en knap under
+   teksten skal være 44 px høj for at kunne rammes, og det er 2,4 linjer. Målt: en note på seks
+   linjer blev så 188 px klippet mod 160 px hel — klippet gjorde rækken HØJERE. Oven på linjen
+   koster knappen nul, og så sparer klippet altid. Den maskerer med --bg, fordi den femte linje
+   kan slutte hvor som helst. Udvidet flytter den ned under teksten, hvor den ikke dækker noget.
+   Chevronen og typografien er lånt fra .priv summary — appen har allerede ét sprog for
+   "der er mere her". */
+.newslist li{position:relative}
+.newslist .nt{min-width:0}
+.newslist li.clip .nt{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.newslist .more{display:none;position:absolute;right:0;bottom:9px;width:172px;height:44px;align-items:flex-end;justify-content:flex-end;cursor:pointer;font-size:1.25rem;line-height:1.45;color:var(--fg);
+  /* Kontrollen er ét tegn, ikke et ord: "se mere" oven på femte linje lå i vejen for de ord, det
+     skjulte, og så lige så trangt ud, som det var. Nu bærer UDTONINGEN beskeden om, at der er mere,
+     og chevronen siger, at den kan trykkes. Derfor er rampen også lang (104 px): linjen skal dø
+     langsomt hen mod tegnet, ikke rammes af en kant.
+     Knappen er 44 px høj for at kunne rammes — det er 2,2 tekstlinjer, så baggrunden males KUN i
+     den nederste linjehøjde (background-size), ellers ville den også dække halen af fjerde linje.
+     Appen toner i forvejen billeder, der løber ud under en kant (.pvcell, .fphoto) — det samme
+     greb, nu på tekst. --bg er sheetens egen flade (.sheet), så den passer i begge temaer uden
+     en media query. Tegnet alene har intet navn, så knappen bærer aria-label. */
+  background:linear-gradient(to right,transparent 0,var(--bg) 148px) bottom/100% calc(0.875rem*1.45) no-repeat}
+.newslist li.clip .more{display:flex}
+/* Udfoldningen er ENVEJS: når noten står helt, er der intet tilbage at trykke på, og tegnet
+   forsvinder i stedet for at hænge alene under teksten og koste 44 px. Intet går tabt —
+   openNews() tegner listen forfra ved hver åbning og klipper på ny, nøjagtig som filteret
+   nulstilles til "alle". Vil man have den korte udgave igen, lukker man klokken. */
+.newslist li.open .more{display:none}
+/* Tegnet peger NED: der er mere tekst nedenunder. Det handler om tekst, der fortsætter, ikke om
+   en sektion, der åbnes — dér bruger .priv summary › → v. Det drejer ikke, for det forsvinder. */
+.newslist .more::before{content:"›";font-size:1.2em;line-height:1;transform:rotate(90deg);color:var(--t-far)}
 .msgtext{margin:0;padding:12px;background:var(--raise);border:1px solid var(--line);font:inherit;font-size:0.875rem;white-space:pre-wrap;overflow-wrap:anywhere;max-height:16rem;overflow:auto;user-select:all;-webkit-user-select:all}
 .queue .st{font-size:0.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t-in);white-space:nowrap}
 /* ÅBNINGSBILLEDE — samme bomærke som i filmen: "slægten", "altid i lommen" og de fire
@@ -742,8 +809,15 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
   <div class="wrap">
     <div class="bar"><span></span><button class="chipbtn" id="closeNews" type="button">luk</button></div>
     <div class="pano" aria-hidden="true"><span class="cap">seneste nyt</span><span class="nm">nyheder</span></div>
+    <!-- Pivotstriben, ikke .seg: ruder skifter VISNING med ord, ikke med en fyldt knap.
+         Den fyldte .seg gjorde filteret til det mørkeste element under en bevidst bleg overskrift. -->
+    <div class="pivots" id="newsFilter" role="tablist" aria-label="Vis nyheder">
+      <button role="tab" type="button" data-nk="alle" aria-selected="true">alle</button>
+      <button role="tab" type="button" data-nk="tree" aria-selected="false">kun træ</button>
+      <button role="tab" type="button" data-nk="app" aria-selected="false">kun app</button>
+    </div>
     <ul class="queue newslist" id="newsList"></ul>
-    <button class="chipbtn" type="button" id="newsToLog" style="align-self:flex-start;margin-top:6px">se alle appens versioner ›</button>
+    <p class="pfnote" id="newsEmpty" hidden>Ingen nyheder af den slags endnu.</p>
   </div>
 </section>
 <section class="sheet" id="quiz" hidden aria-label="Slægtsquiz">
@@ -764,7 +838,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
       <p class="pfnote" id="setVer"></p>
       <div class="grp" id="instSect"><h2>installér appen</h2><p class="pfnote" id="instText"></p><button class="primarybtn" type="button" id="instBtn2" hidden>installér appen</button></div>
       <div class="grp" id="logoutSect"><h2>log ud</h2>
-        <p class="pfnote">Glemmer appens nøgle på denne telefon. Har telefonen selv gemt adgangskoden, udfylder den den igen. Dit valg af person og udseende bliver husket.</p>
+        <p class="pfnote">Glemmer appens nøgle på denne telefon. Har telefonen selv gemt adgangskoden, udfylder den den igen. Udseendet bliver husket, men ikke hvem du havde valgt at se slægten fra.</p>
         <button class="primarybtn" type="button" id="logoutBtn">log ud</button>
       </div>
       <div class="grp priv" id="privSect"><h2>dine data</h2>
@@ -1033,6 +1107,10 @@ function apply(j,first){
   stamp(); if(POV) solve(); if(changed) quiet(); render();
   if(changed&&!first&&NOTIFY) toast(unread()? 'Nyt i træet. Tryk på klokken for at se det.' : 'Træet er opdateret');
   try{ if(window.__quizBoot) setTimeout(window.__quizBoot,1200); }catch(e){}
+  /* Ekstra billeder hentes på forkant, så snart træet er tegnet. Før blev filen først hentet
+     ved det første tryk på et billede, og så landede den midt i udfoldningen. De store filer
+     får forspring: træet og portrætterne skal ikke stå i kø bag den her. */
+  if(!PX&&!PXP&&KEY) setTimeout(loadExtra,2000);
 }
 /* Billedfilen står selv for sin version — ikke træets. Ellers kunne appen tro, at en gammel
    kopi var den nyeste, og så holdt den op med at spørge efter billeder igen */
@@ -1186,6 +1264,10 @@ function emptyKin(sex){ var base=steps(CUR); if(!base) return sex; var t=term(ba
 function unknown(rel){ return '<div class="tile unk"><span class="lab"><span class="lt">'+esc(rel)+'</span><span class="ly">ikke i træet endnu</span></span></div>'; }
 function group(title,inner,extra){ return '<div class="grp"><h2>'+title+'</h2>'+(extra||'')+'<div class="tiles">'+inner+'</div></div>'; }
 function mark(t){ return esc(t).replace(/\s*\(per slægtsbog[^)]*\)/g,' <span class="badge">per slægtsbog</span>'); }
+/* Ægteskabet deles af to personer, men kildelisten gør ikke: står slægtsbogen kun under den
+   ene, stod mærket uforklaret på den andens kort. Så i ægtefælleteksten skrelles kilden af —
+   den bliver i træet, og mærket bliver stående i noterne, hvor definitionen står lige under. */
+function unmark(t){ return esc(t).replace(/\s*\(per slægtsbog[^)]*\)/g,''); }
 
 function render(){
   var povSet=!!POV&&!!P[POV];
@@ -1346,7 +1428,9 @@ function pane(p){
   if(PIVOT==='familie'){
     var par=(p.f?tile(p.f):unknown(emptyKin('far')))+(p.m?tile(p.m):unknown(emptyKin('mor')));
     var html=group('forældre',par);
-    if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(s.txt&&s.txt.trim().toLowerCase()!=='gift'?'<span class="cap2">'+mark(s.txt)+'</span>':'')+'</div>'; }).join('')+'</div></div>';
+    if(p.sp.length) html+='<div class="grp"><h2>gift med</h2><div class="tiles">'+p.sp.map(function(s){ return '<div style="display:flex;flex-direction:column;gap:6px;min-width:0">'+tile(s.id)+(function(){ var cap=unmark(s.txt||'').trim(); if(!cap||cap.toLowerCase()==='gift') return '';
+      /* ⚭ kun foran en vielsesdato - en fritekst som "senere gift" skal ikke have et symbol */
+      return '<span class="cap2">'+(/^\d/.test(cap)?'<span class="wsym">⚭</span> ':'')+cap+'</span>'; })()+'</div>'; }).join('')+'</div></div>';
     html+= p.kids.length? group('børn ('+p.kids.length+')',p.kids.map(function(k){return tile(k)}).join(''))  : ''; // ingen børn i træet: ingen overskrift
     return html;
   }
@@ -1389,9 +1473,10 @@ function renderRail(g){
   m.hidden=false; m.textContent=(g>0?'+':'')+g; m.style.background='var(--c-'+cat(CUR)+')';
   m.style.top=(t.offsetTop-10)+'px';
 }
-var APP_VERSION='2.18';
+var APP_VERSION='2.19';
 var ADMIN='Bo Hejselbæk';
 var CHANGELOG=[
+  {v:'2.19',d:'2026-11-23',t:'2026-11-23T13:11:08Z',items:['Der er travlt under seneste nyt med appopdateringer. Ikke alt er lige interessant. Derfor kan du nu vælge at se alle nyheder, kun nyheder fra træet eller kun fra appen. Når du klikker på fasters billede og ser det i fuld skærm, kunne det give et lille hop. Det er slut nu. På quiz-siden gør jeg opmærksom på, at dit resultat først vises, når Bo er nået igennem køen. Hvis du logger ud af appen, gemmer jeg ikke længere, hvem du havde valgt at se slægten fra. Andre indstillinger bevares. Et lille ⚭ er tilføjet alle bryllupsdatoer. Uden ⚭ var det jo bare datoer. Det var vist det vigtigste']},
   {v:'2.18',d:'2026-11-18',t:'2026-11-18T13:45:19Z',items:['De tomme pladser i listen, hvor du vælger dig selv eller en ukendt faster, har fået farve. Der mangler billeder, men det er bedre end ingenting']},
   {v:'2.17',d:'2026-11-17',t:'2026-11-17T18:05:00Z',items:['Quizzen gav mig nogle udfordringer, som nu er fixet. Ikke noget at hidse sig op over']},
   {v:'2.16',d:'2026-11-17',t:'2026-11-17T08:53:12Z',items:['Små justeringer i brugerfladen. Svært at se for jer andre, det er bare mig, der er pedantisk. Slut herfra']},
@@ -1513,22 +1598,65 @@ function appUnread(){ var seen=store('slaegt.seenapp')||APPBASE; return appNews(
 function unread(){ var s=lastSeen(); return CHANGES.filter(function(c){ return c.t>s; }).length + appUnread(); }
 function updateBadge(){ var n=NOTIFY? unread():0, b=$('#newsBadge'); b.hidden=!n; b.textContent=n>9?'9+':n; $('#newsBtn').setAttribute('aria-label',n? 'Nyheder, '+n+' nye':'Nyheder'); }
 function dayFmt(t){ var d=new Date(t); return isNaN(d)?'':d.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'}); }
+function setNewsFilter(k){
+  var l=$('#newsList'); if(!l) return;
+  l.classList.toggle('only-tree',k==='tree'); l.classList.toggle('only-app',k==='app');
+  Array.prototype.forEach.call($('#newsFilter').querySelectorAll('button'),function(b){
+    b.setAttribute('aria-selected', b.getAttribute('data-nk')===k?'true':'false'); });
+  /* Et filter må ikke efterlade en tom rude uden forklaring */
+  var n=0; Array.prototype.forEach.call(l.children,function(li){ if(k==='alle'||li.getAttribute('data-nk')===k) n++; });
+  $('#newsEmpty').hidden = n>0;
+}
+$('#newsFilter').addEventListener('click',function(e){
+  var b=e.target.closest? e.target.closest('button[data-nk]') : null; if(b) setNewsFilter(b.getAttribute('data-nk'));
+});
 function openNews(){
   var s=lastSeen(), seenApp=store('slaegt.seenapp')||APPBASE;
   var items=CHANGES.map(function(c){ return {k:'træet', d:c.t, when:dayFmt(c.t), text:c.text, unread:c.t>s}; })
     .concat(appNews().map(function(c){ return {k:'appen', d:c.t||c.d+'T23:59:59Z', v:vnum(c.v), when:dayFmt(c.d)+' · version '+c.v, text:c.items.join('. ')+'.', unread:vnum(c.v)>vnum(seenApp)}; }))
     .sort(function(a,b){ if(a.d!==b.d) return a.d<b.d?1:-1; return (b.v||'')>(a.v||'')?1:-1; });
-  $('#newsList').innerHTML= items.length? items.map(function(c){ return '<li class="'+(c.unread?'unread':'')+'"><span class="when"><span class="kind kind-'+(c.k==='appen'?'app':'tree')+'">'+c.k+'</span>'+esc(c.when)+'</span><span>'+esc(c.text)+'</span></li>'; }).join('') : '<li>Ingen nyheder endnu.</li>';
+  $('#newsList').innerHTML= items.length? items.map(function(c){ return '<li data-nk="'+(c.k==='appen'?'app':'tree')+'" class="'+(c.unread?'unread':'')+'"><span class="when"><span class="kind kind-'+(c.k==='appen'?'app':'tree')+'">'+c.k+'</span>'+esc(c.when)+'</span><span class="nt">'+esc(c.text)+'</span><button class="more" type="button" aria-expanded="false" aria-label="se mere"></button></li>'; }).join('') : '<li>Ingen nyheder endnu.</li>';
   if(CHANGES.length) store('slaegt.seen',CHANGES[0].t);
   store('slaegt.seenapp',LIVEVER);
+  /* Filteret starter altid på "alle" og huskes ALDRIG: unread() tæller begge slags, så et
+     klæbende filter ville lade klokken lyse for noter, man havde filtreret væk — og så
+     begynder mærket at lyve. Læst-mærkerne sættes ovenfor, uanset hvad der er synligt. */
+  setNewsFilter('alle');
   $('#news').hidden=false; replay($('#news').querySelector('.wrap'),'m-fwd'); updateBadge();
+  /* Måles FØRST her: ruden er lige blevet synlig. Over den satte vi innerHTML, mens #news stadig
+     var hidden, og en skjult række måler nul — så en måling deroppe ville klippe alt eller intet.
+     rAF venter på, at layoutet er gjort. */
+  requestAnimationFrame(clipNews);
+  /* Skrifterne er vores egne med font-display:swap. Måles der, før Open Sans har malet,
+     tælles linjerne på en reserveskrift, og så får de forkerte rækker .clip. */
+  if(document.fonts&&document.fonts.status!=='loaded') document.fonts.ready.then(clipNews);
 }
+/* Fem linjer er klippet. Vi måler den UKLIPPEDE tekst (ingen .clip er sat endnu, og en åbnet
+   række nulstilles først), så vi aldrig sammenligner en klippet kasse med sig selv. */
+function clipNews(){
+  var lh=1.45*14; /* .queue li er 0.875rem, body line-height 1.45 — læses nedenfor, hvis muligt */
+  Array.prototype.forEach.call($('#newsList').children,function(li){
+    var t=li.querySelector('.nt'); if(!t) return;
+    li.classList.remove('clip','open');
+    var m=parseFloat(getComputedStyle(t).lineHeight); if(m) lh=m;
+    if(t.scrollHeight>lh*5+1) li.classList.add('clip');
+  });
+}
+/* Delegeret, fordi openNews() skriver hele listen om ved hver åbning */
+$('#newsList').addEventListener('click',function(e){
+  if(!e.target.closest) return;
+  /* Selve teksten åbner også — men KUN mens den er klippet. Er den foldet ud, er den almindelig
+     tekst, man skal kunne markere og kopiere, og de 30 korte noter er aldrig et mål. */
+  var li=e.target.closest('li.clip'); if(!li) return;
+  if(!e.target.closest('button.more') && String(window.getSelection?window.getSelection():'').length) return;
+  li.classList.remove('clip'); li.classList.add('open');
+  var b=li.querySelector('.more'); if(b) b.setAttribute('aria-expanded','true');
+});
 // Fortæl én gang, at appen er blevet opdateret
 setTimeout(function(){ var last=store('slaegt.lastrun'); store('slaegt.lastrun',LIVEVER);
   if(last&&vnum(LIVEVER)>vnum(last)&&NOTIFY) toast('Appen er opdateret til version '+LIVEVER+'. Se nyt under klokken.'); updateBadge(); },1500);
 $('#newsBtn').addEventListener('click',openNews);
 $('#closeNews').addEventListener('click',function(){ $('#news').hidden=true; });
-$('#newsToLog').addEventListener('click',function(){ $('#news').hidden=true; openSettings(); setSPane('versioner'); });
 function setNotify(on){ NOTIFY=on; store('slaegt.notify',on?'1':'0'); $('#ntSwitch').setAttribute('aria-checked',on?'true':'false'); $('#newsBtn').hidden=!VER||!on; updateBadge(); }
 $('#ntSwitch').addEventListener('click',function(){ setNotify(!NOTIFY); });
 $('#ntSwitch').setAttribute('aria-checked',NOTIFY?'true':'false');
@@ -1868,7 +1996,10 @@ function qShare(){
   fetch(QFORM,{method:'POST',mode:'no-cors',body:d}).then(function(){
     /* referencekoden rejser stadig med til arket - den skal bare ikke rækkes til nogen,
        der lige har gjort noget selskabeligt */
-    $('#qShareMsg').textContent='Tak for at dele.';
+    /* Køen er det, man venter på, så den skal stå som sætningens emne. Linjen over knappen
+       lover "kan blive vist" — her må der heller ikke loves mere, end et uigennemsigtigt
+       POST kan bære: resultatet står i køen, og hvad der sker derfra, er Bos. */
+    $('#qShareMsg').textContent='Tak for at dele. Dit resultat står nu i køen hos Bo.';
   }).catch(function(){
     QSENT=false; $('#qShare').disabled=false;
     $('#qShareMsg').textContent='Det kunne ikke sendes. Prøv igen, når du har forbindelse.';
@@ -1929,10 +2060,13 @@ function qLoadFeed(){
 function qRenderLog(){
   var el=$('#qLog'); if(!el) return;
   if(!QROWS || QROWS.length<3){
-    el.innerHTML='<p class="pfnote">Herunder vises resultaterne, når et par stykker har været igennem.</p>';
+    el.innerHTML='<p class="pfnote">Herunder vises resultaterne, når Bo har set dem igennem.</p>';
     return;
   }
-  el.innerHTML='<h2>resultater</h2>'+QROWS.map(function(r){
+  /* Nyeste står øverst, så det er dér, man leder efter sig selv og ikke finder noget.
+     Derfor står køen OVER rækkerne: under dem ville den læses som en fodnote til
+     det, der ER med, og ikke som svar på det, man står og savner. */
+  el.innerHTML='<h2>resultater</h2><p class="pfnote">Mangler dit eget, står det i køen hos Bo.</p>'+QROWS.map(function(r){
     return '<div class="q-line"><span class="q-when">'+esc(r.when)+'</span>'
       +'<span class="q-who">'+esc(r.who)+'</span>'
       +'<span class="q-res">'+esc(r.score)+' af '+esc(r.of)+'</span></div>';
@@ -2221,7 +2355,10 @@ isLink(); IS=store('slaegt.is')==='1';
 window.addEventListener('hashchange',function(){ if(isLink()&&!IS){ IS=true; render(); } });
 // Start straks med låste data fra sidst (åbnes med den gemte nøgle); hent derefter nyeste version
 $('#pwForm').addEventListener('submit',function(e){ e.preventDefault(); unlock(); });
-$('#logoutBtn').addEventListener('click',function(){ try{ localStorage.removeItem('slaegt.key'); }catch(e){} location.reload(); });
+/* Log ud glemmer også, hvem man havde valgt at se slægten fra — ellers lå valget og ventede
+   på den næste, der fik telefonen i hånden. Temaet bliver, de krypterede kopier bliver (de er
+   ubrugelige uden nøglen), og klokkens læst-mærker bliver, så ingen får besked om det samme igen. */
+$('#logoutBtn').addEventListener('click',function(){ try{ ['slaegt.key','slaegt.pov'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} location.reload(); });
 try{ localStorage.removeItem('slaegt.tree'); localStorage.removeItem('slaegt.photos'); }catch(e){}
 loadKey().then(function(){
   var ct=null, cp=null; try{ ct=JSON.parse(localStorage.getItem('slaegt.tree.enc')||'null'); cp=JSON.parse(localStorage.getItem('slaegt.photos.enc')||'null'); }catch(e){}
@@ -2252,7 +2389,11 @@ function pvWake(){ if(!PV) return;
   Array.prototype.forEach.call(PV.querySelectorAll('.pvcell'),function(c,i){ c.classList.toggle('on',i===PVI); });
   /* Driften må aldrig blotte baggrunden i en ende — så ville den lave en kant.
      Står man forrest, driver den kun til venstre; bagerst kun til højre. */
-  PV.setAttribute('data-edge', PVL.length<2? 'one' : (PVI===0? 'start' : (PVI===PVL.length-1? 'end' : 'mid')));
+  /* Kender jeg endnu ikke billedlisten, venter jeg med at vælge tilstand: "wait" har ingen
+     regler, så hverken drev eller panorering sættes i gang. Ellers startede ét-billed-drevet,
+     og når de ekstra billeder så landede, blev det revet væk igen midt i en bevægelse. */
+  PV.setAttribute('data-edge', (!PX&&PVL.length<2)? 'wait' :
+    (PVL.length<2? 'one' : (PVI===0? 'start' : (PVI===PVL.length-1? 'end' : 'mid'))));
   var t=PV.querySelector('.pvtrack'); if(t) t.classList.toggle('one',PVL.length<2); }
 function pvGo(n){ if(!PV||PVL.length<2) return; PVI=Math.max(0,Math.min(PVL.length-1,n)); store('slaegt.pvhint','9'); pvSlide(); }
 /* Samme puf som indstillingernes faner: de to første gange glider strimlen en anelse til side,
@@ -2284,15 +2425,22 @@ function openPhoto(id){
     '<div class="pvname">'+esc(p.n)+'</div>';
   document.body.appendChild(PV);
   pvWake();
-  if(list.length>1) pvHint();
-  /* Første gang hentes filen, mens billedet allerede folder sig ud. Kommer der flere billeder,
-     sættes de bagpå — kort 1 røres ikke, så udfoldningen bliver ikke afbrudt. */
-  if(!PX) loadExtra().then(function(){
+  var hinted=false, flying=false, t0=Date.now();
+  if(list.length>1){ pvHint(); hinted=true; }
+  /* Er filen ikke hentet endnu, kommer billederne bagpå, når den lander. Men det må IKKE ske,
+     mens billedet folder sig ud: kort 1 skifter bredde fra 100% til 100%-5px, beskæringen hopper,
+     og driften starter forfra — ét ryk midt i den mest brugte bevægelse i appen. Så venter jeg,
+     til foldningen er færdig. Og jeg puffer kun, hvis jeg ikke allerede har puffet. */
+  if(!PX) loadExtra().then(function add(){
     if(!PV||PVPID!==id) return;
-    var more=photosOf(p).slice(PVL.length); if(!more.length) return;
+    if(flying&&Date.now()-t0<1500){ setTimeout(add,220); return; }
+    /* Også når der INTET er at tilføje, skal tilstanden afgøres: ellers blev "wait" hængende
+       for alle med ét billede, og de fik aldrig deres panorering. */
+    var more=photosOf(p).slice(PVL.length); if(!more.length){ pvWake(); return; }
     var t=PV.querySelector('.pvtrack'); if(!t) return;
     t.insertAdjacentHTML('beforeend', more.map(function(u){ return '<div class="pvcell"><img alt="" loading="lazy" src="'+u+'"></div>'; }).join(''));
-    PVL=PVL.concat(more); t.classList.remove('one'); pvWake(); pvHint();
+    PVL=PVL.concat(more); t.classList.remove('one'); pvWake();
+    if(!hinted){ pvHint(); hinted=true; }
   });
   clearTimeout(IDLET);
   try{ history.pushState({pv:1},''); PVPOP=true; }catch(e){ PVPOP=false; }
@@ -2300,13 +2448,14 @@ function openPhoto(id){
   if(from&&!REDUCED.matches){
     /* Billedet folder sig ud fra det lille kvadrat, det kom fra — samme udsnit hele vejen,
        så ansigtet bliver ikke strakt undervejs. Metros continuum: det, man trykkede på, bliver siden. */
+    flying=true;
     var fly=function(){
       var W=window.innerWidth, H=window.innerHeight;
       var ins='inset('+from.top+'px '+(W-from.right)+'px '+(H-from.bottom)+'px '+from.left+'px)';
       var a=img.animate([{clipPath:ins,webkitClipPath:ins,transform:'scale(1.06)'},
                          {clipPath:'inset(0px)',webkitClipPath:'inset(0px)',transform:'none'}],
         {duration:460,easing:'cubic-bezier(.2,.8,.2,1)'});
-      var done=function(){ img.style.clipPath=''; img.style.transform=''; };
+      var done=function(){ flying=false; img.style.clipPath=''; img.style.transform=''; };
       a.onfinish=done; a.oncancel=done; setTimeout(done,760);
     };
     if(img.complete) fly(); else img.addEventListener('load',fly,{once:true});
